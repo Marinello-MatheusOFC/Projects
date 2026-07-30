@@ -1,0 +1,153 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+@import './components.css';
+
+:root {
+  --color-primary: #E85D3A;
+  --color-primary-hover: #D94D2A;
+  --color-primary-light: #FFF0EB;
+  --color-primary-dark: #C43D1A;
+
+  --color-secondary: #2D8B6F;
+  --color-secondary-hover: #237A60;
+  --color-secondary-light: #E8F5F0;
+
+  --color-accent: #F4A261;
+  --color-accent-hover: #E8924A;
+  --color-accent-light: #FEF0E0;
+
+  --color-bg: #FDFBF9;
+  --color-bg-alt: #F5F0EB;
+  --color-surface: #FFFFFF;
+  --color-text: #2C241B;
+  --color-text-secondary: #6B625A;
+  --color-text-muted: #A69B92;
+  --color-border: #E5DDD6;
+  --color-border-light: #F0EBE6;
+
+  --color-error: #D94D4D;
+  --color-error-bg: #FEF2F2;
+  --color-success: #2D8B6F;
+  --color-success-bg: #F0FDF4;
+  --color-warning: #E5A83A;
+  --color-warning-bg: #FFFBEB;
+  --color-info: #4A90D9;
+  --color-info-bg: #EFF6FF;
+
+  --color-white: #FFFFFF;
+  --color-black: #000000;
+
+  --font-heading: 'Manrope', 'Georgia', serif;
+  --font-body: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 2.75rem;
+  --text-6xl: 3.5rem;
+
+  --leading-tight: 1.15;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.65;
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  --space-0: 0;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2rem;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 1px 3px rgba(44, 36, 27, 0.06);
+  --shadow-md: 0 4px 12px rgba(44, 36, 27, 0.08);
+  --shadow-lg: 0 12px 32px rgba(44, 36, 27, 0.12);
+
+  --transition-fast: 200ms ease;
+  --transition-normal: 350ms ease;
+
+  --container-max: 1200px;
+  --container-padding: var(--space-4);
+}
+
+@media (min-width: 768px) { :root { --container-padding: var(--space-6); } }
+@media (min-width: 1024px) { :root { --container-padding: var(--space-8); } }
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--leading-tight);
+  color: var(--color-text);
+}
+
+a { color: var(--color-primary); text-decoration: none; transition: color var(--transition-fast); }
+a:hover { color: var(--color-primary-hover); text-decoration: underline; }
+
+img { max-width: 100%; height: auto; display: block; }
+button { cursor: pointer; font-family: inherit; font-size: inherit; }
+input, textarea, select { font-family: inherit; font-size: inherit; }
+ul, ol { list-style: none; }
+
+.skip-to-content {
+  position: absolute;
+  top: -100%;
+  left: var(--space-4);
+  z-index: 500;
+  padding: var(--space-2) var(--space-4);
+  background-color: var(--color-text);
+  color: var(--color-white);
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--text-sm);
+  transition: top var(--transition-fast);
+}
+.skip-to-content:focus { top: var(--space-4); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+:focus:not(:focus-visible) { outline: none; }
+::selection { background-color: var(--color-primary-light); color: var(--color-text); }
