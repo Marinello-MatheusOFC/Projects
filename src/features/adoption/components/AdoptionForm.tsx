@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/Textarea';
 import { Select } from '@/components/ui/Select';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { Alert } from '@/components/feedback/Alert';
+import { submitAdoptionApplication } from '@/services/applications';
 
 const adoptionFormSchema = z.object({
   applicant_name: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
@@ -32,11 +33,11 @@ const adoptionFormSchema = z.object({
 type AdoptionFormData = z.infer<typeof adoptionFormSchema>;
 
 interface AdoptionFormProps {
-  animalSlug: string;
+  animalId: string;
   onSuccess: () => void;
 }
 
-export function AdoptionForm({ animalSlug: _animalSlug, onSuccess }: AdoptionFormProps) {
+export function AdoptionForm({ animalId, onSuccess }: AdoptionFormProps) {
   const [submitState, setSubmitState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
   const {
@@ -53,11 +54,10 @@ export function AdoptionForm({ animalSlug: _animalSlug, onSuccess }: AdoptionFor
     },
   });
 
-  const onSubmit = async (_data: AdoptionFormData) => {
+  const onSubmit = async (data: AdoptionFormData) => {
     setSubmitState('loading');
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await submitAdoptionApplication({ animal_id: animalId, ...data });
       setSubmitState('success');
       setTimeout(() => onSuccess(), 2000);
     } catch {

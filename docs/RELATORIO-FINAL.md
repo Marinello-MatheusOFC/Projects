@@ -1,80 +1,95 @@
 # Relatório Final — Redesign SOS Focinho Carente
 
-## Resumo das Entregas
+## Escopo desta fase
 
-### Documentação
-| Documento | Descrição |
-|-----------|-----------|
-| `AUDITORIA-VISUAL.md` | Diagnóstico completo do estado anterior |
-| `DIRECAO-DE-ARTE.md` | Conceito, paleta, tipografia, tom de voz |
-| `CHECKLIST-FUNCIONAL-ANTES-DO-REDESIGN.md` | Funcionalidades implementadas vs. pendentes |
-| `INVENTARIO-COMPONENTES.md` | Inventário completo de componentes pós-redesign |
-| `VALIDACAO-RESPONSIVA.md` | Breakpoints e regras responsivas |
-| `VALIDACAO-ACESSIBILIDADE.md` | Checklist de acessibilidade |
-| `PENDENCIAS-CONTEUDO.md` | Pendências de conteúdo e funcionalidades |
-| `RELATORIO-FINAL.md` | Este documento |
+Redesign completo das páginas públicas com a identidade coral/verde/amarelo,
+tipografia Manrope/Inter e composição editorial, **além de aplicar a mesma
+identidade ao painel administrativo**, conectando tudo aos serviços com
+**dados reais do Supabase quando disponíveis e fallback local demonstrado**
+quando o backend local está desligado. Nenhuma migration, regra de RLS,
+autenticação ou schema de banco foi alterado.
 
-### CSS
-| Arquivo | Ações |
-|---------|-------|
-| `globals.css` | Tokens refinados (paleta mais quente), novas variáveis, dark mode preparado |
-| `components.css` | Reescreito completamente: gradientes, sombras, hover states, bordas, cards, glassmorphism, transições, novas seções (Card, Pagination, Table, Tabs) |
+## Camada de dados
 
-### Novos Componentes
-| Componente | Arquivo |
-|-----------|---------|
-| Card | `src/components/ui/Card.tsx` |
-| Pagination | `src/components/ui/Pagination.tsx` |
-| Table | `src/components/ui/Table.tsx` |
-| Tabs | `src/components/ui/Tabs.tsx` |
+| Arquivo | Responsabilidade |
+|---------|------------------|
+| `src/lib/supabase.ts` | Client Supabase (autenticação e consultas) |
+| `src/lib/images.ts` | `resolveImageUrl`, `getStoragePublicUrl`, `withFallback` (fallback apenas em erro real) |
+| `src/lib/format.ts` | Rótulos pt-BR, datas, moeda, `slugify` |
+| `src/data/animals.ts` | 6 animais de demonstração com imagens e histórias |
+| `src/data/content.ts` | Eventos, notícias, produtos, galeria e configurações de demonstração |
+| `src/services/animals.ts` | CRUD + upload de imagens de animais (fallback demo) |
+| `src/services/events.ts` | CRUD de eventos (fallback demo) |
+| `src/services/news.ts` | CRUD de notícias (fallback demo) |
+| `src/services/products.ts` | CRUD de produtos (fallback demo) |
+| `src/services/gallery.ts` | Álbuns e imagens da galeria (fallback demo) |
+| `src/services/applications.ts` | Formulários de adoção, contato, voluntariado + status administrativos |
+| `src/services/settings.ts` | `fetchOrgInfo`, `fetchAllSettings`, `saveSiteSetting` |
 
-### Novas Páginas
-| Página | Arquivo |
-|--------|---------|
-| 404 | `src/pages/errors/NotFoundPage.tsx` |
-| 403 | `src/pages/errors/ForbiddenPage.tsx` |
-| 500 | `src/pages/errors/ServerErrorPage.tsx` |
+**Regra do fallback:** os serviços consultam o Supabase e, apenas em caso de
+erro real (rede, backend desligado), retornam dados de demonstração. Resultados
+vazios são respeitados. Fotos demonstrativas **não** são associadas a animais
+reais.
 
-### Melhorias de Acessibilidade
-- Skip-to-content adicionado no AdminLayout
-- `aria-label` em navegações e botões
-- `aria-current` na paginação
-- Foco visível gerenciado com `focus-visible`
-- `prefers-reduced-motion` respeitado
+## Páginas públicas
 
-### Melhorias Visuais no Design System
-- **Gradientes**: Hero, page-hero, buttons, sidebar, footer com gradientes suaves
-- **Sombras**: Escala refinada, botões com glow
-- **Cards**: Hover com translateY e shadow elevado
-- **Header**: Glassmorphism com backdrop-filter
-- **Footer**: Gradiente escuro com melhor hierarquia
-- **Modal**: Blur no overlay, animação suave
-- **Badges/Alertas**: Bordas semitransparentes
-- **Erro 404**: Gradiente no texto do código
+| Página | Status |
+|--------|--------|
+| Home | Hero editorial, animais em destaque e eventos vindos dos serviços, loading skeletons |
+| Adoção (`/adocao`) | Listagem com filtros (nome, espécie, sexo, porte) usando `fetchAdoptableAnimals` |
+| Detalhe do animal (`/adocao/:slug`) | Galeria, história, personalidade, lar ideal, formulário de interesse real |
+| Processo de adoção | Etapas editoriais + CTA |
+| Sobre | Conteúdo editorial + `fetchOrgInfo` quando preenchido |
+| Como ajudar | Formas de ajudar; PIX exibido somente se preenchido |
+| Voluntariado | Formulário real (`submitVolunteerApplication`) |
+| Eventos (`/eventos` e detalhe) | Próximos/passados, badges de status, detalhe com sidebar |
+| Notícias (`/noticias` e detalhe) | Lista com destaque, detalhe com conteúdo |
+| Brechó (`/brecho` e detalhe) | Produtos com preço pt-BR, disponibilidade, CTA para contato |
+| Galeria (`/galeria`) | Álbuns com imagens resolvidas e lightbox acessível |
+| Contato | Formulário real (`submitContactMessage`), contatos/redes via `fetchOrgInfo` |
 
-## Build
+## Painel administrativo
+
+| Página | Status |
+|--------|--------|
+| Login | Usa o logotipo oficial (não mais `PawPrint`) |
+| Dashboard | Indicadores reais dos serviços (animais, adoções, mensagens, voluntários, produtos, eventos) |
+| Animais (lista + formulário) | Tabela com busca, editar/arquivar; formulário com upload de fotos, capa e exclusão |
+| Eventos (lista + formulário) | CRUD completo com datas `datetime-local` |
+| Notícias (lista + formulário) | CRUD completo com rascunho/publicada |
+| Produtos (lista + formulário) | CRUD completo com preço e disponibilidade |
+| Adoções | Tabela com status, detalhes em modal, mudança de status e histórico |
+| Mensagens | Tabela com ações (ler, arquivar, excluir) e detalhe em modal |
+| Voluntários | Tabela com mudança de status em modal e exclusão |
+| Configurações | Contatos, redes sociais, PIX e sobre (salvos via `saveSiteSetting`) |
+| Usuários | Perfis somente leitura (com fallback demo) |
+
+Layout: `AdminSidebar` e `AdminHeader` usam o logotipo oficial e a identidade nova.
+
+## Identidade e layout
+
+- Paleta coral/verde/amarelo aplicada como tokens em `globals.css` e `components.css`
+- Tipografia: Manrope (títulos) + Inter (corpo) com escala fluida `clamp()`
+- Header reescrito com drawer móvel acessível (foco aprisionado, Escape, scroll lock)
+- Footer com contatos e redes sociais vindos de `fetchOrgInfo` (sem links falsos)
+- `ResponsivePicture` com fallback contextual ("Foto em atualização", etc.) e sem render de imagens quebradas
+- `document.title` dinâmico em todas as páginas
+
+## Testes
+
 ```
-npm run build → OK (sem erros, 1776 módulos transformados)
+npm run typecheck → OK (0 erros)
+npm run lint      → OK (0 warnings)
+npm run test      → OK (4 arquivos, 20 testes)
+npm run build     → OK
 ```
 
-## Próximos Passos Recomendados
+## Pendências de manutenção (fora do escopo desta fase)
 
-### Prioridade Alta
-1. Preencher páginas públicas vazias (Eventos, Notícias, Brechó, Galeria) com dados reais
-2. Completar CRUDs do admin (Adoções, Eventos, Notícias, Brechó)
-3. Implementar upload de imagens
-4. Testes de responsividade em dispositivos reais
-5. Testes de acessibilidade com leitores de tela
-
-### Prioridade Média
-6. Dark mode completo
-7. Animações de transição entre páginas
-8. Componente de notificação/toast global
-9. Testes unitários (vitest + testing-library)
-10. Melhorias de performance (lazy loading de imagens)
-
-### Prioridade Baixa
-11. PWA (service worker, manifest, offline)
-12. i18n
-13. E2E tests (Playwright)
-14. Storybook para o design system
+- Dark mode completo
+- Animações de transição entre páginas
+- Notificação/toast global
+- Testes de integração dos formulários e schemas Zod
+- Testes de acessibilidade automatizados (axe)
+- E2E com Playwright
+- Ajuste de chunk size no build (aviso pré-existente)

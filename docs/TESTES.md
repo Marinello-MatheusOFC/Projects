@@ -2,42 +2,40 @@
 
 ## Estratégia
 
-- **Testes unitários**: Schemas Zod, formatadores, labels, componentes isolados
-- **Testes de integração**: Fluxos completos (autenticação, formulários, CRUD)
-- **Testes de acessibilidade**: Navegação por teclado, roles ARIA
+- **Testes unitários**: Helpers de formatação, serviços com fallback local, componentes isolados
+- **Testes de componentes**: Drawer acessível do Header, fallback do ResponsivePicture
+- **Testes de integração**: Serviços contra o Supabase (backend off → fallback de demonstração)
 
 ## Comandos
 
 ```bash
-npm test            # Executa testes
-npm run test:watch  # Modo watch
-npm run test:coverage # Relatório de cobertura
+npm test               # Executa testes (vitest run)
+npm run test:watch     # Modo watch
+npm run test:coverage  # Relatório de cobertura
 ```
 
-## Cobertura
+## Suíte Atual (20 testes em 4 arquivos)
 
-A ser medida após implementação dos testes. As metas são:
-- Unitários: > 80%
-- Integração: Fluxos críticos cobertos
+| Arquivo | O que cobre |
+|---------|-------------|
+| `tests/format.test.ts` | `speciesLabel`, `sexLabel`, `sizeLabel`, `animalStatusLabel`, `animalCardMeta`, `formatDate`, `formatShortDate`, `formatPrice`, `slugify` |
+| `tests/animals-service.test.ts` | `fetchAnimals`, `fetchAdoptableAnimals`, `fetchFeaturedAnimals`, `fetchAnimalBySlug` com backend indisponível (fallback para dados de demonstração) |
+| `tests/responsive-picture.test.tsx` | Fallback contextual (src vazio) e renderização de `<img>` com src válido |
+| `tests/header.test.tsx` | Abertura/fechamento do drawer móvel, fechamento com Escape, navegação principal |
 
-## Cenários a testar
+## Padrões
+
+- Testes usam `@testing-library/react` + `@testing-library/jest-dom` + `vitest` (globals habilitadas, ambiente jsdom)
+- Serviços são testados com `vi.mock('@/lib/supabase')` para simular backend indisponível e validar o fallback local
+- Componentes que dependem de roteamento usam `<MemoryRouter>`
+
+## Cenários a adicionar
 
 ### Schemas Zod
 - Validação de campos obrigatórios
 - Validação de formatos (email, telefone)
 - Validação de consentimento
 - Mensagens de erro em português
-
-### Formatadores
-- `formatCurrency`: Formato BRL
-- `formatDate`: Formato pt-BR
-- `slugify`: Remoção de acentos, substituição de espaços
-
-### Componentes
-- `Button`: Loading state, disabled
-- `Modal`: Abertura, fechamento, foco, tecla Escape
-- `EmptyState`: Renderização com título, descrição e ação
-- `ErrorState`: Renderização com mensagem e retry
 
 ### Formulários
 - Envio com dados válidos
@@ -53,8 +51,8 @@ A ser medida após implementação dos testes. As metas são:
 
 ## Pendências
 
-- [ ] Implementar testes unitários
-- [ ] Implementar testes de integração
+- [ ] Cobrir schemas Zod dos formulários
+- [ ] Testes de integração dos fluxos de adoção/contato/voluntariado
 - [ ] Configurar cobertura mínima
-- [ ] Adicionar testes de acessibilidade
+- [ ] Testes de acessibilidade automatizados (axe)
 - [ ] Executar em CI

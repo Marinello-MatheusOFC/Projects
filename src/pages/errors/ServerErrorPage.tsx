@@ -1,25 +1,24 @@
 import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/Button';
 
 export default function ServerErrorPage() {
   return (
     <div className="error-page">
-      <div className="error-code">500</div>
-      <h1 className="error-title">Erro interno do servidor</h1>
-      <p className="error-description">
-        Não foi possível processar sua solicitação. Tente novamente mais tarde.
-      </p>
-      <div className="final-cta-actions">
-        <Link to="/">
-          <Button>
+      <div className="container">
+        <div className="error-code" aria-hidden="true">
+          500
+        </div>
+        <h1 className="error-title">Erro interno do servidor</h1>
+        <p className="error-description">
+          Não foi possível processar sua solicitação. Tente novamente mais tarde.
+        </p>
+        <div className="error-actions">
+          <Link to="/" className="btn btn--primary">
             Voltar para o início
-          </Button>
-        </Link>
-        <Link to="/contato">
-          <Button variant="outline">
+          </Link>
+          <Link to="/contato" className="btn btn--outline">
             Fale conosco
-          </Button>
-        </Link>
+          </Link>
+        </div>
       </div>
     </div>
   );

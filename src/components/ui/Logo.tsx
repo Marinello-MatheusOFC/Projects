@@ -22,15 +22,15 @@ export function Logo({ size = 'md', showText = true, linkTo }: LogoProps) {
         >
           <defs>
             <linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#DC2626" />
-              <stop offset="100%" stopColor="#F59E0B" />
+              <stop offset="0%" stopColor="#E64A35" />
+              <stop offset="100%" stopColor="#F2AB37" />
             </linearGradient>
           </defs>
 
           <ellipse cx="32" cy="38" rx="24" ry="21" fill="url(#logoGrad)" className="logo-head" />
 
-          <path d="M14 24 L8 6 L24 16 Z" fill="#DC2626" className="logo-ear logo-ear--left" />
-          <path d="M50 24 L56 6 L40 16 Z" fill="#F59E0B" className="logo-ear logo-ear--right" />
+          <path d="M14 24 L8 6 L24 16 Z" fill="#E64A35" className="logo-ear logo-ear--left" />
+          <path d="M50 24 L56 6 L40 16 Z" fill="#F2AB37" className="logo-ear logo-ear--right" />
 
           <circle cx="21" cy="32" r="3.5" fill="white" className="logo-eye logo-eye--left" />
           <circle cx="43" cy="32" r="3.5" fill="white" className="logo-eye logo-eye--right" />
@@ -38,8 +38,8 @@ export function Logo({ size = 'md', showText = true, linkTo }: LogoProps) {
           <circle cx="21" cy="32" r="1.5" fill="#1C1917" className="logo-pupil" />
           <circle cx="43" cy="32" r="1.5" fill="#1C1917" className="logo-pupil" />
 
-          <ellipse cx="32" cy="42" rx="7" ry="5" fill="#991B1B" className="logo-nose" />
-          <ellipse cx="32" cy="40" rx="3" ry="2" fill="#FCA5A5" className="logo-nose-shine" />
+          <ellipse cx="32" cy="42" rx="7" ry="5" fill="#AE3322" className="logo-nose" />
+          <ellipse cx="32" cy="40" rx="3" ry="2" fill="#F2A090" className="logo-nose-shine" />
 
           <path d="M26 47 Q32 52 38 47" stroke="white" strokeWidth="2" fill="none" strokeLinecap="round" className="logo-mouth" />
 
@@ -54,7 +54,7 @@ export function Logo({ size = 'md', showText = true, linkTo }: LogoProps) {
       {showText && (
         <span className="logo-text">
           <span className="logo-text-main">SOS Focinho Carente</span>
-          <span className="logo-text-sub">Protegendo vidas desde 2025</span>
+          <span className="logo-text-sub">Adoção responsável e cuidado</span>
         </span>
       )}
     </span>

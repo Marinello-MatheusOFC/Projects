@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { X } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -7,33 +7,18 @@ import { EmptyState } from '@/components/feedback/EmptyState';
 import { ErrorState } from '@/components/feedback/ErrorState';
 import { CardSkeleton } from '@/components/feedback/Skeleton';
 import { ResponsivePicture } from '@/components/media/ResponsivePicture';
+import { PageHeader } from '@/components/layout/PageHeader';
 import { speciesLabels, sexLabels, sizeLabels } from '@/utils';
-
-const adoptionCardImages = [
-  '/images/demo/animal-dog-01.jpg',
-  '/images/demo/animal-cat-01.jpg',
-  '/images/demo/animal-dog-02.jpg',
-  '/images/demo/hero-dog.jpg',
-  '/images/demo/hero-cat.jpg',
-  '/images/demo/animal-dog-03.jpg',
-];
+import { fetchAdoptableAnimals, type AnimalWithImages } from '@/services/animals';
+import { animalCardMeta, speciesLabel, sizeLabel } from '@/lib/format';
 
 const speciesOptions = Object.entries(speciesLabels).map(([value, label]) => ({ value, label }));
 const sexOptions = Object.entries(sexLabels).map(([value, label]) => ({ value, label }));
 const sizeOptions = Object.entries(sizeLabels).map(([value, label]) => ({ value, label }));
 
-const dummyAnimals = [
-  { id: '1', name: 'Luna', species: 'Cachorro', sex: 'Fêmea', size: 'Médio', status: 'available', slug: 'luna' },
-  { id: '2', name: 'Toddy', species: 'Cachorro', sex: 'Macho', size: 'Pequeno', status: 'available', slug: 'toddy' },
-  { id: '3', name: 'Mel', species: 'Gato', sex: 'Fêmea', size: 'Pequeno', status: 'available', slug: 'mel' },
-  { id: '4', name: 'Thor', species: 'Cachorro', sex: 'Macho', size: 'Grande', status: 'in_process', slug: 'thor' },
-  { id: '5', name: 'Pipoca', species: 'Gato', sex: 'Fêmea', size: 'Pequeno', status: 'available', slug: 'pipoca' },
-  { id: '6', name: 'Bolinha', species: 'Cachorro', sex: 'Macho', size: 'Médio', status: 'available', slug: 'bolinha' },
-];
-
 export default function AdoptionPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const loading = false;
+  const [animals, setAnimals] = useState<AnimalWithImages[] | null>(null);
   const [error, setError] = useState(false);
 
   const name = searchParams.get('nome') || '';
@@ -41,12 +26,28 @@ export default function AdoptionPage() {
   const sex = searchParams.get('sexo') || '';
   const size = searchParams.get('porte') || '';
 
+  useEffect(() => {
+    let active = true;
+    fetchAdoptableAnimals()
+      .then((result) => {
+        if (active) {
+          setAnimals(result);
+          setError(false);
+        }
+      })
+      .catch(() => {
+        if (active) setError(true);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
   const updateFilter = useCallback(
     (key: string, value: string) => {
       const params = new URLSearchParams(searchParams);
       if (value) params.set(key, value);
       else params.delete(key);
-      params.set('pagina', '1');
       setSearchParams(params);
     },
     [searchParams, setSearchParams],
@@ -56,9 +57,15 @@ export default function AdoptionPage() {
     setSearchParams({});
   }, [setSearchParams]);
 
-  const hasFilters = name || species || sex || size;
+  const hasFilters = Boolean(name || species || sex || size);
 
-  const animals = dummyAnimals;
+  const filtered = (animals ?? []).filter((animal) => {
+    if (name && !animal.name.toLowerCase().includes(name.toLowerCase())) return false;
+    if (species && animal.species !== species) return false;
+    if (sex && animal.sex !== sex) return false;
+    if (size && animal.size !== size) return false;
+    return true;
+  });
 
   if (error) {
     return (
@@ -77,32 +84,18 @@ export default function AdoptionPage() {
 
   return (
     <div>
+      <PageHeader
+        eyebrow="SOS Focinho Carente"
+        title="Talvez um desses olhares esteja esperando encontrar você."
+        subtitle="Cada animal tem sua própria história. Conheça quem está disponível e descubra se um deles tem a ver com você."
+        media={{
+          src: '/images/demo/hero-cat.jpg',
+          alt: 'Animal olhando com expressão de espera',
+          objectPosition: 'center 40%',
+          fallback: 'hero',
+        }}
+      />
 
-      {/* Abertura */}
-      <section className="page-hero">
-        <div className="page-hero-photo">
-          <ResponsivePicture
-            src="/images/demo/hero-cat.jpg"
-            alt="Animal olhando com expressão de espera"
-            objectFit="cover"
-            objectPosition="center 40%"
-            priority
-            width={1920}
-            height={600}
-            fallback="hero"
-          />
-        </div>
-        <div className="page-hero-overlay" />
-        <div className="container">
-          <h1 className="page-hero-title">Talvez um desses olhares esteja esperando encontrar você.</h1>
-          <p className="page-hero-subtitle">
-            Cada animal tem sua própria história. Conheça quem está disponível
-            e descubra se um deles tem a ver com você.
-          </p>
-        </div>
-      </section>
-
-      {/* Filtros */}
       <section className="section" style={{ paddingTop: 'var(--space-10)', paddingBottom: 0 }}>
         <div className="container">
           <div className="filters-bar" role="search" aria-label="Filtrar animais">
@@ -149,22 +142,21 @@ export default function AdoptionPage() {
         </div>
       </section>
 
-      {/* Listagem */}
       <section className="section">
         <div className="container">
-          {loading ? (
+          {animals === null ? (
             <div className="adoption-grid" aria-label="Carregando animais">
               {Array.from({ length: 6 }).map((_, i) => (
                 <CardSkeleton key={i} />
               ))}
             </div>
-          ) : animals.length > 0 ? (
+          ) : filtered.length > 0 ? (
             <>
-              <p style={{ marginBottom: 'var(--space-4)', color: 'var(--color-text-muted)', fontSize: 'var(--text-sm)' }}>
-                {animals.length} animal(is) encontrado(s)
+              <p className="adoption-count">
+                {filtered.length} {filtered.length === 1 ? 'animal encontrado' : 'animais encontrados'}
               </p>
               <div className="adoption-grid">
-                {animals.map((animal) => (
+                {filtered.map((animal) => (
                   <Link
                     key={animal.id}
                     to={`/adocao/${animal.slug}`}
@@ -173,21 +165,22 @@ export default function AdoptionPage() {
                   >
                     <div className="adoption-card-image">
                       <ResponsivePicture
-                        src={adoptionCardImages[Number(animal.id) - 1]}
-                        alt={`${animal.name}, ${animal.species}`}
+                        src={animal.cover}
+                        alt={`${animal.name}, ${speciesLabel(animal.species)} de porte ${sizeLabel(animal.size)}`}
                         objectFit="cover"
-                        objectPosition={animal.slug === 'luna' ? 'center 40%' : animal.slug === 'toddy' ? 'center 30%' : 'center 50%'}
                         width={600}
                         height={450}
-                        fallback={animal.species === 'Gato' ? 'cat' : 'animal'}
+                        fallback={animal.species === 'cat' ? 'cat' : 'animal'}
                       />
                     </div>
                     <div className="adoption-card-body">
                       <div className="adoption-card-name">{animal.name}</div>
                       <div className="adoption-card-details">
-                        <span className="adoption-card-detail">{animal.species}</span>
-                        <span className="adoption-card-detail">{animal.sex}</span>
-                        <span className="adoption-card-detail">Porte {animal.size}</span>
+                        {animalCardMeta(animal)
+                          .split(' · ')
+                          .map((part) => (
+                            <span key={part} className="adoption-card-detail">{part}</span>
+                          ))}
                       </div>
                       <div className="adoption-card-action">
                         <Button variant="outline" size="sm" style={{ pointerEvents: 'none' }}>
@@ -215,11 +208,10 @@ export default function AdoptionPage() {
         </div>
       </section>
 
-      {/* Processo de adoção */}
       <section className="section section--alt">
         <div className="container">
           <div style={{ textAlign: 'center', maxWidth: 500, margin: '0 auto' }}>
-            <h2 style={{ fontSize: 'var(--text-2xl)', marginBottom: 'var(--space-3)' }}>Processo de Adoção</h2>
+            <h2 className="section-title">Processo de Adoção</h2>
             <p style={{ color: 'var(--color-text-secondary)', marginBottom: 'var(--space-4)', lineHeight: 'var(--leading-relaxed)' }}>
               A adoção é uma decisão importante. Queremos garantir que seja o melhor caminho para você e para o animal.
             </p>
@@ -229,7 +221,6 @@ export default function AdoptionPage() {
           </div>
         </div>
       </section>
-
     </div>
   );
 }

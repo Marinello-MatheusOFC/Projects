@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -7,7 +7,8 @@ import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { Alert } from '@/components/feedback/Alert';
-import { ResponsivePicture } from '@/components/media/ResponsivePicture';
+import { PageHeader } from '@/components/layout/PageHeader';
+import { submitVolunteerApplication } from '@/services/applications';
 
 const volunteerSchema = z.object({
   name: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
@@ -28,6 +29,10 @@ type VolunteerFormData = z.infer<typeof volunteerSchema>;
 export default function VolunteeringPage() {
   const [submitState, setSubmitState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
+  useEffect(() => {
+    document.title = 'Voluntariado — SOS Focinho Carente';
+  }, []);
+
   const {
     register,
     handleSubmit,
@@ -37,10 +42,20 @@ export default function VolunteeringPage() {
     defaultValues: { privacy_consent: false },
   });
 
-  const onSubmit = async (_data: VolunteerFormData) => {
+  const onSubmit = async (data: VolunteerFormData) => {
     setSubmitState('loading');
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await submitVolunteerApplication({
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        city: data.city,
+        availability: data.availability,
+        interests: data.interests,
+        experience: data.experience || null,
+        message: data.message || null,
+        privacy_consent: data.privacy_consent,
+      });
       setSubmitState('success');
     } catch {
       setSubmitState('error');
@@ -49,32 +64,23 @@ export default function VolunteeringPage() {
 
   return (
     <div>
-      <section className="page-hero">
-        <div className="page-hero-photo">
-          <ResponsivePicture
-            src="/images/demo/community-event.jpg"
-            alt="Voluntários cuidando de animais"
-            objectFit="cover"
-            objectPosition="center 40%"
-            priority
-            width={1920}
-            height={600}
-            fallback="care"
-          />
-        </div>
-        <div className="page-hero-overlay" />
-        <div className="container">
-          <h1 className="page-hero-title">Voluntariado</h1>
-          <p className="page-hero-subtitle">
-            Sua dedicação pode transformar o dia de um animal.
-          </p>
-        </div>
-      </section>
+      <PageHeader
+        eyebrow="Faça parte"
+        title="Voluntariado"
+        subtitle="Sua dedicação pode transformar o dia de um animal."
+        media={{
+          src: '/images/demo/care-volunteer.jpg',
+          alt: 'Voluntário cuidando de um animal',
+          objectPosition: 'center 50%',
+          fallback: 'care',
+        }}
+      />
 
       <section className="section">
         <div className="container">
           <div className="volunteering-grid">
             <div className="volunteering-info">
+              <span className="eyebrow">Faça parte</span>
               <h2>Por que ser voluntário?</h2>
               <p>
                 O voluntariado é essencial para o funcionamento da nossa organização.
@@ -91,7 +97,8 @@ export default function VolunteeringPage() {
             </div>
 
             <div>
-              <h2 style={{ fontSize: 'var(--text-2xl)', marginBottom: 'var(--space-4)' }}>Cadastro de Interesse</h2>
+              <span className="eyebrow">Inscrição</span>
+              <h2 className="section-title">Cadastro de Interesse</h2>
 
               {submitState === 'success' ? (
                 <Alert

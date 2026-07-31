@@ -1,24 +1,52 @@
+import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ChevronLeft, Calendar, User, Tag } from 'lucide-react';
+import { ChevronLeft, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { ResponsivePicture } from '@/components/media/ResponsivePicture';
-import { newsList } from '@/data/news';
-
-const monthNames = [
-  'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-  'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro',
-];
-
-function formatDate(iso: string) {
-  const date = new Date(`${iso}T12:00:00`);
-  return `${date.getDate()} de ${monthNames[date.getMonth()]} de ${date.getFullYear()}`;
-}
+import { PageHeader } from '@/components/layout/PageHeader';
+import { fetchNews, fetchNewsBySlug, type NewsWithImage } from '@/services/news';
+import { formatDate } from '@/lib/format';
 
 export default function NewsDetailPage() {
   const { slug } = useParams<{ slug: string }>();
-  const item = newsList.find((n) => n.slug === slug);
+  const [post, setPost] = useState<NewsWithImage | null | undefined>(undefined);
+  const [related, setRelated] = useState<NewsWithImage[]>([]);
 
-  if (!item) {
+  useEffect(() => {
+    if (!slug) return;
+    let active = true;
+    setPost(undefined);
+    fetchNewsBySlug(slug).then((result) => {
+      if (active) setPost(result);
+    });
+    fetchNews().then((result) => {
+      if (active) setRelated(result.filter((item) => item.slug !== slug).slice(0, 3));
+    });
+    return () => {
+      active = false;
+    };
+  }, [slug]);
+
+  useEffect(() => {
+    document.title = post ? `${post.title} — SOS Focinho Carente` : 'Notícias — SOS Focinho Carente';
+  }, [post]);
+
+  if (post === undefined) {
+    return (
+      <div>
+        <section className="section">
+          <div className="container">
+            <div className="skeleton" style={{ aspectRatio: '16 / 10', marginBottom: 'var(--space-6)' }} aria-hidden="true" />
+            <div className="skeleton skeleton-title" aria-hidden="true" />
+            <div className="skeleton skeleton-text" aria-hidden="true" />
+            <div className="skeleton skeleton-text short" aria-hidden="true" />
+          </div>
+        </section>
+      </div>
+    );
+  }
+
+  if (!post) {
     return (
       <div>
         <section className="section">
@@ -40,32 +68,21 @@ export default function NewsDetailPage() {
     );
   }
 
-  const related = newsList.filter((n) => n.slug !== item.slug).slice(0, 3);
+  const paragraphs = (post.content ?? '').split('\n\n').filter(Boolean);
 
   return (
     <div>
-      <section className="page-hero">
-        <div className="page-hero-photo">
-          <ResponsivePicture
-            src={item.image}
-            alt={item.title}
-            objectFit="cover"
-            objectPosition="center 50%"
-            priority
-            width={1920}
-            height={600}
-            fallback="gallery"
-          />
-        </div>
-        <div className="page-hero-overlay" />
-        <div className="container">
-          <p className="page-hero-subtitle" style={{ textTransform: 'uppercase', letterSpacing: '0.12em', fontSize: 'var(--text-xs)', marginBottom: 'var(--space-2)' }}>
-            {item.category}
-          </p>
-          <h1 className="page-hero-title">{item.title}</h1>
-          <p className="page-hero-subtitle">{formatDate(item.date)} · por {item.author}</p>
-        </div>
-      </section>
+      <PageHeader
+        eyebrow="Notícias"
+        title={post.title}
+        subtitle={formatDate(post.published_at)}
+        media={{
+          src: post.image,
+          alt: post.title,
+          objectPosition: 'center 50%',
+          fallback: 'news',
+        }}
+      />
 
       <section className="section">
         <div className="container" style={{ maxWidth: 780 }}>
@@ -75,15 +92,17 @@ export default function NewsDetailPage() {
           </Link>
 
           <div className="news-detail-meta">
-            <span><Calendar size={16} aria-hidden="true" /> {formatDate(item.date)}</span>
-            <span><User size={16} aria-hidden="true" /> {item.author}</span>
-            <span><Tag size={16} aria-hidden="true" /> {item.category}</span>
+            <span><Calendar size={16} aria-hidden="true" /> {formatDate(post.published_at)}</span>
           </div>
 
           <div className="news-detail-content">
-            {item.content.split('\n\n').map((paragraph, index) => (
-              <p key={index}>{paragraph}</p>
-            ))}
+            {paragraphs.length > 0 ? (
+              paragraphs.map((paragraph, index) => (
+                <p key={index}>{paragraph}</p>
+              ))
+            ) : (
+              <p>{post.excerpt || 'Esta notícia ainda não possui conteúdo completo.'}</p>
+            )}
           </div>
 
           <div className="news-detail-share">
@@ -97,42 +116,44 @@ export default function NewsDetailPage() {
         </div>
       </section>
 
-      <section className="section section--alt">
-        <div className="container">
-          <div className="section-intro">
-            <h2>Outras notícias</h2>
-            <p>Continue acompanhando o trabalho da SOS Focinho Carente.</p>
-          </div>
-          <div className="news-list">
-            {related.map((n) => (
-              <article key={n.slug} className="news-card">
-                <Link to={`/noticias/${n.slug}`} className="news-card-image-link" tabIndex={-1}>
-                  <div className="news-card-image">
-                    <ResponsivePicture
-                      src={n.image}
-                      alt={n.title}
-                      objectFit="cover"
-                      width={800}
-                      height={500}
-                      fallback="gallery"
-                    />
-                  </div>
-                </Link>
-                <div className="news-card-body">
-                  <span className="news-card-date">{formatDate(n.date)}</span>
-                  <h3>
-                    <Link to={`/noticias/${n.slug}`}>{n.title}</Link>
-                  </h3>
-                  <p>{n.summary}</p>
-                  <Link to={`/noticias/${n.slug}`} className="news-card-link">
-                    Ler notícia completa
+      {related.length > 0 && (
+        <section className="section section--alt">
+          <div className="container">
+            <div className="section-intro">
+              <h2>Outras notícias</h2>
+              <p>Continue acompanhando o trabalho da SOS Focinho Carente.</p>
+            </div>
+            <div className="news-list">
+              {related.map((item) => (
+                <article key={item.slug} className="news-card">
+                  <Link to={`/noticias/${item.slug}`} className="news-card-image-link" tabIndex={-1}>
+                    <div className="news-card-image">
+                      <ResponsivePicture
+                        src={item.image}
+                        alt={item.title}
+                        objectFit="cover"
+                        width={800}
+                        height={500}
+                        fallback="news"
+                      />
+                    </div>
                   </Link>
-                </div>
-              </article>
-            ))}
+                  <div className="news-card-body">
+                    <span className="news-card-date">{formatDate(item.published_at)}</span>
+                    <h3>
+                      <Link to={`/noticias/${item.slug}`}>{item.title}</Link>
+                    </h3>
+                    {item.excerpt && <p>{item.excerpt}</p>}
+                    <Link to={`/noticias/${item.slug}`} className="news-card-link">
+                      Ler notícia completa
+                    </Link>
+                  </div>
+                </article>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   );
 }

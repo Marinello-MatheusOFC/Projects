@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Alert } from '@/components/feedback/Alert';
-import { PawPrint } from 'lucide-react';
+import { Logo } from '@/components/ui/Logo';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -38,8 +38,8 @@ export default function LoginPage() {
     <div className="login-page">
       <div className="login-card">
         <div className="login-header">
-          <PawPrint size={40} className="login-icon" aria-hidden="true" />
-          <h1 className="login-title">Admin</h1>
+          <Logo size="lg" showText={false} />
+          <h1 className="login-title">Painel administrativo</h1>
           <p className="login-subtitle">SOS Focinho Carente</p>
         </div>
 

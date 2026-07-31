@@ -1,14 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Mail, Phone, MapPin, MessageCircle, Clock, Plus } from 'lucide-react';
+import { Mail, Phone, MapPin, MessageCircle, Plus, Facebook, Instagram, Youtube } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { Alert } from '@/components/feedback/Alert';
-import { ResponsivePicture } from '@/components/media/ResponsivePicture';
+import { PageHeader } from '@/components/layout/PageHeader';
+import { submitContactMessage } from '@/services/applications';
+import { fetchOrgInfo, type OrgInfo } from '@/services/settings';
 
 const contactSchema = z.object({
   name: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
@@ -23,6 +25,17 @@ const contactSchema = z.object({
 });
 
 type ContactFormData = z.infer<typeof contactSchema>;
+
+const socialLinks: {
+  key: keyof OrgInfo['social'];
+  href: (url: string) => string;
+  label: string;
+  icon: typeof Instagram;
+}[] = [
+  { key: 'instagram', href: (u) => (u.startsWith('http') ? u : `https://instagram.com/${u}`), label: 'Instagram', icon: Instagram },
+  { key: 'facebook', href: (u) => (u.startsWith('http') ? u : `https://facebook.com/${u}`), label: 'Facebook', icon: Facebook },
+  { key: 'youtube', href: (u) => (u.startsWith('http') ? u : `https://youtube.com/@${u}`), label: 'YouTube', icon: Youtube },
+];
 
 const faqs = [
   {
@@ -55,6 +68,18 @@ const faqs = [
 export default function ContactPage() {
   const [submitState, setSubmitState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [org, setOrg] = useState<OrgInfo | null>(null);
+
+  useEffect(() => {
+    document.title = 'Contato — SOS Focinho Carente';
+    let active = true;
+    fetchOrgInfo().then((info) => {
+      if (active) setOrg(info);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const {
     register,
@@ -65,119 +90,166 @@ export default function ContactPage() {
     defaultValues: { privacy_consent: false, website: '' },
   });
 
-  const onSubmit = async (_data: ContactFormData) => {
+  const onSubmit = async (data: ContactFormData) => {
     setSubmitState('loading');
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await submitContactMessage({
+        name: data.name,
+        email: data.email,
+        phone: data.phone || null,
+        subject: data.subject,
+        message: data.message,
+        privacy_consent: data.privacy_consent,
+      });
       setSubmitState('success');
     } catch {
       setSubmitState('error');
     }
   };
 
+  const contacts = org?.contacts;
+  const socials = org?.social;
+  const hasContactDetails = Boolean(
+    contacts && (contacts.email || contacts.phone || contacts.whatsapp || contacts.address),
+  );
+  const hasSocials = Boolean(
+    socials && socialLinks.some((s) => socials[s.key]),
+  );
+
   return (
     <div>
-      <section className="page-hero">
-        <div className="page-hero-photo">
-          <ResponsivePicture
-            src="/images/demo/animal-paw.jpg"
-            alt="Contato da ONG"
-            objectFit="cover"
-            objectPosition="center 50%"
-            priority
-            width={1920}
-            height={600}
-            fallback="hero"
-          />
-        </div>
-        <div className="page-hero-overlay" />
-        <div className="container">
-          <h1 className="page-hero-title">Contato</h1>
-          <p className="page-hero-subtitle">
-            Tire suas dúvidas, envie sugestões ou entre em contato conosco.
-          </p>
-        </div>
-      </section>
+      <PageHeader
+        eyebrow="Fale conosco"
+        title="Contato"
+        subtitle="Tire suas dúvidas, envie sugestões ou entre em contato conosco."
+        media={{
+          src: '/images/demo/animal-bunny.jpg',
+          alt: 'Animal acolhido pela ONG',
+          objectPosition: 'center 50%',
+          fallback: 'hero',
+        }}
+      />
 
       <section className="section">
         <div className="container">
-          <div className="contact-cards">
-            <div className="contact-card">
-              <h3>WhatsApp</h3>
-              <p>Atendimento rápido e orientação para resgates.</p>
-              <a href="https://wa.me/5511999999999" target="_blank" rel="noopener noreferrer">(11) 99999-9999</a>
+          {hasContactDetails && contacts && (
+            <div className="contact-cards">
+              {contacts.whatsapp && (
+                <div className="contact-card">
+                  <h3>WhatsApp</h3>
+                  <p>Atendimento rápido e orientação para resgates.</p>
+                  <a href={`https://wa.me/${contacts.whatsapp}`} target="_blank" rel="noopener noreferrer">
+                    {contacts.whatsapp}
+                  </a>
+                </div>
+              )}
+              {contacts.email && (
+                <div className="contact-card">
+                  <h3>E-mail</h3>
+                  <p>Para parcerias, doações e imprensa.</p>
+                  <a href={`mailto:${contacts.email}`}>{contacts.email}</a>
+                </div>
+              )}
+              {contacts.phone && (
+                <div className="contact-card">
+                  <h3>Telefone</h3>
+                  <p>Para atendimento direto com a nossa equipe.</p>
+                  <a href={`tel:${contacts.phone}`}>{contacts.phone}</a>
+                </div>
+              )}
+              {contacts.address && (
+                <div className="contact-card">
+                  <h3>Endereço</h3>
+                  <p>Visitas com agendamento prévio.</p>
+                  <span style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)' }}>
+                    {contacts.address}
+                  </span>
+                </div>
+              )}
             </div>
-            <div className="contact-card">
-              <h3>E-mail</h3>
-              <p>Para parcerias, doações e imprensa.</p>
-              <a href="mailto:contato@sosfocinhocarente.org.br">contato@sosfocinhocarente.org.br</a>
-            </div>
-            <div className="contact-card">
-              <h3>Telefone</h3>
-              <p>De segunda a sexta, das 9h às 17h.</p>
-              <a href="tel:+551133332222">(11) 3333-2222</a>
-            </div>
-            <div className="contact-card">
-              <h3>Horário de funcionamento</h3>
-              <p>Segunda a sexta: 9h às 17h. Sábado: 9h às 13h.</p>
-              <span style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)' }}>Rua das Flores, 123 — Centro</span>
-            </div>
-          </div>
+          )}
 
           <div className="contact-grid" style={{ marginTop: 'var(--space-16)' }}>
             <div className="contact-info">
-              <h2>Fale com a gente</h2>
+              <span className="eyebrow">Fale com a gente</span>
+              <h2>Entre em contato</h2>
               <p>
                 Estamos abertos a ouvir sua mensagem. Respondemos assim que possível.
               </p>
               <div className="contact-details">
-                <div className="contact-detail">
-                  <span className="contact-detail-icon"><Mail size={18} aria-hidden="true" /></span>
-                  <div>
-                    <strong>E-mail</strong>
-                    contato@sosfocinhocarente.org.br
+                {contacts?.email && (
+                  <div className="contact-detail">
+                    <span className="contact-detail-icon"><Mail size={18} aria-hidden="true" /></span>
+                    <div>
+                      <strong>E-mail</strong>
+                      <a href={`mailto:${contacts.email}`}>{contacts.email}</a>
+                    </div>
                   </div>
-                </div>
-                <div className="contact-detail">
-                  <span className="contact-detail-icon"><Phone size={18} aria-hidden="true" /></span>
-                  <div>
-                    <strong>Telefone</strong>
-                    (11) 3333-2222
+                )}
+                {contacts?.phone && (
+                  <div className="contact-detail">
+                    <span className="contact-detail-icon"><Phone size={18} aria-hidden="true" /></span>
+                    <div>
+                      <strong>Telefone</strong>
+                      <a href={`tel:${contacts.phone}`}>{contacts.phone}</a>
+                    </div>
                   </div>
-                </div>
-                <div className="contact-detail">
-                  <span className="contact-detail-icon"><MessageCircle size={18} aria-hidden="true" /></span>
-                  <div>
-                    <strong>WhatsApp</strong>
-                    (11) 99999-9999
+                )}
+                {contacts?.whatsapp && (
+                  <div className="contact-detail">
+                    <span className="contact-detail-icon"><MessageCircle size={18} aria-hidden="true" /></span>
+                    <div>
+                      <strong>WhatsApp</strong>
+                      <a href={`https://wa.me/${contacts.whatsapp}`} target="_blank" rel="noopener noreferrer">
+                        {contacts.whatsapp}
+                      </a>
+                    </div>
                   </div>
-                </div>
-                <div className="contact-detail">
-                  <span className="contact-detail-icon"><MapPin size={18} aria-hidden="true" /></span>
-                  <div>
-                    <strong>Endereço</strong>
-                    Rua das Flores, 123 — Centro
+                )}
+                {contacts?.address && (
+                  <div className="contact-detail">
+                    <span className="contact-detail-icon"><MapPin size={18} aria-hidden="true" /></span>
+                    <div>
+                      <strong>Endereço</strong>
+                      {contacts.address}
+                    </div>
                   </div>
-                </div>
-                <div className="contact-detail">
-                  <span className="contact-detail-icon"><Clock size={18} aria-hidden="true" /></span>
-                  <div>
-                    <strong>Horários</strong>
-                    Seg a Sex: 9h às 17h · Sáb: 9h às 13h
+                )}
+                {!hasContactDetails && (
+                  <div className="contact-detail">
+                    <span className="contact-detail-icon"><MessageCircle size={18} aria-hidden="true" /></span>
+                    <div>
+                      <strong>Entre em contato</strong>
+                      Envie sua mensagem pelo formulário e responderemos assim que possível.
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
 
-              <div className="contact-social">
-                <a href="#" onClick={(e) => e.preventDefault()} className="contact-social-link">Facebook</a>
-                <a href="#" onClick={(e) => e.preventDefault()} className="contact-social-link">Instagram</a>
-                <a href="#" onClick={(e) => e.preventDefault()} className="contact-social-link">YouTube</a>
-                <a href="#" onClick={(e) => e.preventDefault()} className="contact-social-link">TikTok</a>
-              </div>
+              {hasSocials && (
+                <div className="contact-social">
+                  {socialLinks
+                    .filter((s) => socials?.[s.key])
+                    .map(({ key, href, label, icon: Icon }) => (
+                      <a
+                        key={key}
+                        href={href(socials![key])}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="contact-social-link"
+                        aria-label={label}
+                        title={label}
+                      >
+                        <Icon size={16} aria-hidden="true" />
+                      </a>
+                    ))}
+                </div>
+              )}
             </div>
 
             <div>
-              <h2 style={{ fontSize: 'var(--text-2xl)', marginBottom: 'var(--space-4)' }}>Envie sua mensagem</h2>
+              <span className="eyebrow">Mensagem</span>
+              <h2 className="section-title">Envie sua mensagem</h2>
 
               {submitState === 'success' ? (
                 <Alert
@@ -247,11 +319,12 @@ export default function ContactPage() {
       <section className="section section--alt">
         <div className="container">
           <div className="section-intro">
+            <span className="eyebrow">Dúvidas frequentes</span>
             <h2>Perguntas frequentes</h2>
             <p>Tire as principais dúvidas sobre adoção, doações e voluntariado.</p>
           </div>
 
-          <div className="faq-list">
+          <div className="faq-list" style={{ margin: '0 auto' }}>
             {faqs.map((faq, index) => (
               <div key={index} className={`faq-item ${openFaq === index ? 'faq-item--open' : ''}`}>
                 <button
@@ -270,9 +343,10 @@ export default function ContactPage() {
             ))}
           </div>
 
-          <p className="faq-note">
-            Não encontrou sua resposta? Fale com a gente pelo WhatsApp (11) 99999-9999 —
-            atendemos de segunda a sexta, das 9h às 17h.
+          <p className="faq-note" style={{ maxWidth: 720, marginLeft: 'auto', marginRight: 'auto' }}>
+            {contacts?.whatsapp
+              ? `Não encontrou sua resposta? Fale com a gente pelo WhatsApp ${contacts.whatsapp} — atendemos de segunda a sexta, das 9h às 17h.`
+              : 'Não encontrou sua resposta? Envie sua mensagem pelo formulário acima e responderemos assim que possível.'}
           </p>
         </div>
       </section>

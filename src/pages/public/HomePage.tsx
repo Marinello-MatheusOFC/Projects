@@ -1,25 +1,18 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Calendar, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { ResponsivePicture } from '@/components/media/ResponsivePicture';
+import { CallToAction } from '@/components/layout/CallToAction';
+import { fetchFeaturedAnimals, type AnimalWithImages } from '@/services/animals';
+import { fetchUpcomingEvents, type EventWithImage } from '@/services/events';
+import { animalCardMeta, animalCollectionLabel, speciesLabel, sizeLabel, formatShortDate } from '@/lib/format';
 
-const animalImages = [
-  '/images/demo/animal-dog-01.jpg',
-  '/images/demo/animal-cat-01.jpg',
-  '/images/demo/animal-dog-02.jpg',
-];
-
-const featuredAnimals = [
-  { name: 'Luna', species: 'Cachorro', sex: 'Fêmea', size: 'Médio', slug: 'luna' },
-  { name: 'Toddy', species: 'Cachorro', sex: 'Macho', size: 'Pequeno', slug: 'toddy' },
-  { name: 'Mel', species: 'Gato', sex: 'Fêmea', size: 'Pequeno', slug: 'mel' },
-];
-
-const galleryImages = [
-  '/images/demo/animal-paw.jpg',
-  '/images/demo/volunteer-care.jpg',
-  '/images/demo/adoption-event.jpg',
-  '/images/demo/shelter-space.jpg',
+const galleryMoments = [
+  { src: '/images/demo/animal-paw.jpg', caption: 'Momento de cuidado' },
+  { src: '/images/demo/care-volunteer.jpg', caption: 'Voluntários em ação' },
+  { src: '/images/demo/adoption-event.jpg', caption: 'Campanha de adoção' },
+  { src: '/images/demo/shelter-space.jpg', caption: 'Espaço de acolhimento' },
 ];
 
 const helpWays = [
@@ -38,60 +31,62 @@ const journeySteps = [
   { title: 'Acompanhamento', desc: 'Mesmo após a adoção, continuamos por perto.' },
 ];
 
-const galleryMoments = [
-  { caption: 'Momento de cuidado' },
-  { caption: 'Voluntários em ação' },
-  { caption: 'Animal em acolhimento' },
-  { caption: 'Campanha de adoção' },
-];
-
 export default function HomePage() {
+  const [animals, setAnimals] = useState<AnimalWithImages[] | null>(null);
+  const [events, setEvents] = useState<EventWithImage[] | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    fetchFeaturedAnimals(3).then((result) => {
+      if (active) setAnimals(result);
+    });
+    fetchUpcomingEvents().then((result) => {
+      if (active) setEvents(result.slice(0, 3));
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+
   return (
     <div>
-
-      {/* ═══════════════════════════════════════
-          HERO — fotografia como protagonista
-          ═══════════════════════════════════════ */}
-      <section className="emotional-hero">
-        <div className="emotional-hero-bg">
-          <ResponsivePicture
-            src="/images/demo/hero-dog.jpg"
-            alt="Animal adulto olhando para a câmera com expressão tranquila"
-            objectFit="cover"
-            objectPosition="center 40%"
-            priority
-            width={1920}
-            height={1080}
-            fallback="hero"
-          />
-        </div>
-        <div className="emotional-hero-overlay" />
-        <div className="emotional-hero-content">
-          <span className="eyebrow">SOS Focinho Carente</span>
-          <h1>Todo focinho merece ser reconhecido como parte de uma família.</h1>
-          <p>
-            Conheça animais que esperam por cuidado, segurança e a oportunidade
-            de começar uma nova história.
-          </p>
-          <div className="emotional-hero-actions">
-            <Link to="/adocao">
-              <Button size="lg">
-                Conhecer os animais
-              </Button>
-            </Link>
-            <Link to="/como-ajudar">
-              <Button variant="outline" className="btn--outline-white" size="lg">
-                Descobrir como ajudar
-              </Button>
-            </Link>
+      <section className="home-hero">
+        <div className="home-hero__inner">
+          <div className="home-hero__content">
+            <span className="home-hero__eyebrow">SOS Focinho Carente</span>
+            <h1 className="home-hero__title">
+              Todo focinho merece a chance de encontrar um lar.
+            </h1>
+            <p className="home-hero__text">
+              Conheça animais que esperam por cuidado, segurança e a oportunidade
+              de começar uma nova história.
+            </p>
+            <div className="home-hero__actions">
+              <Link to="/adocao">
+                <Button size="lg">Conhecer os animais</Button>
+              </Link>
+              <Link to="/como-ajudar">
+                <Button variant="outline" size="lg">
+                  Como posso ajudar?
+                </Button>
+              </Link>
+            </div>
+          </div>
+          <div className="home-hero__media">
+            <ResponsivePicture
+              src="/images/demo/hero-dog.jpg"
+              alt="Animal adulto olhando para a câmera com expressão tranquila"
+              objectFit="cover"
+              objectPosition="center 40%"
+              priority
+              width={960}
+              height={720}
+              fallback="hero"
+            />
           </div>
         </div>
-        <div className="emotional-hero-indicator" aria-hidden="true" />
       </section>
 
-      {/* ═══════════════════════════════════════
-          ENCONTRE UM NOVO AMIGO — grid editorial
-          ═══════════════════════════════════════ */}
       <section className="section">
         <div className="container">
           <div className="section-intro">
@@ -102,48 +97,50 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="editorial-grid">
-            {featuredAnimals.map((animal, index) => (
-              <Link
-                key={animal.slug}
-                to={`/adocao/${animal.slug}`}
-                className="animal-portrait"
-                aria-label={`Conhecer ${animal.name}`}
-              >
-                <ResponsivePicture
-                  src={animalImages[index]}
-                  alt={`${animal.name}, ${animal.species} de porte ${animal.size}`}
-                  objectFit="cover"
-                  objectPosition={index === 0 ? 'center 40%' : index === 1 ? 'center 30%' : 'center 50%'}
-                  width={800}
-                  height={600}
-                  fallback={animal.species === 'Gato' ? 'cat' : 'animal'}
-                />
-                <div className="animal-portrait-overlay" />
-                <div className="animal-portrait-info">
-                  <div className="animal-portrait-name">{animal.name}</div>
-                  <div className="animal-portrait-meta">
-                    {animal.species} · {animal.sex} · Porte {animal.size}
+          {!animals ? (
+            <div className="editorial-grid" aria-hidden="true">
+              {[0, 1, 2].map((i) => (
+                <div key={i} className="skeleton animal-portrait" style={{ aspectRatio: '4 / 3' }} />
+              ))}
+            </div>
+          ) : (
+            <div className="editorial-grid">
+              {animals.map((animal) => (
+                <Link
+                  key={animal.slug}
+                  to={`/adocao/${animal.slug}`}
+                  className="animal-portrait"
+                  aria-label={`Conhecer ${animal.name}, ${animalCollectionLabel(animal.species)}`}
+                >
+                  <ResponsivePicture
+                    src={animal.cover}
+                    alt={`${animal.name}, ${speciesLabel(animal.species)} de porte ${sizeLabel(animal.size)}`}
+                    objectFit="cover"
+                    width={800}
+                    height={600}
+                    fallback={animal.species === 'cat' ? 'cat' : 'animal'}
+                  />
+                  <div className="animal-portrait-overlay" />
+                  <div className="animal-portrait-info">
+                    <div className="animal-portrait-name">{animal.name}</div>
+                    <div className="animal-portrait-meta">{animalCardMeta(animal)}</div>
+                    <span className="animal-portrait-link">
+                      Conhecer {animal.name} <ArrowRight size={14} aria-hidden="true" />
+                    </span>
                   </div>
-                  <span className="animal-portrait-link">
-                    Conhecer {animal.name} <ArrowRight size={14} aria-hidden="true" />
-                  </span>
-                </div>
-              </Link>
-            ))}
-          </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════
-          CADA FOCINHO TEM UMA HISTÓRIA
-          ═══════════════════════════════════════ */}
       <section className="section section--alt">
         <div className="container">
           <div className="animal-story">
             <div className="animal-story-image">
               <ResponsivePicture
-                src="/images/demo/care-volunteer.jpg"
+                src="/images/demo/animal-dog-02.jpg"
                 alt="Animal em momento de acolhimento"
                 objectFit="cover"
                 objectPosition="center 50%"
@@ -169,9 +166,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════
-          QUEM CUIDA TAMBÉM FAZ PARTE DA HISTÓRIA
-          ═══════════════════════════════════════ */}
       <section className="section">
         <div className="container">
           <div className="animal-story">
@@ -203,9 +197,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════
-          FORMAS REAIS DE AJUDAR
-          ═══════════════════════════════════════ */}
       <section className="section section--warm">
         <div className="container">
           <div className="section-intro">
@@ -229,9 +220,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════
-          COMO A ADOÇÃO ACONTECE
-          ═══════════════════════════════════════ */}
       <section className="section">
         <div className="container">
           <div className="adoption-journey">
@@ -247,9 +235,7 @@ export default function HomePage() {
               />
             </div>
             <div>
-              <h2 style={{ fontSize: 'var(--text-2xl)', marginBottom: 'var(--space-4)' }}>
-                Como a adoção acontece
-              </h2>
+              <h2 className="section-title">Como a adoção acontece</h2>
               <div className="journey-steps">
                 {journeySteps.map((step, i) => (
                   <div key={i} className="journey-step">
@@ -266,10 +252,56 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════
-          MOMENTOS DA ONG
-          ═══════════════════════════════════════ */}
-      <section className="section section--alt">
+      {events && events.length > 0 && (
+        <section className="section section--alt">
+          <div className="container">
+            <div className="section-intro">
+              <h2>Próximos eventos</h2>
+              <p>Campanhas, feiras de adoção e encontros da comunidade.</p>
+            </div>
+
+            <div className="events-list">
+              {events.map((event) => (
+                <Link to={`/eventos/${event.slug}`} key={event.slug} className="event-card">
+                  <div className="event-card-image">
+                    <ResponsivePicture
+                      src={event.image}
+                      alt={event.title}
+                      objectFit="cover"
+                      width={640}
+                      height={400}
+                      fallback="event"
+                    />
+                    <span className="event-card-status event-card-status--upcoming">Em breve</span>
+                  </div>
+                  <div className="event-card-body">
+                    <div className="event-card-meta">
+                      <span className="event-card-date">
+                        <Calendar size={13} aria-hidden="true" /> {formatShortDate(event.start_at)}
+                      </span>
+                      {event.location_name && (
+                        <span className="event-card-location">
+                          <MapPin size={13} aria-hidden="true" /> {event.location_name}
+                        </span>
+                      )}
+                    </div>
+                    <h3>{event.title}</h3>
+                    {event.summary && <p>{event.summary}</p>}
+                  </div>
+                </Link>
+              ))}
+            </div>
+
+            <div className="section-actions">
+              <Link to="/eventos">
+                <Button variant="outline">Ver todos os eventos</Button>
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
+
+      <section className="section">
         <div className="container">
           <div className="section-intro">
             <h2>Momentos da ONG</h2>
@@ -280,7 +312,7 @@ export default function HomePage() {
             {galleryMoments.map((img, i) => (
               <div key={i} className="mosaic-item">
                 <ResponsivePicture
-                  src={galleryImages[i]}
+                  src={img.src}
                   alt={img.caption}
                   objectFit="cover"
                   objectPosition="center 50%"
@@ -295,44 +327,22 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════
-          CHAMADA FINAL
-          ═══════════════════════════════════════ */}
-      <section className="final-cta-section">
-        <div className="final-cta-bg">
-          <ResponsivePicture
-            src="/images/demo/hero-dog.jpg"
-            alt="Animal olhando para o horizonte"
-            objectFit="cover"
-            objectPosition="center 30%"
-            width={1920}
-            height={1080}
-            priority
-            fallback="hero"
-          />
-        </div>
-        <div className="final-cta-overlay" />
-        <div className="container">
-          <h2>Talvez o próximo capítulo da história deles comece com você.</h2>
-          <p>
-            Seja conhecendo, adotando, ajudando ou compartilhando — você pode
-            fazer parte dessa transformação.
-          </p>
-          <div className="final-cta-actions">
+      <CallToAction
+        title="Talvez o próximo capítulo da história deles comece com você."
+        description="Seja conhecendo, adotando, ajudando ou compartilhando — você pode fazer parte dessa transformação."
+        actions={
+          <>
             <Link to="/adocao">
-              <Button size="lg">
-                Conhecer os animais
-              </Button>
+              <Button size="lg">Conhecer os animais</Button>
             </Link>
             <Link to="/como-ajudar">
-              <Button variant="outline" className="btn--outline-white" size="lg">
+              <Button variant="outline" size="lg">
                 Ajudar a SOS Focinho Carente
               </Button>
             </Link>
-          </div>
-        </div>
-      </section>
-
+          </>
+        }
+      />
     </div>
   );
 }

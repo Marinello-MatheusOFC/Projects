@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { Logo } from '@/components/ui/Logo';
@@ -14,6 +14,55 @@ const navItems = [
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const drawerRef = useRef<HTMLElement>(null);
+
+  const open = () => setIsOpen(true);
+  const close = () => setIsOpen(false);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const menuButton = menuButtonRef.current;
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    closeButtonRef.current?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        close();
+        return;
+      }
+      if (event.key === 'Tab') {
+        const drawer = drawerRef.current;
+        if (!drawer) return;
+        const focusables = Array.from(
+          drawer.querySelectorAll<HTMLElement>('a[href], button:not([disabled])'),
+        );
+        if (focusables.length === 0) return;
+        const first = focusables[0] as HTMLElement;
+        const last = focusables[focusables.length - 1] as HTMLElement;
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    };
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', handleKeyDown);
+      menuButton?.focus();
+      if (previouslyFocused instanceof HTMLElement) previouslyFocused.focus();
+    };
+  }, [isOpen]);
 
   return (
     <header className="header">
@@ -23,20 +72,17 @@ export function Header() {
         </Link>
 
         <button
+          ref={menuButtonRef}
           className="header-menu-btn"
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={isOpen ? close : open}
           aria-expanded={isOpen}
           aria-controls="main-nav"
           aria-label={isOpen ? 'Fechar menu' : 'Abrir menu'}
         >
-          {isOpen ? <X size={22} /> : <Menu size={22} />}
+          {isOpen ? <X size={22} aria-hidden="true" /> : <Menu size={22} aria-hidden="true" />}
         </button>
 
-        <nav
-          id="main-nav"
-          className={`header-nav ${isOpen ? 'header-nav--open' : ''}`}
-          aria-label="Navegação principal"
-        >
+        <nav className="header-nav" aria-label="Navegação principal">
           <ul className="header-nav-list">
             {navItems.map((item) => (
               <li key={item.to}>
@@ -45,7 +91,6 @@ export function Header() {
                   className={({ isActive }) =>
                     `header-nav-link ${isActive ? 'header-nav-link--active' : ''}`
                   }
-                  onClick={() => setIsOpen(false)}
                 >
                   {item.label}
                 </NavLink>
@@ -60,6 +105,53 @@ export function Header() {
           </Link>
         </div>
       </div>
+
+      {/* Drawer mobile */}
+      {isOpen && (
+        <div className="header-drawer-layer">
+          <div className="header-drawer-backdrop" onClick={close} aria-hidden="true" />
+          <nav
+            id="main-nav"
+            ref={drawerRef}
+            className="header-drawer"
+            aria-label="Menu principal"
+            aria-modal="true"
+            role="dialog"
+          >
+            <div className="header-drawer-head">
+              <span className="header-drawer-title">Menu</span>
+              <button
+                ref={closeButtonRef}
+                className="header-menu-btn header-drawer-close"
+                onClick={close}
+                aria-label="Fechar menu"
+              >
+                <X size={22} aria-hidden="true" />
+              </button>
+            </div>
+            <ul className="header-drawer-list">
+              {navItems.map((item) => (
+                <li key={item.to}>
+                  <NavLink
+                    to={item.to}
+                    className={({ isActive }) =>
+                      `header-drawer-link ${isActive ? 'header-drawer-link--active' : ''}`
+                    }
+                    onClick={close}
+                  >
+                    {item.label}
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
+            <div className="header-drawer-footer">
+              <Link to="/adocao" className="btn btn--primary btn--full" onClick={close}>
+                Quero adotar
+              </Link>
+            </div>
+          </nav>
+        </div>
+      )}
     </header>
   );
 }

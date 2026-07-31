@@ -14,8 +14,9 @@ import {
   ChevronLeft,
   ChevronRight,
   LogOut,
-  PawPrint as PawIcon,
+  ExternalLink,
 } from 'lucide-react';
+import { Logo } from '@/components/ui/Logo';
 import { useAuth } from '@/features/auth/hooks/useAuth.ts';
 
 const sidebarItems = [
@@ -42,9 +43,8 @@ export function AdminSidebar() {
       aria-label="Menu administrativo"
     >
       <div className="admin-sidebar-header">
-        <Link to="/admin" className="admin-sidebar-logo">
-          <PawIcon size={28} aria-hidden="true" />
-          {!collapsed && <span>Admin</span>}
+        <Link to="/admin" className="admin-sidebar-logo" aria-label="Painel administrativo">
+          <Logo size="sm" showText={false} />
         </Link>
         <button
           className="admin-sidebar-toggle"
@@ -79,7 +79,7 @@ export function AdminSidebar() {
 
       <div className="admin-sidebar-footer">
         <Link to="/" className="admin-sidebar-link" title="Ver site">
-          <PawIcon size={20} aria-hidden="true" />
+          <ExternalLink size={20} aria-hidden="true" />
           {!collapsed && <span>Ver site</span>}
         </Link>
         <button

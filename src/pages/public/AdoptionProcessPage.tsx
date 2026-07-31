@@ -1,7 +1,8 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
-import { ResponsivePicture } from '@/components/media/ResponsivePicture';
+import { PageHeader } from '@/components/layout/PageHeader';
 
 const steps = [
   { title: 'Manifestação de Interesse', desc: 'Preencha o formulário de interesse indicando o animal desejado e suas informações básicas.' },
@@ -11,32 +12,35 @@ const steps = [
 ];
 
 export default function AdoptionProcessPage() {
+  useEffect(() => {
+    document.title = 'Processo de Adoção — SOS Focinho Carente';
+  }, []);
+
   return (
     <div>
-      <section className="page-hero">
-        <div className="page-hero-photo">
-          <ResponsivePicture
-            src="/images/demo/animal-cat-02.jpg"
-            alt="Processo de adoção responsável"
-            objectFit="cover"
-            objectPosition="center 50%"
-            priority
-            width={1920}
-            height={600}
-            fallback="hero"
-          />
-        </div>
-        <div className="page-hero-overlay" />
-        <div className="container">
-          <h1 className="page-hero-title">Processo de Adoção</h1>
-          <p className="page-hero-subtitle">
-            Conheça as etapas do nosso processo de adoção responsável.
-          </p>
-        </div>
-      </section>
+      <PageHeader
+        eyebrow="Adoção responsável"
+        title="Processo de Adoção"
+        subtitle="Conheça as etapas do nosso processo de adoção responsável."
+        media={{
+          src: '/images/demo/animal-cat-02.jpg',
+          alt: 'Gato acolhido aguardando uma adoção responsável',
+          objectPosition: 'center 50%',
+          fallback: 'cat',
+        }}
+      />
 
       <section className="section">
         <div className="container">
+          <div className="section-intro">
+            <span className="eyebrow">Passo a passo</span>
+            <h2>Como funciona a adoção</h2>
+            <p>
+              Cada etapa é pensada para garantir um encontro seguro e duradouro entre
+              você e o animal.
+            </p>
+          </div>
+
           <div className="journey-steps" style={{ maxWidth: 640, margin: '0 auto' }}>
             {steps.map((step, i) => (
               <div key={i} className="journey-step">
@@ -57,6 +61,24 @@ export default function AdoptionProcessPage() {
               <Button variant="outline">
                 Conhecer animais disponíveis <ArrowRight size={16} aria-hidden="true" />
               </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="section section--alt">
+        <div className="container">
+          <div className="section-intro">
+            <span className="eyebrow">Dúvidas</span>
+            <h2>Quer saber mais?</h2>
+            <p>
+              Se tiver perguntas sobre o processo, fale com a nossa equipe. Teremos
+              prazer em ajudar você e o animal a se encontrarem.
+            </p>
+          </div>
+          <div className="section-actions">
+            <Link to="/contato">
+              <Button>Fale conosco</Button>
             </Link>
           </div>
         </div>

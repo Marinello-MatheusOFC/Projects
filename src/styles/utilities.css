@@ -1,0 +1,170 @@
+/* ══════════════════════════════════════════════════════════
+   SOS Focinho Carente — Utilitários de layout
+   Container, seções, grades e auxiliares.
+   Importado por globals.css.
+   ══════════════════════════════════════════════════════════ */
+
+/* ── Container ──
+   Inseto horizontal fixo (32px) até 1200px; centralizado a partir de 1200px. */
+.container {
+  width: min(100% - var(--container-gutter), var(--container-max));
+  margin-inline: auto;
+}
+
+.container--wide {
+  width: min(100% - var(--container-gutter), var(--container-wide));
+}
+
+/* ── Seções ── */
+.section { padding: var(--space-16) 0; }
+.section--alt { background-color: var(--color-bg-alt); }
+.section--warm { background-color: var(--color-bg-warm); }
+.section--deep { background-color: var(--green-900); color: rgba(255, 255, 255, 0.85); }
+.section--deep h1, .section--deep h2, .section--deep h3 { color: var(--color-white); }
+
+.section--compact { padding: var(--space-8) 0; }
+@media (max-width: 767px) {
+  .section { padding: var(--space-12) 0; }
+}
+
+.section-intro {
+  max-width: 640px;
+  margin: 0 auto var(--space-10);
+  text-align: center;
+}
+.section-intro--left {
+  text-align: left;
+  margin-inline: 0;
+}
+.section-intro--left h2 { margin-bottom: var(--space-3); }
+.section-intro h2 { font-size: var(--text-3xl); margin-bottom: var(--space-3); }
+.section-intro p {
+  color: var(--color-text-secondary);
+  font-size: var(--text-lg);
+  line-height: var(--leading-relaxed);
+}
+
+.section-title { font-size: var(--text-2xl); margin-bottom: var(--space-4); }
+
+.section-actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-8);
+  flex-wrap: wrap;
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-primary);
+  margin-bottom: var(--space-3);
+}
+
+/* ── Grades ── */
+.grid { display: grid; gap: var(--space-6); }
+.grid--2, .grid--sm-2 { grid-template-columns: 1fr; }
+.grid--3, .grid--sm-3 { grid-template-columns: 1fr; }
+.grid--4, .grid--sm-4 { grid-template-columns: 1fr; }
+.grid--tight { gap: var(--space-4); }
+.grid--loose { gap: var(--space-8); }
+
+@media (min-width: 640px) {
+  .grid--sm-2, .grid--2 { grid-template-columns: repeat(2, 1fr); }
+  .grid--sm-3, .grid--3 { grid-template-columns: repeat(3, 1fr); }
+  .grid--sm-4, .grid--4 { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* ── Composições ── */
+.stack { display: flex; flex-direction: column; }
+.stack > * + * { margin-top: var(--space-4); }
+.stack--tight > * + * { margin-top: var(--space-3); }
+.stack--loose > * + * { margin-top: var(--space-8); }
+
+.cluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-8);
+  align-items: center;
+}
+@media (min-width: 960px) {
+  .split { grid-template-columns: repeat(2, 1fr); }
+  .split--reverse > :first-child { order: 2; }
+  .split--reverse > :last-child { order: 1; }
+}
+
+/* ── Proporções de mídia ──
+   Use em wrappers de imagem junto com object-fit no <img>. */
+.ratio { position: relative; overflow: hidden; }
+.ratio > img, .ratio > picture, .ratio > video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ratio-4x3 { aspect-ratio: 4 / 3; }
+.ratio-3x2 { aspect-ratio: 3 / 2; }
+.ratio-16x10 { aspect-ratio: 16 / 10; }
+.ratio-1x1 { aspect-ratio: 1 / 1; }
+.ratio-4x5 { aspect-ratio: 4 / 5; }
+.ratio-3x4 { aspect-ratio: 3 / 4; }
+
+/* ── Color utility classes ── */
+.bg-primary          { background-color: var(--color-primary); }
+.bg-primary-light    { background-color: var(--color-primary-light); }
+.bg-primary-lighter  { background-color: var(--color-primary-lighter); }
+.bg-secondary        { background-color: var(--color-secondary); }
+.bg-secondary-light  { background-color: var(--color-secondary-light); }
+.bg-secondary-lighter { background-color: var(--color-secondary-lighter); }
+.bg-accent           { background-color: var(--color-accent); }
+.bg-accent-light     { background-color: var(--color-accent-light); }
+.bg-accent-lighter   { background-color: var(--color-accent-lighter); }
+.bg-warm             { background-color: var(--color-bg-warm); }
+.bg-warm-alt         { background-color: var(--color-bg-warm-alt); }
+.bg-yellow           { background-color: var(--color-yellow); }
+.bg-yellow-light     { background-color: var(--color-yellow-light); }
+.bg-red              { background-color: var(--color-red); }
+.bg-red-light        { background-color: var(--color-red-light); }
+.bg-green            { background-color: var(--color-green); }
+.bg-green-light      { background-color: var(--color-green-light); }
+.bg-bg               { background-color: var(--color-bg); }
+.bg-alt              { background-color: var(--color-bg-alt); }
+
+.text-primary         { color: var(--color-primary); }
+.text-secondary       { color: var(--color-secondary); }
+.text-accent          { color: var(--color-accent); }
+.text-red             { color: var(--color-red); }
+.text-yellow          { color: var(--color-yellow); }
+.text-green           { color: var(--color-green); }
+.text-muted           { color: var(--color-text-muted); }
+.text-white           { color: var(--color-white); }
+
+.border-primary       { border-color: var(--color-primary); }
+.border-secondary     { border-color: var(--color-secondary); }
+.border-accent        { border-color: var(--color-accent); }
+
+/* ── Gradient utilities (uso pontual e controlado) ── */
+.gradient-primary {
+  background: linear-gradient(135deg, var(--coral-500) 0%, var(--coral-700) 100%);
+}
+.gradient-secondary {
+  background: linear-gradient(135deg, var(--green-500) 0%, var(--green-700) 100%);
+}
+.gradient-accent {
+  background: linear-gradient(135deg, var(--yellow-500) 0%, var(--yellow-700) 100%);
+}
+.gradient-coral-yellow {
+  background: linear-gradient(135deg, var(--coral-500) 0%, var(--yellow-500) 100%);
+}
+.gradient-warm {
+  background: linear-gradient(180deg, var(--color-bg-warm) 0%, var(--color-bg) 100%);
+}
+
+/* ── Texto com largura de leitura confortável ── */
+.measure { max-width: 65ch; }
+.measure--wide { max-width: 72ch; }

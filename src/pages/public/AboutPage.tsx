@@ -1,42 +1,54 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { ResponsivePicture } from '@/components/media/ResponsivePicture';
+import { PageHeader } from '@/components/layout/PageHeader';
+import { fetchOrgInfo, type OrgInfo } from '@/services/settings';
 
 export default function AboutPage() {
+  const [org, setOrg] = useState<OrgInfo | null>(null);
+
+  useEffect(() => {
+    document.title = 'Sobre — SOS Focinho Carente';
+    let active = true;
+    fetchOrgInfo().then((info) => {
+      if (active) setOrg(info);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const mission =
+    org?.about.mission?.trim() ||
+    'A SOS Focinho Carente nasceu da vontade de transformar a realidade de animais em situação de vulnerabilidade. Desde o início, nosso trabalho é movido pelo respeito e cuidado com cada vida.';
+
+  const shortDescription =
+    org?.about.short_description?.trim() ||
+    'Atuamos no resgate, reabilitação e encaminhamento para adoção responsável, além de promover campanhas educativas sobre posse responsável e bem-estar animal.';
+
   return (
     <div>
-      {/* Abertura fotográfica */}
-      <section className="page-hero">
-        <div className="page-hero-photo">
-          <ResponsivePicture
-            src="/images/demo/hero-cat.jpg"
-            alt="Espaço de acolhimento da ONG"
-            objectFit="cover"
-            objectPosition="center 50%"
-            priority
-            width={1920}
-            height={600}
-            fallback="hero"
-          />
-        </div>
-        <div className="page-hero-overlay" />
-        <div className="container">
-          <h1 className="page-hero-title">Sobre a SOS Focinho Carente</h1>
-          <p className="page-hero-subtitle">
-            Conheça nossa história e o trabalho que desenvolvemos pelos animais.
-          </p>
-        </div>
-      </section>
+      <PageHeader
+        eyebrow="Quem somos"
+        title="Sobre a SOS Focinho Carente"
+        subtitle="Conheça nossa história e o trabalho que desenvolvemos pelos animais."
+        media={{
+          src: '/images/demo/shelter-space.jpg',
+          alt: 'Espaço de acolhimento da ONG',
+          objectPosition: 'center 50%',
+          fallback: 'hero',
+        }}
+      />
 
-      {/* Quem é a SOS */}
       <section className="section">
         <div className="container">
           <div className="about-story">
             <div className="about-story-image">
               <ResponsivePicture
                 src="/images/demo/community-event.jpg"
-                alt="Atividade da ONG"
+                alt="Voluntários em uma atividade da ONG"
                 objectFit="cover"
                 objectPosition="center 40%"
                 width={800}
@@ -46,24 +58,17 @@ export default function AboutPage() {
             </div>
             <div className="about-story-body">
               <h2>Quem é a SOS Focinho Carente</h2>
-              <p>
-                A SOS Focinho Carente nasceu da vontade de transformar a realidade de
-                animais em situação de vulnerabilidade. Desde o início, nosso trabalho
-                é movido pelo respeito e cuidado com cada vida.
-              </p>
-              <p>
-                Atuamos no resgate, reabilitação e encaminhamento para adoção responsável,
-                além de promover campanhas educativas sobre posse responsável e bem-estar animal.
-              </p>
+              <p>{mission}</p>
+              <p>{shortDescription}</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Como trabalhamos */}
       <section className="section section--alt">
         <div className="container">
           <div className="section-intro">
+            <span className="eyebrow">Nossos princípios</span>
             <h2>Como trabalhamos</h2>
             <p>Princípios que guiam cada ação da nossa organização.</p>
           </div>
@@ -88,14 +93,14 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Como participar */}
       <section className="section">
-        <div className="container" style={{ textAlign: 'center' }}>
-          <h2 style={{ fontSize: 'var(--text-2xl)', marginBottom: 'var(--space-3)' }}>Faça parte</h2>
-          <p style={{ color: 'var(--color-text-secondary)', marginBottom: 'var(--space-6)', maxWidth: 500, marginLeft: 'auto', marginRight: 'auto' }}>
-            Conheça as formas de contribuir com o trabalho da SOS Focinho Carente.
-          </p>
-          <div style={{ display: 'flex', gap: 'var(--space-3)', justifyContent: 'center', flexWrap: 'wrap' }}>
+        <div className="container">
+          <div className="section-intro">
+            <span className="eyebrow">Participe</span>
+            <h2>Faça parte</h2>
+            <p>Conheça as formas de contribuir com o trabalho da SOS Focinho Carente.</p>
+          </div>
+          <div className="section-actions" style={{ gap: 'var(--space-3)', flexWrap: 'wrap' }}>
             <Link to="/voluntariado">
               <Button>Ser voluntário</Button>
             </Link>

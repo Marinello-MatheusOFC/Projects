@@ -1,0 +1,217 @@
+/* ══════════════════════════════════════════════════════════
+   SOS Focinho Carente — Design Tokens
+   Paleta única: coral institucional, verde institucional,
+   amarelo de apoio e neutros quentes.
+   Importado por globals.css (única origem de tokens).
+   ══════════════════════════════════════════════════════════ */
+:root {
+  /* Coral (ação principal) */
+  --coral-50: #FDF2F0;
+  --coral-100: #FBE3DF;
+  --coral-200: #F7C5BC;
+  --coral-300: #F2A090;
+  --coral-500: #E64A35;
+  --coral-600: #D13D2A;
+  --coral-700: #AE3322;
+
+  /* Verde institucional */
+  --green-50: #ECF7F4;
+  --green-100: #D5EEE7;
+  --green-200: #ADD9CC;
+  --green-500: #16866F;
+  --green-600: #10715C;
+  --green-700: #0C5B49;
+  --green-900: #07352B;
+
+  /* Amarelo (apoio) */
+  --yellow-50: #FEF8EC;
+  --yellow-100: #FCEFCF;
+  --yellow-300: #F8D487;
+  --yellow-400: #F5BE5C;
+  --yellow-500: #F2AB37;
+  --yellow-700: #B8730F;
+
+  /* Neutros quentes */
+  --cream: #FBFAF7;
+  --sand: #F0EBE2;
+  --warm-white: #FFFEFC;
+  --warm-gray: #757C74;
+  --charcoal: #18211E;
+
+  /* ── Tokens semânticos ── */
+  --brand-primary: var(--coral-500);
+  --brand-primary-hover: var(--coral-600);
+  --brand-primary-soft: var(--coral-50);
+  --brand-secondary: var(--green-500);
+  --brand-secondary-hover: var(--green-600);
+  --brand-secondary-soft: var(--green-50);
+  --brand-accent: var(--yellow-500);
+  --brand-accent-soft: var(--yellow-50);
+
+  --background: var(--cream);
+  --background-alternate: var(--sand);
+  --surface: var(--warm-white);
+  --surface-raised: #FFFFFF;
+  --text-primary: var(--charcoal);
+  --text-secondary: #49544E;
+  --text-muted: #7A827B;
+  --border: #E8E3D9;
+  --focus-ring: var(--coral-500);
+
+  --success: var(--green-600);
+  --success-bg: var(--green-50);
+  --warning: #A8640B;
+  --warning-bg: var(--yellow-50);
+  --error: #C42B1E;
+  --error-bg: var(--coral-50);
+  --info: #0F766E;
+  --info-bg: #E9F5F3;
+
+  --color-white: #FFFFFF;
+  --color-black: #000000;
+
+  /* ── Compatibilidade (tokens legados mapeados à nova paleta) ── */
+  --color-primary: var(--coral-500);
+  --color-primary-hover: var(--coral-600);
+  --color-primary-light: var(--coral-100);
+  --color-primary-lighter: var(--coral-50);
+  --color-primary-dark: var(--coral-600);
+  --color-primary-darker: var(--coral-700);
+  --color-primary-50: var(--coral-50);
+  --color-primary-100: var(--coral-100);
+  --color-primary-200: var(--coral-200);
+  --color-primary-300: var(--coral-300);
+  --color-primary-400: var(--coral-300);
+  --color-primary-500: var(--coral-500);
+  --color-primary-600: var(--coral-600);
+  --color-primary-700: var(--coral-700);
+  --color-primary-800: var(--coral-700);
+  --color-primary-900: var(--coral-700);
+
+  --color-secondary: var(--green-500);
+  --color-secondary-hover: var(--green-600);
+  --color-secondary-light: var(--green-100);
+  --color-secondary-lighter: var(--green-50);
+  --color-secondary-dark: var(--green-700);
+  --color-secondary-darker: var(--green-900);
+  --color-secondary-50: var(--green-50);
+  --color-secondary-100: var(--green-100);
+  --color-secondary-200: var(--green-200);
+  --color-secondary-300: var(--green-200);
+  --color-secondary-400: var(--green-500);
+  --color-secondary-500: var(--green-500);
+  --color-secondary-600: var(--green-600);
+  --color-secondary-700: var(--green-700);
+  --color-secondary-800: var(--green-700);
+  --color-secondary-900: var(--green-900);
+
+  --color-accent: var(--yellow-500);
+  --color-accent-hover: var(--yellow-700);
+  --color-accent-light: var(--yellow-100);
+  --color-accent-lighter: var(--yellow-50);
+  --color-accent-dark: var(--yellow-700);
+  --color-accent-50: var(--yellow-50);
+  --color-accent-100: var(--yellow-100);
+  --color-accent-200: var(--yellow-100);
+  --color-accent-300: var(--yellow-300);
+  --color-accent-400: var(--yellow-400);
+  --color-accent-500: var(--yellow-500);
+  --color-accent-600: var(--yellow-700);
+  --color-accent-700: var(--yellow-700);
+  --color-accent-800: var(--yellow-700);
+  --color-accent-900: var(--yellow-700);
+
+  --color-red: var(--coral-600);
+  --color-red-light: var(--coral-100);
+  --color-yellow: var(--yellow-500);
+  --color-yellow-light: var(--yellow-100);
+  --color-green: var(--green-500);
+  --color-green-light: var(--green-100);
+
+  --color-bg: var(--cream);
+  --color-bg-alt: var(--yellow-100);
+  --color-bg-warm: var(--yellow-50);
+  --color-bg-warm-alt: #F8EFE2;
+  --color-surface: var(--warm-white);
+  --color-text: var(--charcoal);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-border: var(--border);
+  --color-border-light: #F1EDE4;
+
+  --color-error: var(--error);
+  --color-error-bg: var(--error-bg);
+  --color-success: var(--success);
+  --color-success-bg: var(--success-bg);
+  --color-warning: var(--warning);
+  --color-warning-bg: var(--warning-bg);
+  --color-info: var(--info);
+  --color-info-bg: var(--info-bg);
+
+  /* ── Tipografia: Manrope (títulos) + Inter (corpo) ── */
+  --font-heading: 'Manrope', 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  --text-xs: clamp(0.75rem, 0.72rem + 0.15vw, 0.8125rem);
+  --text-sm: clamp(0.875rem, 0.85rem + 0.13vw, 0.9375rem);
+  --text-base: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);
+  --text-lg: clamp(1.125rem, 1.07rem + 0.28vw, 1.25rem);
+  --text-xl: clamp(1.25rem, 1.18rem + 0.35vw, 1.5rem);
+  --text-2xl: clamp(1.5rem, 1.39rem + 0.55vw, 1.875rem);
+  --text-3xl: clamp(1.75rem, 1.58rem + 0.85vw, 2.25rem);
+  --text-4xl: clamp(2rem, 1.72rem + 1.4vw, 2.75rem);
+  --text-5xl: clamp(2.25rem, 1.85rem + 2vw, 3.25rem);
+  --text-6xl: clamp(2.5rem, 1.9rem + 3vw, 4rem);
+  --text-7xl: clamp(2.75rem, 2rem + 3.75vw, 4.5rem);
+
+  --leading-tight: 1.15;
+  --leading-normal: 1.55;
+  --leading-relaxed: 1.7;
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  --space-0: 0;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-28: 7rem;
+  --space-32: 8rem;
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2rem;
+  --radius-3xl: 2.5rem;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 1px 3px rgba(28, 25, 23, 0.06);
+  --shadow-md: 0 4px 12px rgba(28, 25, 23, 0.08);
+  --shadow-lg: 0 8px 24px rgba(28, 25, 23, 0.12);
+  --shadow-xl: 0 16px 40px rgba(28, 25, 23, 0.16);
+
+  --transition-fast: 200ms ease;
+  --transition-normal: 350ms ease;
+
+  --container-max: 1200px;
+  --container-wide: 1400px;
+  --container-gutter: 32px;
+}
+
+@media (max-width: 359px) {
+  :root { --container-gutter: 24px; }
+}
