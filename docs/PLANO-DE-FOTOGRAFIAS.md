@@ -1,62 +1,185 @@
 # Plano de Fotografias — SOS Focinho Carente
 
+> Este documento lista todas as fotografias necessárias para o redesign completo do portal.
+> As imagens marcadas com "[PLACEHOLDER]" usam fallback visual até que a ONG forneça o material oficial.
+
 ## Home Page
 
-| # | Página | Seção | Objetivo | Proporção | Enquadramento | Alt Text | Nome Sugerido |
-|---|--------|-------|----------|-----------|---------------|----------|---------------|
-| 1 | Home | Hero | Causar conexão imediata com um animal | 16:9 ou 3:2 | Retrato/foco no olhar do animal | "Animal adulto olhando para a câmera com expressão tranquila" | hero-animal.jpg |
-| 2 | Home | Animais em destaque (principal) | Apresentar animal individualmente | 4:3 | Retrato do animal em ambiente natural | "Cachorro成年 de porte médio sentado ao ar livre" | featured-main.jpg |
-| 3 | Home | Animais em destaque (secundário 1) | Mostrar variedade | 1:1 | Foco no rosto | "Gato olhando para o lado com luz natural" | featured-secondary-1.jpg |
-| 4 | Home | Animais em destaque (secundário 2) | Mostrar variedade | 1:1 | Animal deitado ou em repouso | "Cachorro deitado em colchonete" | featured-secondary-2.jpg |
-| 5 | Home | História individual | Contar história visualmente | 16:9 ou 3:2 | Animal com voluntário ou em espaço aberto | "Voluntária segurando animal resgatado" | story-hero.jpg |
-| 6 | Home | Quem cuida | Humanizar a ONG | 4:3 | Voluntários ou atividade de cuidado | "Voluntários em atividade de cuidado com animais" | about-activity.jpg |
-| 7 | Home | Formas de ajudar | Ilustrar adoção | 3:2 | Pessoa com animal adotado | "Animal sendo acolhido por adotante" | help-adoption.jpg |
-| 8 | Home | Formas de ajudar | Ilustrar voluntariado | 3:2 | Voluntário em ação | "Voluntário alimentando animal" | help-volunteer.jpg |
-| 9 | Home | Galeria/Momentos | Mostrar comunidade | 4:3 | Evento ou atividade em grupo | "Grupo de voluntários em evento da ONG" | community-moment.jpg |
-| 10 | Home | CTA final | Encerrar com emoção | 16:9 | Close em detalhe (pata, focinho) | "Detalhe da pata de animal sendo tocada" | cta-footer.jpg |
+### Hero Principal
+| Campo | Detalhe |
+|-------|---------|
+| **Página** | Home |
+| **Seção** | Hero emocional |
+| **Objetivo** | Impacto visual imediato, conexão emocional |
+| **Orientação** | Horizontal (16:9) |
+| **Enquadramento** | Close/retrato de animal olhando para a câmera |
+| **Conteúdo** | Animal adulto (cachorro ou gato), olhar tranquilo, fundo neutro ou levemente desfocado |
+| **Alt sugerido** | "Cachorro adulto olhando para a câmera com expressão tranquila e confiante" |
+| **Arquivo** | `hero-principal.jpg` |
+| **Status** | PLACEHOLDER — `/placeholder-hero.jpg` |
+| **Observação** | Priorizar animal com olhar marcante, fundo que não compita com o texto |
+
+### Animais em Destaque (3+ fotografias)
+| Campo | Detalhe |
+|-------|---------|
+| **Página** | Home |
+| **Seção** | Encontre um novo amigo |
+| **Objetivo** | Apresentar animais disponíveis com personalidade |
+| **Orientação** | Horizontal (4:3) |
+| **Enquadramento** | Retrato do animal, variar posição do olhar |
+| **Conteúdo** | Animais reais disponíveis para adoção |
+| **Alt sugerido** | "[Nome], [espécie] disponível para adoção" |
+| **Arquivos** | `animal-destaque-01.jpg`, `animal-destaque-02.jpg`, `animal-destaque-03.jpg` |
+| **Status** | PLACEHOLDER — `/placeholder-animal.jpg` (com cores de fundo diferentes) |
+
+### História Individual
+| Campo | Detalhe |
+|-------|---------|
+| **Página** | Home |
+| **Seção** | Cada focinho tem uma história |
+| **Objetivo** | Contar a história de um animal específico |
+| **Orientação** | Horizontal (3:2) |
+| **Enquadramento** | Ambiente — animal em espaço de acolhimento ou interagindo |
+| **Conteúdo** | Animal em destaque, de preferência com voluntário ou em espaço aberto |
+| **Alt sugerido** | "[Nome] em momento de acolhimento na ONG" |
+| **Arquivo** | `historia-destaque.jpg` |
+| **Status** | PLACEHOLDER — `/placeholder-story.jpg` |
+
+### Quem Cuida
+| Campo | Detalhe |
+|-------|---------|
+| **Página** | Home |
+| **Seção** | Quem cuida também faz parte da história |
+| **Objetivo** | Mostrar o trabalho humano da ONG |
+| **Orientação** | Horizontal (4:3 / 3:2) |
+| **Enquadramento** | Animal com voluntário, momento de cuidado |
+| **Conteúdo** | Voluntário autorizado interagindo com animal |
+| **Alt sugerido** | "Voluntário cuidando de animal na ONG" |
+| **Arquivo** | `quem-cuida.jpg` |
+| **Status** | PLACEHOLDER — `/placeholder-about.jpg` |
+
+### Formas de Ajudar (apoio visual)
+| Campo | Detalhe |
+|-------|---------|
+| **Página** | Home |
+| **Seção** | Formas reais de ajudar |
+| **Objetivo** | Apoiar visualmente cada forma de ajuda |
+| **Orientação** | Variada (detalhe, close, ambiente) |
+| **Enquadramento** | Detalhes de pata, recipiente de ração, mãos voluntárias, evento |
+| **Conteúdo** | Pequenos momentos que representem cada tipo de ajuda |
+| **Alt sugerido** | Descritivo conforme a imagem |
+| **Arquivos** | `ajuda-voluntario.jpg`, `ajuda-doacao.jpg`, `ajuda-evento.jpg` |
+| **Status** | PLACEHOLDER — podem usar detalhes dos mesmos animais |
+
+### Processo de Adoção
+| Campo | Detalhe |
+|-------|---------|
+| **Página** | Home |
+| **Seção** | Como a adoção acontece |
+| **Objetivo** | Ilustrar o processo de forma acolhedora |
+| **Orientação** | Horizontal (16:9) |
+| **Enquadramento** | Animal sendo acolhido ou interagindo |
+| **Conteúdo** | Momento de cuidado ou encontro |
+| **Alt sugerido** | "Animal sendo acolhido durante processo de adoção" |
+| **Arquivo** | `processo-adocao.jpg` |
+| **Status** | PLACEHOLDER — `/placeholder-process.jpg` |
+
+### Momentos da ONG (4+ fotografias)
+| Campo | Detalhe |
+|-------|---------|
+| **Página** | Home |
+| **Seção** | Momentos da ONG |
+| **Objetivo** | Mostrar a vida real da organização |
+| **Orientação** | Mista (horizontal e quadrada) |
+| **Enquadramento** | Variado: atividade, evento, cuidado, animal, voluntário |
+| **Conteúdo** | Registros autênticos do dia a dia |
+| **Alt sugerido** | Conforme contexto de cada imagem |
+| **Arquivos** | `momento-01.jpg` a `momento-04.jpg` |
+| **Status** | PLACEHOLDER |
+
+### CTA Final
+| Campo | Detalhe |
+|-------|---------|
+| **Página** | Home |
+| **Seção** | Chamada final |
+| **Objetivo** | Encerrar com emoção e convite à ação |
+| **Orientação** | Horizontal (16:9) |
+| **Enquadramento** | Animal em ambiente aberto ou looking away |
+| **Conteúdo** | Imagem que transmita esperança |
+| **Alt sugerido** | "Animal olhando para o horizonte" |
+| **Arquivo** | `cta-final.jpg` |
+| **Status** | PLACEHOLDER |
 
 ## Páginas Internas
 
-| # | Página | Seção | Proporção | Enquadramento | Alt Text | Nome Sugerido |
-|---|--------|-------|-----------|---------------|----------|---------------|
-| 11 | Adoção | Abertura | 16:9 | Animal em ambiente de acolhimento | "Animal disponível para adoção olhando para câmera" | adocao-hero.jpg |
-| 12 | Detalhe Animal | Galeria principal | 4:3 | Retrato frontal | "Retrato de [nome do animal]" | [slug]-main.jpg |
-| 13 | Detalhe Animal | Galeria secundária | 4:3 | Corpo inteiro ou ambiente | "[Nome do animal] em ambiente" | [slug]-02.jpg |
-| 14 | Detalhe Animal | História | 4:3 | Animal com contexto | "[Nome do animal] durante resgate/cuidado" | [slug]-story.jpg |
-| 15 | Sobre | Abertura | 16:9 | Atividade ou espaço da ONG | "Espaço de acolhimento da ONG" | sobre-hero.jpg |
-| 16 | Como Ajudar | Abertura | 16:9 | Pessoa ajudando animal | "Voluntária interagindo com animal" | ajudar-hero.jpg |
-| 17 | Voluntariado | Abertura | 16:9 | Voluntário em atividade | "Voluntário cuidando de animal" | voluntario-hero.jpg |
-| 18 | Eventos | Abertura | 16:9 | Evento ou campanha | "Evento beneficente da SOS Focinho Carente" | eventos-hero.jpg |
-| 19 | Brechó | Abertura | 16:9 | Produtos ou bazar | "Espaço do brechó beneficente" | brecho-hero.jpg |
-| 20 | Notícias | Abertura | 16:9 | Atividade institucional | "Atividade da ONG" | noticias-hero.jpg |
-| 21 | Contato | Abertura | 16:9 | Espaço físico ou animal | "Fachada ou espaço de atendimento" | contato-hero.jpg |
+### Página de Adoção — Abertura
+| Campo | Detalhe |
+|-------|---------|
+| **Página** | Adoção |
+| **Seção** | Abertura |
+| **Objetivo** | Estabelecer tom emocional da página |
+| **Orientação** | Horizontal (16:7) |
+| **Enquadramento** | Olhar de animal |
+| **Alt sugerido** | "Animal olhando com expressão de espera" |
+| **Arquivo** | `adocao-abertura.jpg` |
+| **Status** | PLACEHOLDER |
 
-## Diretrizes de Captura
+### Página Sobre — Abertura
+| Campo | Detalhe |
+|-------|---------|
+| **Página** | Sobre |
+| **Seção** | Abertura |
+| **Objetivo** | Apresentar visualmente a ONG |
+| **Orientação** | Horizontal (16:7) |
+| **Enquadramento** | Espaço de acolhimento ou atividade |
+| **Alt sugerido** | "Espaço de acolhimento da ONG" |
+| **Arquivo** | `sobre-abertura.jpg` |
+| **Status** | PLACEHOLDER |
 
-- Luz natural ou difusa
-- Sem flash direto
-- Cores naturais (sem filtro alaranjado)
-- Enquadramento próximo do animal
-- Foco nos olhos
-- Ambiente limpo visualmente
-- Animais em posição confortável
-- Voluntários autorizados e confortáveis
-- Evitar gaiolas ou correntes visíveis
-- Evitar ângulo de cima para baixo (evitar "coitadismo")
-- Preferir ângulo ao nível do olho do animal
+### Como Ajudar — Abertura
+| Campo | Detalhe |
+|-------|---------|
+| **Página** | Como ajudar |
+| **Seção** | Abertura |
+| **Objetivo** | Mostrar ação voluntária |
+| **Orientação** | Horizontal (16:7) |
+| **Enquadramento** | Mãos ajudando ou voluntário com animal |
+| **Alt sugerido** | "Voluntário interagindo com animal" |
+| **Arquivo** | `ajuda-abertura.jpg` |
+| **Status** | PLACEHOLDER |
 
-## Placeholders
+### Eventos — Imagens de Eventos
+| Campo | Detalhe |
+|-------|---------|
+| **Página** | Eventos |
+| **Seção** | Cada evento |
+| **Objetivo** | Mostrar o evento real |
+| **Orientação** | Horizontal (16:9) |
+| **Enquadramento** | Atividade do evento |
+| **Conteúdo** | Fotos reais de eventos passados |
+| **Alt sugerido** | "[Nome do evento] — [descrição breve]" |
+| **Arquivos** | Conforme disponibilidade |
+| **Status** | Quando houver eventos publicados |
 
-Enquanto as fotos oficiais não são fornecidas:
-- Utilizar placeholder cinza com texto "Fotografia em breve"
-- Manter proporções e espaços corretos
-- Não usar imagens aleatórias da internet
-- Registrar ausência em docs/PENDENCIAS-DE-CONTEUDO.md
+### Brechó — Produtos
+| Campo | Detalhe |
+|-------|---------|
+| **Página** | Brechó |
+| **Seção** | Produtos |
+| **Objetivo** | Mostrar itens disponíveis |
+| **Orientação** | Quadrada (1:1) |
+| **Enquadramento** | Produto em fundo neutro |
+| **Conteúdo** | Foto real do produto |
+| **Alt sugerido** | "[Nome do produto] — brechó beneficente" |
+| **Arquivos** | Conforme cadastro |
+| **Status** | Quando houver produtos publicados |
 
-## Formatos Técnicos
+## Observações Gerais
 
-- Formato: WebP (com fallback JPEG)
-- Max width: 1920px (hero) / 1200px (demais)
-- Qualidade: 80%
-- Lazy loading: todas exceto hero principal
-- Width/height explícitos para evitar CLS
+1. **Formatos**: Preferir JPEG para fotografias (qualidade 85-90%), WebP para performance
+2. **Dimensões máximas**: 1920px no lado maior para hero, 1200px para demais
+3. **Proporções variar**: Não usar a mesma proporção em todas as imagens
+4. **Consistência de tratamento**: Todas as fotos devem ter tratamento natural, sem filtros pesados
+5. **Legendas**: Associar legendas apenas quando houver contexto real
+6. **Alt text**: Todo alt text deve ser descritivo e contextual, nunca genérico
+7. **Object-position**: Configurar por imagem para evitar corte de rostos/focinhos

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#16866F;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0E6B58;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <ellipse cx="400" cy="300" rx="140" ry="160" fill="#1A9E82" opacity="0.5"/>
+  <polygon points="320,240 340,180 360,240" fill="#E8F5F0" opacity="0.6"/>
+  <polygon points="440,240 460,180 480,240" fill="#E8F5F0" opacity="0.6"/>
+  <circle cx="360" cy="280" r="14" fill="#E8F5F0" opacity="0.8"/>
+  <circle cx="440" cy="280" r="14" fill="#E8F5F0" opacity="0.8"/>
+  <circle cx="360" cy="280" r="6" fill="#2C241B" opacity="0.7"/>
+  <circle cx="440" cy="280" r="6" fill="#2C241B" opacity="0.7"/>
+  <ellipse cx="400" cy="310" rx="8" ry="5" fill="#FFB5A0" opacity="0.6"/>
+  <text x="400" y="420" text-anchor="middle" font-family="Georgia, serif" font-size="28" fill="#E8F5F0" opacity="0.6">Foto em atualização</text>
+</svg>

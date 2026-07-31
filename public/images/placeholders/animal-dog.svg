@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F2AB37;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#D9941A;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <ellipse cx="400" cy="320" rx="180" ry="150" fill="#F4B84D" opacity="0.5"/>
+  <circle cx="340" cy="270" r="20" fill="#FFF8E0" opacity="0.8"/>
+  <circle cx="460" cy="270" r="20" fill="#FFF8E0" opacity="0.8"/>
+  <circle cx="340" cy="270" r="9" fill="#2C241B" opacity="0.7"/>
+  <circle cx="460" cy="270" r="9" fill="#2C241B" opacity="0.7"/>
+  <ellipse cx="400" cy="380" rx="35" ry="22" fill="#2C241B" opacity="0.5"/>
+  <path d="M350 340 Q400 370 450 340" stroke="#FFF8E0" stroke-width="3" fill="none" opacity="0.6"/>
+  <ellipse cx="280" cy="300" rx="50" ry="70" fill="#E5A83A" opacity="0.4" transform="rotate(-15 280 300)"/>
+  <ellipse cx="520" cy="300" rx="50" ry="70" fill="#E5A83A" opacity="0.4" transform="rotate(15 520 300)"/>
+  <text x="400" y="440" text-anchor="middle" font-family="Georgia, serif" font-size="28" fill="#FFF8E0" opacity="0.6">Foto em atualização</text>
+</svg>

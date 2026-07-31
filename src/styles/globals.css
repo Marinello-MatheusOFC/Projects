@@ -1,43 +1,89 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Merriweather:wght@700;900&display=swap');
 @import './components.css';
 
 :root {
-  --color-primary: #E85D3A;
-  --color-primary-hover: #D94D2A;
-  --color-primary-light: #FFF0EB;
-  --color-primary-dark: #C43D1A;
+  --color-primary: #DC2626;
+  --color-primary-hover: #B91C1C;
+  --color-primary-light: #FEE2E2;
+  --color-primary-lighter: #FEF2F2;
+  --color-primary-dark: #991B1B;
+  --color-primary-darker: #7F1D1D;
+  --color-primary-50: #FEF2F2;
+  --color-primary-100: #FEE2E2;
+  --color-primary-200: #FECACA;
+  --color-primary-300: #FCA5A5;
+  --color-primary-400: #F87171;
+  --color-primary-500: #EF4444;
+  --color-primary-600: #DC2626;
+  --color-primary-700: #B91C1C;
+  --color-primary-800: #991B1B;
+  --color-primary-900: #7F1D1D;
 
-  --color-secondary: #2D8B6F;
-  --color-secondary-hover: #237A60;
-  --color-secondary-light: #E8F5F0;
+  --color-secondary: #059669;
+  --color-secondary-hover: #047857;
+  --color-secondary-light: #D1FAE5;
+  --color-secondary-lighter: #ECFDF5;
+  --color-secondary-dark: #065F46;
+  --color-secondary-darker: #064E3B;
+  --color-secondary-50: #ECFDF5;
+  --color-secondary-100: #D1FAE5;
+  --color-secondary-200: #A7F3D0;
+  --color-secondary-300: #6EE7B7;
+  --color-secondary-400: #34D399;
+  --color-secondary-500: #10B981;
+  --color-secondary-600: #059669;
+  --color-secondary-700: #047857;
+  --color-secondary-800: #065F46;
+  --color-secondary-900: #064E3B;
 
-  --color-accent: #F4A261;
-  --color-accent-hover: #E8924A;
-  --color-accent-light: #FEF0E0;
+  --color-accent: #F59E0B;
+  --color-accent-hover: #D97706;
+  --color-accent-light: #FEF3C7;
+  --color-accent-lighter: #FFFBEB;
+  --color-accent-dark: #B45309;
+  --color-accent-50: #FFFBEB;
+  --color-accent-100: #FEF3C7;
+  --color-accent-200: #FDE68A;
+  --color-accent-300: #FCD34D;
+  --color-accent-400: #FBBF24;
+  --color-accent-500: #F59E0B;
+  --color-accent-600: #D97706;
+  --color-accent-700: #B45309;
+  --color-accent-800: #92400E;
+  --color-accent-900: #78350F;
 
-  --color-bg: #FDFBF9;
-  --color-bg-alt: #F5F0EB;
+  --color-red: #DC2626;
+  --color-red-light: #FEE2E2;
+  --color-yellow: #F59E0B;
+  --color-yellow-light: #FEF3C7;
+  --color-green: #059669;
+  --color-green-light: #D1FAE5;
+
+  --color-bg: #FFFCF5;
+  --color-bg-alt: #FEF3C7;
+  --color-bg-warm: #FFFBEB;
+  --color-bg-warm-alt: #FFF7ED;
   --color-surface: #FFFFFF;
-  --color-text: #2C241B;
-  --color-text-secondary: #6B625A;
-  --color-text-muted: #A69B92;
-  --color-border: #E5DDD6;
-  --color-border-light: #F0EBE6;
+  --color-text: #1C1917;
+  --color-text-secondary: #57534E;
+  --color-text-muted: #A8A29E;
+  --color-border: #E7E5E4;
+  --color-border-light: #F5F5F4;
 
-  --color-error: #D94D4D;
+  --color-error: #DC2626;
   --color-error-bg: #FEF2F2;
-  --color-success: #2D8B6F;
+  --color-success: #059669;
   --color-success-bg: #F0FDF4;
-  --color-warning: #E5A83A;
+  --color-warning: #F59E0B;
   --color-warning-bg: #FFFBEB;
-  --color-info: #4A90D9;
+  --color-info: #3B82F6;
   --color-info-bg: #EFF6FF;
 
   --color-white: #FFFFFF;
   --color-black: #000000;
 
-  --font-heading: 'Manrope', 'Georgia', serif;
-  --font-body: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  --font-heading: 'Merriweather', Georgia, 'Times New Roman', serif;
+  --font-body: 'Nunito', 'Segoe UI', Tahoma, system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
   --text-xs: 0.75rem;
@@ -50,6 +96,7 @@
   --text-4xl: 2.25rem;
   --text-5xl: 2.75rem;
   --text-6xl: 3.5rem;
+  --text-7xl: 4rem;
 
   --leading-tight: 1.15;
   --leading-normal: 1.5;
@@ -74,6 +121,7 @@
   --space-16: 4rem;
   --space-20: 5rem;
   --space-24: 6rem;
+  --space-28: 7rem;
   --space-32: 8rem;
 
   --radius-sm: 0.25rem;
@@ -81,16 +129,19 @@
   --radius-lg: 1rem;
   --radius-xl: 1.5rem;
   --radius-2xl: 2rem;
+  --radius-3xl: 2.5rem;
   --radius-full: 9999px;
 
-  --shadow-sm: 0 1px 3px rgba(44, 36, 27, 0.06);
-  --shadow-md: 0 4px 12px rgba(44, 36, 27, 0.08);
-  --shadow-lg: 0 12px 32px rgba(44, 36, 27, 0.12);
+  --shadow-sm: 0 1px 3px rgba(28, 25, 23, 0.06);
+  --shadow-md: 0 4px 12px rgba(28, 25, 23, 0.08);
+  --shadow-lg: 0 8px 24px rgba(28, 25, 23, 0.12);
+  --shadow-xl: 0 16px 40px rgba(28, 25, 23, 0.16);
 
   --transition-fast: 200ms ease;
   --transition-normal: 350ms ease;
 
   --container-max: 1200px;
+  --container-wide: 1400px;
   --container-padding: var(--space-4);
 }
 
@@ -151,3 +202,52 @@ ul, ol { list-style: none; }
 :focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
 :focus:not(:focus-visible) { outline: none; }
 ::selection { background-color: var(--color-primary-light); color: var(--color-text); }
+
+/* ── Color utility classes ── */
+.bg-primary          { background-color: var(--color-primary); }
+.bg-primary-light    { background-color: var(--color-primary-light); }
+.bg-primary-lighter  { background-color: var(--color-primary-lighter); }
+.bg-secondary        { background-color: var(--color-secondary); }
+.bg-secondary-light  { background-color: var(--color-secondary-light); }
+.bg-secondary-lighter { background-color: var(--color-secondary-lighter); }
+.bg-accent           { background-color: var(--color-accent); }
+.bg-accent-light     { background-color: var(--color-accent-light); }
+.bg-accent-lighter   { background-color: var(--color-accent-lighter); }
+.bg-warm             { background-color: var(--color-bg-warm); }
+.bg-warm-alt         { background-color: var(--color-bg-warm-alt); }
+.bg-yellow           { background-color: var(--color-yellow); }
+.bg-yellow-light     { background-color: var(--color-yellow-light); }
+.bg-red              { background-color: var(--color-red); }
+.bg-red-light        { background-color: var(--color-red-light); }
+.bg-green            { background-color: var(--color-green); }
+.bg-green-light      { background-color: var(--color-green-light); }
+.bg-bg               { background-color: var(--color-bg); }
+.bg-alt              { background-color: var(--color-bg-alt); }
+
+.text-primary         { color: var(--color-primary); }
+.text-secondary       { color: var(--color-secondary); }
+.text-accent          { color: var(--color-accent); }
+.text-red             { color: var(--color-red); }
+.text-yellow          { color: var(--color-yellow); }
+.text-green           { color: var(--color-green); }
+
+.border-primary       { border-color: var(--color-primary); }
+.border-secondary     { border-color: var(--color-secondary); }
+.border-accent        { border-color: var(--color-accent); }
+
+/* ── Gradient utilities ── */
+.gradient-primary {
+  background: linear-gradient(135deg, #DC2626 0%, #991B1B 100%);
+}
+.gradient-secondary {
+  background: linear-gradient(135deg, #059669 0%, #065F46 100%);
+}
+.gradient-accent {
+  background: linear-gradient(135deg, #F59E0B 0%, #B45309 100%);
+}
+.gradient-red-yellow {
+  background: linear-gradient(135deg, #DC2626 0%, #F59E0B 50%, #FCD34D 100%);
+}
+.gradient-warm {
+  background: linear-gradient(180deg, var(--color-bg-warm) 0%, var(--color-bg) 100%);
+}

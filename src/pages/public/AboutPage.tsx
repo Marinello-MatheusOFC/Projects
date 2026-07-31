@@ -7,24 +7,25 @@ export default function AboutPage() {
   return (
     <div>
       {/* Abertura fotográfica */}
-      <section className="section" style={{ paddingBottom: 0 }}>
+      <section className="page-hero">
+        <div className="page-hero-photo">
+          <ResponsivePicture
+            src="/images/demo/hero-cat.jpg"
+            alt="Espaço de acolhimento da ONG"
+            objectFit="cover"
+            objectPosition="center 50%"
+            priority
+            width={1920}
+            height={600}
+            fallback="hero"
+          />
+        </div>
+        <div className="page-hero-overlay" />
         <div className="container">
-          <div style={{
-            borderRadius: 'var(--radius-lg)',
-            overflow: 'hidden',
-            background: 'var(--color-border-light)',
-            aspectRatio: '16/7',
-            marginBottom: 'var(--space-8)',
-          }}>
-            <ResponsivePicture
-              src="/placeholder-about.jpg"
-              alt="Espaço de acolhimento da ONG"
-              objectFit="cover"
-              objectPosition="center 50%"
-              width={1200}
-              height={525}
-            />
-          </div>
+          <h1 className="page-hero-title">Sobre a SOS Focinho Carente</h1>
+          <p className="page-hero-subtitle">
+            Conheça nossa história e o trabalho que desenvolvemos pelos animais.
+          </p>
         </div>
       </section>
 
@@ -34,12 +35,13 @@ export default function AboutPage() {
           <div className="about-story">
             <div className="about-story-image">
               <ResponsivePicture
-                src="/placeholder-about.jpg"
+                src="/images/demo/community-event.jpg"
                 alt="Atividade da ONG"
                 objectFit="cover"
                 objectPosition="center 40%"
                 width={800}
                 height={600}
+                fallback="care"
               />
             </div>
             <div className="about-story-body">
@@ -58,7 +60,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Valores */}
+      {/* Como trabalhamos */}
       <section className="section section--alt">
         <div className="container">
           <div className="section-intro">

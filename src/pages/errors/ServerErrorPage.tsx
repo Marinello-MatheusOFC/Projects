@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { RotateCcw, Home } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 
 export default function ServerErrorPage() {
@@ -8,17 +7,17 @@ export default function ServerErrorPage() {
       <div className="error-code">500</div>
       <h1 className="error-title">Erro interno do servidor</h1>
       <p className="error-description">
-        Algo deu errado. Tente novamente em alguns instantes.
+        Não foi possível processar sua solicitação. Tente novamente mais tarde.
       </p>
       <div className="final-cta-actions">
-        <Button onClick={() => window.location.reload()}>
-          <RotateCcw size={18} aria-hidden="true" />
-          Tentar novamente
-        </Button>
         <Link to="/">
+          <Button>
+            Voltar para o início
+          </Button>
+        </Link>
+        <Link to="/contato">
           <Button variant="outline">
-            <Home size={18} aria-hidden="true" />
-            Ir para o início
+            Fale conosco
           </Button>
         </Link>
       </div>

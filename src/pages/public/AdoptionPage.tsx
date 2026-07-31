@@ -3,12 +3,20 @@ import { useSearchParams, Link } from 'react-router-dom';
 import { X } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Select } from '@/components/ui/Select';
-import { Input } from '@/components/ui/Input';
 import { EmptyState } from '@/components/feedback/EmptyState';
 import { ErrorState } from '@/components/feedback/ErrorState';
 import { CardSkeleton } from '@/components/feedback/Skeleton';
 import { ResponsivePicture } from '@/components/media/ResponsivePicture';
 import { speciesLabels, sexLabels, sizeLabels } from '@/utils';
+
+const adoptionCardImages = [
+  '/images/demo/animal-dog-01.jpg',
+  '/images/demo/animal-cat-01.jpg',
+  '/images/demo/animal-dog-02.jpg',
+  '/images/demo/hero-dog.jpg',
+  '/images/demo/hero-cat.jpg',
+  '/images/demo/animal-dog-03.jpg',
+];
 
 const speciesOptions = Object.entries(speciesLabels).map(([value, label]) => ({ value, label }));
 const sexOptions = Object.entries(sexLabels).map(([value, label]) => ({ value, label }));
@@ -71,16 +79,32 @@ export default function AdoptionPage() {
     <div>
 
       {/* Abertura */}
-      <section className="section" style={{ paddingBottom: 0 }}>
+      <section className="page-hero">
+        <div className="page-hero-photo">
+          <ResponsivePicture
+            src="/images/demo/hero-cat.jpg"
+            alt="Animal olhando com expressão de espera"
+            objectFit="cover"
+            objectPosition="center 40%"
+            priority
+            width={1920}
+            height={600}
+            fallback="hero"
+          />
+        </div>
+        <div className="page-hero-overlay" />
         <div className="container">
-          <div className="adoption-header">
-            <h1>Talvez um desses olhares esteja esperando encontrar você.</h1>
-            <p>
-              Cada animal tem sua própria história. Conheça quem está disponível
-              e descubra se um deles tem a ver com você.
-            </p>
-          </div>
+          <h1 className="page-hero-title">Talvez um desses olhares esteja esperando encontrar você.</h1>
+          <p className="page-hero-subtitle">
+            Cada animal tem sua própria história. Conheça quem está disponível
+            e descubra se um deles tem a ver com você.
+          </p>
+        </div>
+      </section>
 
+      {/* Filtros */}
+      <section className="section" style={{ paddingTop: 'var(--space-10)', paddingBottom: 0 }}>
+        <div className="container">
           <div className="filters-bar" role="search" aria-label="Filtrar animais">
             <div className="form-field" style={{ marginBottom: 0, minWidth: 200, flex: 2 }}>
               <label htmlFor="search-name" className="form-label">Buscar por nome</label>
@@ -149,12 +173,13 @@ export default function AdoptionPage() {
                   >
                     <div className="adoption-card-image">
                       <ResponsivePicture
-                        src="/placeholder-animal.jpg"
+                        src={adoptionCardImages[Number(animal.id) - 1]}
                         alt={`${animal.name}, ${animal.species}`}
                         objectFit="cover"
                         objectPosition={animal.slug === 'luna' ? 'center 40%' : animal.slug === 'toddy' ? 'center 30%' : 'center 50%'}
                         width={600}
                         height={450}
+                        fallback={animal.species === 'Gato' ? 'cat' : 'animal'}
                       />
                     </div>
                     <div className="adoption-card-body">
@@ -175,19 +200,17 @@ export default function AdoptionPage() {
               </div>
             </>
           ) : (
-            <div className="animals-empty">
-              <EmptyState
-                title="Nenhum animal encontrado"
-                description="Tente ajustar os filtros ou buscar por outro nome."
-                action={
-                  hasFilters ? (
-                    <Button variant="outline" onClick={clearFilters}>
-                      Limpar filtros
-                    </Button>
-                  ) : undefined
-                }
-              />
-            </div>
+            <EmptyState
+              title="Nenhum animal encontrado"
+              description="Tente ajustar os filtros ou buscar por outro nome."
+              action={
+                hasFilters ? (
+                  <Button variant="outline" onClick={clearFilters}>
+                    Limpar filtros
+                  </Button>
+                ) : undefined
+              }
+            />
           )}
         </div>
       </section>

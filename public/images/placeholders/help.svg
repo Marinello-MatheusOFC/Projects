@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="338" viewBox="0 0 600 338">
+  <rect width="600" height="338" fill="#E8F5F0"/>
+  <ellipse cx="300" cy="170" rx="80" ry="60" fill="#2D8B6F" opacity="0.15"/>
+  <circle cx="270" cy="155" r="10" fill="#2D8B6F" opacity="0.25"/>
+  <circle cx="330" cy="155" r="10" fill="#2D8B6F" opacity="0.25"/>
+  <ellipse cx="300" cy="190" rx="18" ry="10" fill="#2D8B6F" opacity="0.2"/>
+  <text x="300" y="250" text-anchor="middle" font-family="Georgia, serif" font-size="16" fill="#2D8B6F" opacity="0.5">Participe</text>
+</svg>

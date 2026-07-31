@@ -1,93 +1,119 @@
 # Antes e Depois — Home Page
 
-## Estrutura Anterior
+## Estrutura Anterior (layout genérico)
 
 ```
-Hero (gradiente abstrato, sem foto)
-  → Título genérico
-  → Dois botões
-  → Sem imagem de animal
-
-Highlights Grid (3 cards idênticos)
-  → Ícone + título + texto + link
-  → Adoção, Voluntariado, Brechó
-
-Section "Animais disponíveis" (vazia)
-  → Apenas um botão "Conhecer todos"
-
-Section "Nossa Missão" (texto genérico)
-  → Parágrafo institucional vago
-
-Help Grid (4 cards em seção accent)
-  → Ícone + título + texto + link
-  → Layout de cards repetitivo
-
-Final CTA
-  → Título + texto + dois botões
++--------------------------------------------------+
+| HEADER (sticky, ícone de pata + links)            |
++--------------------------------------------------+
+| HERO (foto + overlay escuro + texto centralizado) |
+|   - Eyebrow: "SOS Focinho Carente"               |
+|   - Título + descrição                            |
+|   - 2 botões                                      |
+|   - Indicador de scroll (mouse shape)             |
++--------------------------------------------------+
+| SEÇÃO: Encontre um novo amigo                     |
+|   - Intro centralizada                            |
+|   - Grid de 3 cards assimétricos (2fr + 1fr)      |
+|   - Cada card: foto + overlay + nome + espécie    |
++--------------------------------------------------+
+| SEÇÃO: Cada focinho tem uma história              |
+|   - Layout 2 colunas (foto | texto)              |
+|   - Botão "Conhecer as histórias"                |
++--------------------------------------------------+
+| SEÇÃO: Quem cuida também faz parte da história    |
+|   - Mesmo layout invertido (texto | foto)        |
++--------------------------------------------------+
+| SEÇÃO: Formas reais de ajudar                     |
+|   - Intro centralizada                            |
+|   - Grid de 6 cards (3 colunas)                  |
+|   - Cada card: emoji + título + descrição        |
++--------------------------------------------------+
+| SEÇÃO: Como a adoção acontece                     |
+|   - Layout 2 colunas (foto | steps numerados)    |
+|   - 4 steps com circulos numerados               |
++--------------------------------------------------+
+| SEÇÃO: Momentos da ONG                           |
+|   - Mosaico 4 imagens (2x2 grid)                 |
++--------------------------------------------------+
+| SEÇÃO: CTA Final                                 |
+|   - Título + descrição + 2 botões centralizados  |
++--------------------------------------------------+
+| FOOTER (escuro, links frios)                     |
++--------------------------------------------------+
 ```
 
-**Problemas**: Tudo em cards, sem fotografia, sem hierarquia emocional, parece template.
+### Problemas da estrutura anterior:
+- 4 das 8 seções usam o mesmo layout (2 colunas foto/texto)
+- Seções alternam sempre mesma cor de fundo (branco/bege claro)
+- Grids uniformes sem surpresa visual
+- Hero com overlay pesado escondendo a fotografia
+- Nenhuma quebra na grade
+- Todas as imagens com mesmo border-radius
+- Seções não têm personalidade própria
 
-## Nova Estrutura
+---
+
+## Nova Estrutura (emocional, fotográfica, editorial)
 
 ```
-EmotionalHero
-  → Fotografia grande de animal (placeholder ou real)
-  → Título emocional
-  → Subtítulo
-  → Eyebrow "SOS Focinho Carente"
-  → Duas ações: "Conhecer os animais" | "Descobrir como ajudar"
-  → Indicador de continuidade visual
-
-FeaturedAnimalSection (seção editorial)
-  → Um animal em grande destaque
-  → Outros animais em posições secundárias
-  → Nomes visíveis, fotos grandes
-  → Layout editorial assimétrico (desktop) / lista (mobile)
-
-AnimalStorySection
-  → Seção de história individual (editorial/reportagem)
-  → Foto grande + nome + história real (ou texto institucional)
-  → Ação: "Conhecer [nome]"
-
-AboutSection (quem cuida)
-  → Foto de atividade/voluntariado
-  → Texto institucional breve
-  → Link "Conhecer a SOS Focinho Carente"
-
-WaysToHelpSection (mural comunitário)
-  → Composição visual diversa (não cards idênticos)
-  → Adotar | Lar Temporário | Voluntariado | Doar | Divulgar | Eventos
-  → Cada item com tratamento visual próprio
-
-AdoptionJourneySection
-  → Processo de adoção em linguagem acolhedora
-  → Foto + etapas
-  → Sem timeline corporativa
-
-CommunityGallerySection (mosaico)
-  → Grid fotográfico de momentos da ONG
-  → Legendas contextuais
-  → Oculto se não houver fotos
-
-EventFeatureSection (se forçado condicional)
-  → Evento futuro em destaque (foto + data + título)
-  → Oculto se não houver
-
-EmotionalCallToAction
-  → Foto forte
-  → Mensagem final
-  → Duas ações
++--------------------------------------------------+
+| HEADER (minimal, com marca tipográfica + CTA)     |
++--------------------------------------------------+
+| HERO EMOCIONAL (foto grande, sem overlay pesado)  |
+|   - Fotografia ocupando largura total             |
+|   - Rosto/focinho do animal visível               |
+|   - Texto posicionado sem cobrir o rosto          |
+|   - 2 ações claras                                |
+|   - Pequeno indicador sutil                       |
++--------------------------------------------------+
+| SEÇÃO: Encontre um novo amigo                     |
+|   - Composição editorial assimétrica             |
+|   - 1 animal em grande destaque                   |
+|   - 2-3 animais em posições secundárias           |
+|   - Nomes e personalidade visíveis                |
+|   - Sem hover para info essencial                 |
++--------------------------------------------------+
+| SEÇÃO: Cada focinho tem uma história              |
+|   - Composição de reportagem fotográfica          |
+|   - Foto grande + nome + relato real              |
+|   - Não se parece com card                        |
++--------------------------------------------------+
+| SEÇÃO: Quem cuida também faz parte da história    |
+|   - Mosaico fotográfico de cuidado                |
+|   - Texto institucional breve                     |
+|   - Link para conhecer a ONG                      |
++--------------------------------------------------+
+| SEÇÃO: Formas reais de ajudar (mural)             |
+|   - Composição de mural comunitário               |
+|   - Título + frase específica + ação              |
+|   - Não usa cards idênticos                       |
+|   - Apoio visual variado                          |
++--------------------------------------------------+
+| SEÇÃO: Como a adoção acontece                     |
+|   - Passos explicados com cuidado + foto          |
+|   - Linguagem acolhedora                          |
+|   - Apenas etapas reais                           |
++--------------------------------------------------+
+| SEÇÃO: Momentos da ONG (mosaico editorial)        |
+|   - Grid variado com proporções diferentes        |
+|   - Legendas contextuais                          |
++--------------------------------------------------+
+| SEÇÃO: CTA Final com fotografia                   |
+|   - Foto de fundo ou composição                   |
+|   - Mensagem emocional com dignidade              |
+|   - 2 ações claras                                |
++--------------------------------------------------+
+| FOOTER (quente, informativo, com identidade)      |
++--------------------------------------------------+
 ```
 
-## Mudanças Visuais Principais
-
-| Antes | Depois |
-|-------|--------|
-| Gradiente abstrato no hero | Fotografia de animal no hero |
-| Três cards iguais (highlights) | Grid editorial assimétrico de animais |
-| Seção vazia de animais | Animais reais em destaque |
-| Texto de missão genérico | História e identidade visual da ONG |
-| Quatro cards de ajuda iguais | Mural diverso de formas de ajudar |
-| Timeline corporativa | Processo acolhedor com fotografia |
-| Grade fria no footer | Footer com personalidade |
+### Melhorias da nova estrutura:
+- Hero permite que a foto respire (overlay mais suave)
+- Grid editorial assimétrico na seção de animais
+- História individual com mais destaque visual
+- Mural de ajuda não usa cards idênticos
+- Mosaico de momentos com proporções variadas
+- CTA final com fotografia de fundo
+- Layout mais variado entre seções
+- Transições visuais entre seções

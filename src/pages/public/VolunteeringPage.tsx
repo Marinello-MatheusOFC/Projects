@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { Alert } from '@/components/feedback/Alert';
+import { ResponsivePicture } from '@/components/media/ResponsivePicture';
 
 const volunteerSchema = z.object({
   name: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
@@ -47,19 +48,32 @@ export default function VolunteeringPage() {
   };
 
   return (
-    <div className="volunteering-page">
+    <div>
       <section className="page-hero">
+        <div className="page-hero-photo">
+          <ResponsivePicture
+            src="/images/demo/community-event.jpg"
+            alt="Voluntários cuidando de animais"
+            objectFit="cover"
+            objectPosition="center 40%"
+            priority
+            width={1920}
+            height={600}
+            fallback="care"
+          />
+        </div>
+        <div className="page-hero-overlay" />
         <div className="container">
           <h1 className="page-hero-title">Voluntariado</h1>
           <p className="page-hero-subtitle">
-            Transforme seu tempo em amor aos animais.
+            Sua dedicação pode transformar o dia de um animal.
           </p>
         </div>
       </section>
 
       <section className="section">
         <div className="container">
-          <div className="volunteering-content">
+          <div className="volunteering-grid">
             <div className="volunteering-info">
               <h2>Por que ser voluntário?</h2>
               <p>
@@ -76,8 +90,8 @@ export default function VolunteeringPage() {
               </ul>
             </div>
 
-            <div className="volunteering-form-wrapper">
-              <h2>Cadastro de Interesse</h2>
+            <div>
+              <h2 style={{ fontSize: 'var(--text-2xl)', marginBottom: 'var(--space-4)' }}>Cadastro de Interesse</h2>
 
               {submitState === 'success' ? (
                 <Alert
@@ -85,7 +99,7 @@ export default function VolunteeringPage() {
                   message="Seu cadastro de interesse foi enviado com sucesso! Entraremos em contato."
                 />
               ) : (
-                <form onSubmit={handleSubmit(onSubmit)} className="volunteering-form" noValidate>
+                <form onSubmit={handleSubmit(onSubmit)} noValidate>
                   <Input
                     label="Nome completo"
                     error={errors.name?.message}

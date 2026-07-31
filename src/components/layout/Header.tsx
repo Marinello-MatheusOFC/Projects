@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { Menu, X, PawPrint } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
+import { Logo } from '@/components/ui/Logo';
 
 const navItems = [
   { to: '/adocao', label: 'Conhecer animais' },
@@ -18,8 +19,7 @@ export function Header() {
     <header className="header">
       <div className="header-inner">
         <Link to="/" className="header-logo" aria-label="SOS Focinho Carente — Início">
-          <PawPrint size={24} className="header-logo-icon" aria-hidden="true" />
-          <span>SOS Focinho Carente</span>
+          <Logo size="sm" />
         </Link>
 
         <button

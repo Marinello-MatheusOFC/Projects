@@ -1,7 +1,13 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, ChevronRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { ResponsivePicture } from '@/components/media/ResponsivePicture';
+
+const animalImages = [
+  '/images/demo/animal-dog-01.jpg',
+  '/images/demo/animal-cat-01.jpg',
+  '/images/demo/animal-dog-02.jpg',
+];
 
 const featuredAnimals = [
   { name: 'Luna', species: 'Cachorro', sex: 'Fêmea', size: 'Médio', slug: 'luna' },
@@ -9,20 +15,34 @@ const featuredAnimals = [
   { name: 'Mel', species: 'Gato', sex: 'Fêmea', size: 'Pequeno', slug: 'mel' },
 ];
 
-const waysToHelp = [
-  { icon: '🏠', title: 'Adoção Responsável', desc: 'Abra seu lar para um novo amigo. Cada adoção muda duas vidas.', link: '/adocao', label: 'Conhecer animais' },
-  { icon: '🛏️', title: 'Lar Temporário', desc: 'Ofereça um abrigo temporário até a adoção definitiva.', link: '/como-ajudar', label: 'Saiba mais' },
-  { icon: '🤝', title: 'Voluntariado', desc: 'Doe tempo e talento para transformar vidas.', link: '/voluntariado', label: 'Seja voluntário' },
-  { icon: '💰', title: 'Doação Financeira', desc: 'Contribua com qualquer valor para manter nossos projetos.', link: '/como-ajudar', label: 'Como doar' },
-  { icon: '📢', title: 'Divulgação', desc: 'Compartilhe nossos animais e campanhas. A divulgação salva vidas.', link: '/como-ajudar', label: 'Ajudar divulgando' },
-  { icon: '🎉', title: 'Participar de Eventos', desc: 'Participe dos nossos eventos e campanhas beneficentes.', link: '/eventos', label: 'Ver eventos' },
+const galleryImages = [
+  '/images/demo/animal-paw.jpg',
+  '/images/demo/volunteer-care.jpg',
+  '/images/demo/adoption-event.jpg',
+  '/images/demo/shelter-space.jpg',
 ];
 
-const galleryImages = [
-  { id: 1, caption: 'Momento de cuidado' },
-  { id: 2, caption: 'Voluntários em ação' },
-  { id: 3, caption: 'Animal em acolhimento' },
-  { id: 4, caption: 'Campanha de adoção' },
+const helpWays = [
+  { title: 'Adoção Responsável', desc: 'Cada adoção muda duas vidas. Conheça quem espera por um lar.', link: '/adocao', label: 'Conhecer animais' },
+  { title: 'Lar Temporário', desc: 'Ofereça abrigo temporário até a adoção definitiva.', link: '/como-ajudar', label: 'Entender como funciona' },
+  { title: 'Voluntariado', desc: 'Doe tempo e cuidado. Há muitas formas de participar.', link: '/voluntariado', label: 'Ser voluntário' },
+  { title: 'Doação Financeira', desc: 'Contribua com qualquer valor para manter o trabalho da ONG.', link: '/como-ajudar', label: 'Como doar' },
+  { title: 'Divulgação', desc: 'Compartilhe perfis e campanhas. A divulgação também salva.', link: '/adocao', label: 'Ajudar divulgando' },
+  { title: 'Eventos', desc: 'Participe de campanhas e encontros da comunidade.', link: '/eventos', label: 'Ver eventos' },
+];
+
+const journeySteps = [
+  { title: 'Conheça o animal', desc: 'Explore os perfis e encontre quem combina com você.' },
+  { title: 'Demonstre interesse', desc: 'Preencha o formulário com suas informações.' },
+  { title: 'Conversa com a ONG', desc: 'A equipe entra em contato para conhecer você melhor.' },
+  { title: 'Acompanhamento', desc: 'Mesmo após a adoção, continuamos por perto.' },
+];
+
+const galleryMoments = [
+  { caption: 'Momento de cuidado' },
+  { caption: 'Voluntários em ação' },
+  { caption: 'Animal em acolhimento' },
+  { caption: 'Campanha de adoção' },
 ];
 
 export default function HomePage() {
@@ -35,13 +55,14 @@ export default function HomePage() {
       <section className="emotional-hero">
         <div className="emotional-hero-bg">
           <ResponsivePicture
-            src="/placeholder-hero.jpg"
+            src="/images/demo/hero-dog.jpg"
             alt="Animal adulto olhando para a câmera com expressão tranquila"
             objectFit="cover"
-            objectPosition="center 30%"
+            objectPosition="center 40%"
             priority
             width={1920}
             height={1080}
+            fallback="hero"
           />
         </div>
         <div className="emotional-hero-overlay" />
@@ -69,7 +90,7 @@ export default function HomePage() {
       </section>
 
       {/* ═══════════════════════════════════════
-          ANIMAIS EM DESTAQUE — grid editorial
+          ENCONTRE UM NOVO AMIGO — grid editorial
           ═══════════════════════════════════════ */}
       <section className="section">
         <div className="container">
@@ -81,29 +102,30 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="featured-animals">
+          <div className="editorial-grid">
             {featuredAnimals.map((animal, index) => (
               <Link
                 key={animal.slug}
                 to={`/adocao/${animal.slug}`}
-                className="animal-card"
+                className="animal-portrait"
                 aria-label={`Conhecer ${animal.name}`}
               >
                 <ResponsivePicture
-                  src="/placeholder-animal.jpg"
+                  src={animalImages[index]}
                   alt={`${animal.name}, ${animal.species} de porte ${animal.size}`}
                   objectFit="cover"
                   objectPosition={index === 0 ? 'center 40%' : index === 1 ? 'center 30%' : 'center 50%'}
                   width={800}
                   height={600}
+                  fallback={animal.species === 'Gato' ? 'cat' : 'animal'}
                 />
-                <div className="animal-card-overlay" />
-                <div className="animal-card-info">
-                  <div className="animal-card-name">{animal.name}</div>
-                  <div className="animal-card-meta">
+                <div className="animal-portrait-overlay" />
+                <div className="animal-portrait-info">
+                  <div className="animal-portrait-name">{animal.name}</div>
+                  <div className="animal-portrait-meta">
                     {animal.species} · {animal.sex} · Porte {animal.size}
                   </div>
-                  <span className="animal-card-link">
+                  <span className="animal-portrait-link">
                     Conhecer {animal.name} <ArrowRight size={14} aria-hidden="true" />
                   </span>
                 </div>
@@ -114,26 +136,27 @@ export default function HomePage() {
       </section>
 
       {/* ═══════════════════════════════════════
-          HISTÓRIA INDIVIDUAL — editorial
+          CADA FOCINHO TEM UMA HISTÓRIA
           ═══════════════════════════════════════ */}
       <section className="section section--alt">
         <div className="container">
           <div className="animal-story">
             <div className="animal-story-image">
               <ResponsivePicture
-                src="/placeholder-story.jpg"
+                src="/images/demo/care-volunteer.jpg"
                 alt="Animal em momento de acolhimento"
                 objectFit="cover"
                 objectPosition="center 50%"
                 width={800}
                 height={600}
+                fallback="story"
               />
             </div>
             <div className="animal-story-body">
               <h3>Cada focinho tem uma história</h3>
               <p>
-                Cada animal que chega até nós carrega uma trajetória única. 
-                Conhecer essa história é o primeiro passo para construir uma 
+                Cada animal que chega até nós carrega uma trajetória única.
+                Conhecer essa história é o primeiro passo para construir uma
                 nova etapa com respeito e cuidado.
               </p>
               <Link to="/adocao">
@@ -147,26 +170,27 @@ export default function HomePage() {
       </section>
 
       {/* ═══════════════════════════════════════
-          QUEM CUIDA
+          QUEM CUIDA TAMBÉM FAZ PARTE DA HISTÓRIA
           ═══════════════════════════════════════ */}
       <section className="section">
         <div className="container">
-          <div className="animal-story" style={{ direction: 'rtl' }} dir="ltr">
-            <div className="animal-story-image" style={{ direction: 'ltr' }}>
+          <div className="animal-story">
+            <div className="animal-story-image">
               <ResponsivePicture
-                src="/placeholder-about.jpg"
+                src="/images/demo/community-event.jpg"
                 alt="Voluntários em atividade de cuidado com animais"
                 objectFit="cover"
                 objectPosition="center 50%"
                 width={800}
                 height={600}
+                fallback="care"
               />
             </div>
-            <div className="animal-story-body" style={{ direction: 'ltr' }}>
+            <div className="animal-story-body">
               <h3>Quem cuida também faz parte da história</h3>
               <p>
-                A SOS Focinho Carente existe por causa de pessoas que dedicam 
-                tempo, cuidado e respeito aos animais. Conheça nosso trabalho 
+                A SOS Focinho Carente existe por causa de pessoas que dedicam
+                tempo, cuidado e respeito aos animais. Conheça nosso trabalho
                 e como você pode fazer parte.
               </p>
               <Link to="/sobre">
@@ -180,9 +204,9 @@ export default function HomePage() {
       </section>
 
       {/* ═══════════════════════════════════════
-          FORMAS DE AJUDAR — mural diverso
+          FORMAS REAIS DE AJUDAR
           ═══════════════════════════════════════ */}
-      <section className="section section--alt">
+      <section className="section section--warm">
         <div className="container">
           <div className="section-intro">
             <h2>Formas reais de ajudar</h2>
@@ -191,13 +215,14 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="ways-grid">
-            {waysToHelp.map((item, i) => (
-              <div key={i} className="way-item">
-                <span className="way-item-icon" aria-hidden="true">{item.icon}</span>
+          <div className="ways-mural">
+            {helpWays.map((item, i) => (
+              <div key={i} className="way-mural-item">
                 <h3>{item.title}</h3>
                 <p>{item.desc}</p>
-                <Link to={item.link}>{item.label} <ArrowRight size={14} aria-hidden="true" /></Link>
+                <Link to={item.link}>
+                  {item.label} <ArrowRight size={14} aria-hidden="true" />
+                </Link>
               </div>
             ))}
           </div>
@@ -212,12 +237,13 @@ export default function HomePage() {
           <div className="adoption-journey">
             <div className="adoption-journey-image">
               <ResponsivePicture
-                src="/placeholder-process.jpg"
-                alt="Animal sendo acolhido"
+                src="/images/demo/animal-cat-02.jpg"
+                alt="Animal sendo acolhido durante processo de adoção"
                 objectFit="cover"
                 objectPosition="center 50%"
                 width={800}
                 height={600}
+                fallback="cat"
               />
             </div>
             <div>
@@ -225,14 +251,9 @@ export default function HomePage() {
                 Como a adoção acontece
               </h2>
               <div className="journey-steps">
-                {[
-                  { num: 1, title: 'Conheça o animal', desc: 'Explore os perfis e encontre quem combina com você.' },
-                  { num: 2, title: 'Demonstre interesse', desc: 'Preencha o formulário com suas informações.' },
-                  { num: 3, title: 'Conversa com a ONG', desc: 'A equipe entra em contato para conhecer você melhor.' },
-                  { num: 4, title: 'Acompanhamento', desc: 'Mesmo após a adoção, continuamos por perto.' },
-                ].map((step) => (
-                  <div key={step.num} className="journey-step">
-                    <div className="journey-step-num">{step.num}</div>
+                {journeySteps.map((step, i) => (
+                  <div key={i} className="journey-step">
+                    <div className="journey-step-num">{i + 1}</div>
                     <div className="journey-step-body">
                       <h4>{step.title}</h4>
                       <p>{step.desc}</p>
@@ -246,7 +267,7 @@ export default function HomePage() {
       </section>
 
       {/* ═══════════════════════════════════════
-          MOMENTOS DA ONG — mosaico
+          MOMENTOS DA ONG
           ═══════════════════════════════════════ */}
       <section className="section section--alt">
         <div className="container">
@@ -255,17 +276,19 @@ export default function HomePage() {
             <p>Registros de cuidado, encontros e comunidade.</p>
           </div>
 
-          <div className="gallery-mosaic">
-            {galleryImages.map((img) => (
-              <div key={img.id} className="mosaic-item">
+          <div className="community-mosaic">
+            {galleryMoments.map((img, i) => (
+              <div key={i} className="mosaic-item">
                 <ResponsivePicture
-                  src="/placeholder-gallery.jpg"
+                  src={galleryImages[i]}
                   alt={img.caption}
                   objectFit="cover"
                   objectPosition="center 50%"
                   width={600}
                   height={600}
+                  fallback="gallery"
                 />
+                <div className="mosaic-caption">{img.caption}</div>
               </div>
             ))}
           </div>
@@ -275,11 +298,24 @@ export default function HomePage() {
       {/* ═══════════════════════════════════════
           CHAMADA FINAL
           ═══════════════════════════════════════ */}
-      <section className="final-cta-section section">
+      <section className="final-cta-section">
+        <div className="final-cta-bg">
+          <ResponsivePicture
+            src="/images/demo/hero-dog.jpg"
+            alt="Animal olhando para o horizonte"
+            objectFit="cover"
+            objectPosition="center 30%"
+            width={1920}
+            height={1080}
+            priority
+            fallback="hero"
+          />
+        </div>
+        <div className="final-cta-overlay" />
         <div className="container">
           <h2>Talvez o próximo capítulo da história deles comece com você.</h2>
           <p>
-            Seja conhecendo, adotando, ajudando ou compartilhando — você pode 
+            Seja conhecendo, adotando, ajudando ou compartilhando — você pode
             fazer parte dessa transformação.
           </p>
           <div className="final-cta-actions">
@@ -289,7 +325,7 @@ export default function HomePage() {
               </Button>
             </Link>
             <Link to="/como-ajudar">
-              <Button variant="outline" size="lg">
+              <Button variant="outline" className="btn--outline-white" size="lg">
                 Ajudar a SOS Focinho Carente
               </Button>
             </Link>

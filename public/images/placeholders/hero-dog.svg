@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E64A35;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#C43D1A;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F2AB37;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#E64A35;stop-opacity:0" />
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+  <rect width="1920" height="1080" fill="url(#glow)"/>
+  <ellipse cx="960" cy="500" rx="320" ry="300" fill="#D94D2A" opacity="0.6"/>
+  <ellipse cx="960" cy="480" rx="220" ry="200" fill="#E85D3A" opacity="0.5"/>
+  <circle cx="900" cy="420" r="18" fill="#FFF0EB" opacity="0.8"/>
+  <circle cx="1020" cy="420" r="18" fill="#FFF0EB" opacity="0.8"/>
+  <circle cx="900" cy="420" r="8" fill="#2C241B" opacity="0.7"/>
+  <circle cx="1020" cy="420" r="8" fill="#2C241B" opacity="0.7"/>
+  <ellipse cx="960" cy="540" rx="40" ry="25" fill="#2C241B" opacity="0.6"/>
+  <path d="M940 490 Q960 510 980 490" stroke="#FFF0EB" stroke-width="3" fill="none" opacity="0.7"/>
+  <ellipse cx="830" cy="470" rx="60" ry="80" fill="#D94D2A" opacity="0.4" transform="rotate(-20 830 470)"/>
+  <ellipse cx="1090" cy="470" rx="60" ry="80" fill="#D94D2A" opacity="0.4" transform="rotate(20 1090 470)"/>
+  <text x="960" y="750" text-anchor="middle" font-family="Georgia, serif" font-size="40" fill="#FFF0EB" opacity="0.6">Fotografia em breve</text>
+  <text x="960" y="800" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#FFF0EB" opacity="0.4">Animal em destaque — fotografia oficial em atualização</text>
+</svg>

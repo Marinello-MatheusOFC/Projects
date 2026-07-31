@@ -186,3 +186,4 @@ Projeto desenvolvido como Trabalho de Conclusão de Curso de Desenvolvimento de 
 - **Ícones**: [Lucide](https://lucide.dev)
 - **Fontes**: [Manrope](https://manropefont.com), [Inter](https://rsms.me/inter/)
 - **Infraestrutura**: [Supabase](https://supabase.com)
+

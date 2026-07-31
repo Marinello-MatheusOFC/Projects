@@ -1,48 +1,54 @@
 # Auditoria Emocional — SOS Focinho Carente
 
-## Critérios de Avaliação
+## Problemas identificados na Home (antes do redesign)
 
-### Home Page Atual
+### 1. Identidade Visual Genérica
+- Uso de ícone de pata (`PawPrint`) como logo — genérico e sem personalidade
+- Paleta de cores existente mas sem aplicação emocional consistente
+- Layout excessivamente baseado em cards retangulares com cantos arredondados uniformes
+- Aspecto visual próximo de template SaaS ou startup
 
-| Critério | Avaliação | Problema |
-|----------|-----------|----------|
-| O animal é protagonista visual? | ❌ | Hero usa gradiente abstrato sem foto de animal |
-| Existe fotografia significativa? | ❌ | Nenhuma fotografia de animal na Home |
-| O conteúdo parece específico da ONG? | ❌ | Genérico, poderia ser qualquer ONG |
-| Há ação clara? | ⚠️ | Sim, mas CTAs são genéricos |
-| A página parece template? | ❌ | Sim — estrutura blocada, cards iguais |
-| Há cards demais? | ❌ | Sim — highlights, help, tudo em cards |
-| Há textos vagos? | ❌ | "Conectamos pessoas e animais em busca de amor" |
-| Há dados inventados? | ⚠️ | Nenhum — mas também nenhum dado real |
-| A emoção está equilibrada? | ❌ | Fria, distante, impessoal |
-| Funciona sem hover? | ✅ | Sim |
-| Funciona no celular? | ⚠️ | Parcialmente |
+### 2. Falta de Protagonismo dos Animais
+- Animais representados apenas como texto em cards
+- Placeholder `placeholder-animal.jpg` repetido em todas as seções
+- Nenhuma fotografia real ou composição fotográfica significativa
+- Informações dos animais reduzidas a etiquetas técnicas (espécie, sexo, porte)
 
-### Páginas Públicas (geral)
+### 3. Estrutura Excessivamente Uniforme
+- Todas as seções seguem o mesmo padrão: intro centralizada + grid de cards
+- "Formas de ajudar": seis cards idênticos com ícone emoji, título e descrição
+- Seção "Quem cuida" espelhada da seção "História" — mesma estrutura, invertida
+- Pouca variação de composição entre seções
 
-| Página | Problema Principal |
-|--------|-------------------|
-| Adoção | Grade genérica, sem fotos, aparência de catálogo |
-| Detalhe Animal | Página vazia (apenas erro/empty), sem galeria, sem história |
-| Sobre | Missão/visão/valores em cards corporativos |
-| Como Ajudar | Seis cards idênticos com ícones |
-| Voluntariado | Formulário longo sem elementos visuais |
-| Eventos | Página vazia |
-| Notícias | Página vazia |
-| Brechó | Página vazia |
-| Galeria | Página vazia |
-| Contato | Apenas formulário, sem acolhimento visual |
+### 4. Textos Genéricos
+- "Faça parte dessa jornada incrível" (removido)
+- "Juntos fazemos a diferença" (ausente, mas tom similar em vários lugares)
+- Linguagem excessivamente institucional e impessoal
+- Falta de vozes e histórias individuais
 
-## Conclusão
+### 5. Ausência de Narrativa Visual
+- Nenhuma fotografia que conte uma história
+- Grid de galeria com 4 imagens placeholder idênticas
+- Hero com overlay escuro pesado escondendo detalhes da imagem
+- Todas as imagens com mesmo tratamento, mesmas proporções
 
-O site atual é funcional mas emocionalmente neutro. Nenhuma página utiliza fotografia como elemento central. A estrutura é baseada em cards genéricos que poderiam pertencer a qualquer aplicação web. A identidade visual não comunica que se trata de uma ONG de proteção animal.
+### 6. Experiência Fria
+- Navegação padrão sem personalidade
+- Rodapé escuro com links frios
+- Nenhum elemento que gere conexão emocional antes da ação
+- Chamada para ação sem contexto emocional
 
-## Diretrizes para Correção
+### 7. Problemas de UX
+- Hero muito escuro — overlay prejudica visibilidade da fotografia
+- Texto do hero cobre área central da imagem
+- Cards de animais dependem de hover para revelar nome
+- Navegação esconde CTA principal ("Quero adotar") no mobile
 
-1. Fotografia deve ser o primeiro elemento visto em cada página
-2. Animais devem ser apresentados como indivíduos, não como registros
-3. Estrutura de cards deve ser substituída por composições editoriais variadas
-4. Textos devem ser específicos, não genéricos
-5. Cada página precisa de uma abertura fotográfica significativa
-6. Remover linguagem corporativa (missão/visão/valores como bloco)
-7. Adicionar variação de layouts entre páginas
+## Diretrizes da transformação
+
+1. **Fotografia como protagonista** — toda seção deve ter presença fotográfica significativa
+2. **Composição editorial** — variar layouts entre seções, usar assimetria controlada
+3. **Identidade visual única** — remover elementos genéricos (ícone de pata, emojis como ícones)
+4. **Linguagem humana** — textos específicos, próximos, sem jargão institucional
+5. **Narrativa emocional** — guiar o visitante por uma jornada: conexão → curiosidade → confiança → possibilidade → ação
+6. **Responsividade emocional** — a emoção deve funcionar tanto em desktop quanto em mobile
