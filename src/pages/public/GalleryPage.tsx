@@ -37,6 +37,7 @@ export default function GalleryPage() {
   return (
     <div>
       <PageHeader
+        tone="yellow"
         eyebrow="Álbum de fotos"
         title="Galeria"
         subtitle="Momentos especiais dos nossos animais e eventos."
@@ -48,7 +49,7 @@ export default function GalleryPage() {
         }}
       />
 
-      <section className="section">
+      <section className="section section--cream">
         <div className="container">
           {error ? (
             <ErrorState

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Calendar, MapPin } from 'lucide-react';
 import { ResponsivePicture } from '@/components/media/ResponsivePicture';
 import { PageHeader } from '@/components/layout/PageHeader';
-import { EmptyState } from '@/components/feedback/EmptyState';
+import { EventsEmptyState } from '@/components/content/EventsEmptyState';
 import { ErrorState } from '@/components/feedback/ErrorState';
 import { CardSkeleton } from '@/components/feedback/Skeleton';
 import { fetchEvents, type EventWithImage } from '@/services/events';
@@ -103,6 +103,7 @@ export default function EventsPage() {
   return (
     <div>
       <PageHeader
+        tone="green"
         eyebrow="Agenda"
         title="Eventos"
         subtitle="Participe das nossas campanhas e eventos beneficentes."
@@ -114,7 +115,7 @@ export default function EventsPage() {
         }}
       />
 
-      <section className="section">
+      <section className="section section--cream">
         <div className="container">
           <div className="section-intro">
             <h2>Próximos eventos</h2>
@@ -134,16 +135,16 @@ export default function EventsPage() {
           ) : upcoming.length > 0 ? (
             <div className="events-list">{upcoming.map(renderEventCard)}</div>
           ) : (
-            <EmptyState
-              title="Nenhum evento em breve"
-              description="Em breve divulgaremos novas datas. Acompanhe nossas redes sociais."
+            <EventsEmptyState
+              image="/images/demo/adoption-event.jpg"
+              imageAlt="Evento de adoção da ONG"
             />
           )}
         </div>
       </section>
 
       {!error && events !== null && past.length > 0 && (
-        <section className="section section--alt">
+        <section className="section section--peach">
           <div className="container">
             <div className="section-intro">
               <h2>Eventos anteriores</h2>

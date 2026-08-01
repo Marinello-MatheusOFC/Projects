@@ -84,7 +84,7 @@ export default function NewsDetailPage() {
         }}
       />
 
-      <section className="section">
+      <section className="section section--cream">
         <div className="container" style={{ maxWidth: 780 }}>
           <Link to="/noticias" className="back-link">
             <ChevronLeft size={20} aria-hidden="true" />

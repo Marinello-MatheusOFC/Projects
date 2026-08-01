@@ -49,6 +49,20 @@ export async function fetchGallery(): Promise<GalleryAlbumWithImages[]> {
   });
 }
 
+export async function fetchGalleryAlbum(id: string): Promise<GalleryAlbumWithImages | null> {
+  const { data, error } = await supabase
+    .from('gallery_albums')
+    .select('*, gallery_images(*)')
+    .eq('id', id)
+    .maybeSingle();
+  if (error) throw new Error('Não foi possível carregar o álbum.');
+  if (!data) return null;
+  return decorateAlbum(
+    data as GalleryAlbum,
+    (data as { gallery_images?: GalleryImage[] }).gallery_images ?? [],
+  );
+}
+
 export async function fetchAdminGallery(): Promise<GalleryAlbumWithImages[]> {
   return withFallback(
     async () =>

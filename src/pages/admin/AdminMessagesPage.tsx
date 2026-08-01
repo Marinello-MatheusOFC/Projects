@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Eye, Mail, Trash2, Archive } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -8,12 +9,13 @@ import { TableSkeleton } from '@/components/feedback/Skeleton';
 import { EmptyState } from '@/components/feedback/EmptyState';
 import { ErrorState } from '@/components/feedback/ErrorState';
 import { Alert } from '@/components/feedback/Alert';
-import { Modal } from '@/components/ui/Modal';
+import { ConfirmDialog } from '@/components/feedback/ConfirmDialog';
 import {
   fetchContactMessages,
   updateContactMessageStatus,
   deleteContactMessage,
 } from '@/services/applications';
+import { logAudit } from '@/services/audit';
 import type { ContactMessage, ContactMessageStatus } from '@/types';
 import { formatDate } from '@/lib/format';
 
@@ -35,7 +37,7 @@ export default function AdminMessagesPage() {
   const [error, setError] = useState(false);
   const [actionError, setActionError] = useState(false);
   const [search, setSearch] = useState('');
-  const [detail, setDetail] = useState<ContactMessage | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<ContactMessage | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -78,10 +80,10 @@ export default function AdminMessagesPage() {
     setActionError(false);
     try {
       await updateContactMessageStatus(message.id, status);
+      await logAudit(status === 'archived' ? 'arquivar' : 'marcar_lida', 'contact_message', message.id);
       setMessages((prev) =>
         prev ? prev.map((m) => (m.id === message.id ? { ...m, status } : m)) : prev,
       );
-      setDetail((prev) => (prev && prev.id === message.id ? { ...prev, status } : prev));
     } catch {
       setActionError(true);
     } finally {
@@ -89,16 +91,18 @@ export default function AdminMessagesPage() {
     }
   };
 
-  const handleDelete = async (message: ContactMessage) => {
-    if (!window.confirm(`Excluir a mensagem de "${message.name}"?`)) return;
-    setBusyId(message.id);
+  const handleDelete = async () => {
+    if (!confirmDelete) return;
+    setBusyId(confirmDelete.id);
     setActionError(false);
     try {
-      await deleteContactMessage(message.id);
-      setMessages((prev) => (prev ? prev.filter((m) => m.id !== message.id) : prev));
-      setDetail((prev) => (prev && prev.id === message.id ? null : prev));
+      await deleteContactMessage(confirmDelete.id);
+      await logAudit('excluir', 'contact_message', confirmDelete.id);
+      setMessages((prev) => (prev ? prev.filter((m) => m.id !== confirmDelete.id) : prev));
+      setConfirmDelete(null);
     } catch {
       setActionError(true);
+      setConfirmDelete(null);
     } finally {
       setBusyId(null);
     }
@@ -124,12 +128,16 @@ export default function AdminMessagesPage() {
 
   return (
     <div className="admin-page">
-      <h2 className="admin-page-title">Mensagens</h2>
-      <p className="admin-page-subtitle">Mensagens recebidas pelo formulário de contato.</p>
+      <div className="admin-page-header">
+        <div>
+          <h1 className="admin-page-title">Mensagens</h1>
+          <p className="admin-page-subtitle">Mensagens recebidas pelo formulário de contato.</p>
+        </div>
+      </div>
 
       {actionError && (
         <div style={{ marginBottom: 'var(--space-4)' }}>
-          <Alert type="error" message="Não foi possível atualizar a mensagem." />
+          <Alert type="error" message="Não foi possível atualizar a mensagem." onClose={() => setActionError(false)} />
         </div>
       )}
 
@@ -170,11 +178,15 @@ export default function AdminMessagesPage() {
               key: 'actions',
               header: 'Ações',
               render: (m) => (
-                <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-                  <Button variant="outline" size="sm" onClick={() => setDetail(m)}>
-                    <Eye size={14} aria-hidden="true" />
-                    Detalhes
-                  </Button>
+                <div className="admin-table-actions">
+                  <Link
+                    to={`/admin/mensagens/${m.id}`}
+                    className="admin-icon-btn"
+                    aria-label={`Abrir mensagem de ${m.name}`}
+                    title="Abrir mensagem"
+                  >
+                    <Eye size={18} aria-hidden="true" />
+                  </Link>
                   {m.status !== 'read' && (
                     <Button
                       variant="ghost"
@@ -198,16 +210,15 @@ export default function AdminMessagesPage() {
                       Arquivar
                     </Button>
                   )}
-                  <Button
-                    variant="danger"
-                    size="sm"
-                    loading={busyId === m.id}
-                    onClick={() => handleDelete(m)}
+                  <button
+                    type="button"
+                    className="admin-icon-btn admin-icon-btn--danger"
                     aria-label={`Excluir mensagem de ${m.name}`}
+                    title="Excluir"
+                    onClick={() => setConfirmDelete(m)}
                   >
-                    <Trash2 size={14} aria-hidden="true" />
-                    Excluir
-                  </Button>
+                    <Trash2 size={18} aria-hidden="true" />
+                  </button>
                 </div>
               ),
             },
@@ -218,58 +229,20 @@ export default function AdminMessagesPage() {
         />
       )}
 
-      <Modal
-        isOpen={!!detail}
-        onClose={() => setDetail(null)}
-        title={detail ? `Mensagem de ${detail.name}` : 'Mensagem'}
-        size="lg"
-      >
-        {detail && (
-          <div>
-            <dl className="detail-list" style={{ marginBottom: 'var(--space-5)' }}>
-              <div className="detail-row">
-                <dt>Nome</dt>
-                <dd>{detail.name}</dd>
-              </div>
-              <div className="detail-row">
-                <dt>E-mail</dt>
-                <dd>{detail.email}</dd>
-              </div>
-              <div className="detail-row">
-                <dt>Telefone</dt>
-                <dd>{detail.phone || '—'}</dd>
-              </div>
-              <div className="detail-row">
-                <dt>Assunto</dt>
-                <dd>{detail.subject || '—'}</dd>
-              </div>
-              <div className="detail-row">
-                <dt>Recebida em</dt>
-                <dd>{formatDate(detail.created_at)}</dd>
-              </div>
-              <div className="detail-row">
-                <dt>Status</dt>
-                <dd>
-                  <Badge variant={messageBadge(detail.status).variant}>
-                    {messageBadge(detail.status).label}
-                  </Badge>
-                </dd>
-              </div>
-            </dl>
-
-            <div
-              style={{
-                padding: 'var(--space-4)',
-                background: 'var(--color-bg-alt)',
-                border: '1px solid var(--color-border-light)',
-                whiteSpace: 'pre-wrap',
-              }}
-            >
-              {detail.message}
-            </div>
-          </div>
-        )}
-      </Modal>
+      <ConfirmDialog
+        isOpen={!!confirmDelete}
+        onClose={() => setConfirmDelete(null)}
+        title="Excluir mensagem"
+        message={
+          <>
+            Tem certeza que deseja excluir permanentemente a mensagem de{' '}
+            <strong>{confirmDelete?.name}</strong>? Essa ação não pode ser desfeita.
+          </>
+        }
+        confirmLabel="Excluir"
+        loading={busyId === confirmDelete?.id}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 }

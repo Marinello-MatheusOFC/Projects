@@ -1,20 +1,19 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Eye, Trash2, Users } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { Select } from '@/components/ui/Select';
 import { Badge } from '@/components/ui/Badge';
 import { Table } from '@/components/ui/Table';
 import { TableSkeleton } from '@/components/feedback/Skeleton';
 import { EmptyState } from '@/components/feedback/EmptyState';
 import { ErrorState } from '@/components/feedback/ErrorState';
 import { Alert } from '@/components/feedback/Alert';
-import { Modal } from '@/components/ui/Modal';
+import { ConfirmDialog } from '@/components/feedback/ConfirmDialog';
 import {
   fetchVolunteerApplications,
-  updateVolunteerStatus,
   deleteVolunteerApplication,
 } from '@/services/applications';
+import { logAudit } from '@/services/audit';
 import type { VolunteerApplication, VolunteerStatus } from '@/types';
 import { truncate } from '@/utils';
 import { formatDate } from '@/lib/format';
@@ -46,18 +45,13 @@ function volunteerBadgeVariant(status: VolunteerStatus): BadgeVariant {
   }
 }
 
-const statusOptions = (Object.keys(volunteerStatusLabels) as VolunteerStatus[]).map((value) => ({
-  value,
-  label: volunteerStatusLabels[value],
-}));
-
 export default function AdminVolunteersPage() {
   const [applications, setApplications] = useState<VolunteerApplication[] | null>(null);
   const [error, setError] = useState(false);
   const [actionError, setActionError] = useState(false);
   const [search, setSearch] = useState('');
-  const [detail, setDetail] = useState<VolunteerApplication | null>(null);
-  const [updating, setUpdating] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState<VolunteerApplication | null>(null);
+  const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     document.title = 'Voluntários — SOS Focinho Carente';
@@ -93,34 +87,20 @@ export default function AdminVolunteersPage() {
     );
   }, [applications, search]);
 
-  const handleStatusChange = async (app: VolunteerApplication, newStatus: VolunteerStatus) => {
-    setUpdating(true);
+  const handleDelete = async () => {
+    if (!confirmDelete) return;
+    setBusy(true);
     setActionError(false);
     try {
-      await updateVolunteerStatus(app.id, newStatus);
-      setApplications((prev) =>
-        prev ? prev.map((a) => (a.id === app.id ? { ...a, status: newStatus } : a)) : prev,
-      );
-      setDetail((prev) => (prev ? { ...prev, status: newStatus } : prev));
+      await deleteVolunteerApplication(confirmDelete.id);
+      await logAudit('excluir', 'volunteer_application', confirmDelete.id, { name: confirmDelete.name });
+      setApplications((prev) => (prev ? prev.filter((a) => a.id !== confirmDelete.id) : prev));
+      setConfirmDelete(null);
     } catch {
       setActionError(true);
+      setConfirmDelete(null);
     } finally {
-      setUpdating(false);
-    }
-  };
-
-  const handleDelete = async (app: VolunteerApplication) => {
-    if (!window.confirm(`Excluir a inscrição de "${app.name}"?`)) return;
-    setUpdating(true);
-    setActionError(false);
-    try {
-      await deleteVolunteerApplication(app.id);
-      setApplications((prev) => (prev ? prev.filter((a) => a.id !== app.id) : prev));
-      setDetail(null);
-    } catch {
-      setActionError(true);
-    } finally {
-      setUpdating(false);
+      setBusy(false);
     }
   };
 
@@ -144,14 +124,18 @@ export default function AdminVolunteersPage() {
 
   return (
     <div className="admin-page">
-      <h2 className="admin-page-title">Voluntários</h2>
-      <p className="admin-page-subtitle">
-        Inscrições recebidas pelo formulário de voluntariado.
-      </p>
+      <div className="admin-page-header">
+        <div>
+          <h1 className="admin-page-title">Voluntários</h1>
+          <p className="admin-page-subtitle">
+            Inscrições recebidas pelo formulário de voluntariado.
+          </p>
+        </div>
+      </div>
 
       {actionError && (
         <div style={{ marginBottom: 'var(--space-4)' }}>
-          <Alert type="error" message="Não foi possível atualizar a inscrição." />
+          <Alert type="error" message="Não foi possível concluir a ação." onClose={() => setActionError(false)} />
         </div>
       )}
 
@@ -179,7 +163,11 @@ export default function AdminVolunteersPage() {
       ) : (
         <Table<VolunteerApplication>
           columns={[
-            { key: 'name', header: 'Nome', render: (a) => <strong>{a.name}</strong> },
+            {
+              key: 'name',
+              header: 'Nome',
+              render: (a) => <Link to={`/admin/voluntarios/${a.id}`}><strong>{a.name}</strong></Link>,
+            },
             { key: 'city', header: 'Cidade', render: (a) => a.city || '—' },
             { key: 'availability', header: 'Disponibilidade', render: (a) => a.availability || '—' },
             {
@@ -201,20 +189,24 @@ export default function AdminVolunteersPage() {
               key: 'actions',
               header: 'Ações',
               render: (a) => (
-                <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-                  <Button variant="outline" size="sm" onClick={() => setDetail(a)}>
-                    <Eye size={14} aria-hidden="true" />
-                    Detalhes
-                  </Button>
-                  <Button
-                    variant="danger"
-                    size="sm"
-                    onClick={() => handleDelete(a)}
-                    aria-label={`Excluir inscrição de ${a.name}`}
+                <div className="admin-table-actions">
+                  <Link
+                    to={`/admin/voluntarios/${a.id}`}
+                    className="admin-icon-btn"
+                    aria-label={`Abrir inscrição de ${a.name}`}
+                    title="Abrir inscrição"
                   >
-                    <Trash2 size={14} aria-hidden="true" />
-                    Excluir
-                  </Button>
+                    <Eye size={18} aria-hidden="true" />
+                  </Link>
+                  <button
+                    type="button"
+                    className="admin-icon-btn admin-icon-btn--danger"
+                    aria-label={`Excluir inscrição de ${a.name}`}
+                    title="Excluir"
+                    onClick={() => setConfirmDelete(a)}
+                  >
+                    <Trash2 size={18} aria-hidden="true" />
+                  </button>
                 </div>
               ),
             },
@@ -225,71 +217,20 @@ export default function AdminVolunteersPage() {
         />
       )}
 
-      <Modal
-        isOpen={!!detail}
-        onClose={() => setDetail(null)}
-        title={detail ? `Inscrição de ${detail.name}` : 'Inscrição'}
-        size="lg"
-      >
-        {detail && (
-          <div>
-            <dl className="detail-list" style={{ marginBottom: 'var(--space-5)' }}>
-              <div className="detail-row">
-                <dt>E-mail</dt>
-                <dd>{detail.email}</dd>
-              </div>
-              <div className="detail-row">
-                <dt>Telefone</dt>
-                <dd>{detail.phone || '—'}</dd>
-              </div>
-              <div className="detail-row">
-                <dt>Cidade</dt>
-                <dd>{detail.city || '—'}</dd>
-              </div>
-              <div className="detail-row">
-                <dt>Disponibilidade</dt>
-                <dd>{detail.availability || '—'}</dd>
-              </div>
-              <div className="detail-row">
-                <dt>Interesses</dt>
-                <dd>{detail.interests || '—'}</dd>
-              </div>
-              <div className="detail-row">
-                <dt>Recebida em</dt>
-                <dd>{formatDate(detail.created_at)}</dd>
-              </div>
-            </dl>
-
-            {detail.experience && (
-              <p style={{ color: 'var(--color-text-secondary)' }}>
-                <strong style={{ color: 'var(--color-text)' }}>Experiência:</strong>{' '}
-                {detail.experience}
-              </p>
-            )}
-            {detail.message && (
-              <p style={{ color: 'var(--color-text-secondary)' }}>
-                <strong style={{ color: 'var(--color-text)' }}>Mensagem:</strong> {detail.message}
-              </p>
-            )}
-            {detail.internal_notes && (
-              <p style={{ color: 'var(--color-text-secondary)' }}>
-                <strong style={{ color: 'var(--color-text)' }}>Notas internas:</strong>{' '}
-                {detail.internal_notes}
-              </p>
-            )}
-
-            <div className="admin-form" style={{ marginTop: 'var(--space-5)' }}>
-              <Select
-                label="Status"
-                value={detail.status}
-                disabled={updating}
-                options={statusOptions}
-                onChange={(e) => handleStatusChange(detail, e.target.value as VolunteerStatus)}
-              />
-            </div>
-          </div>
-        )}
-      </Modal>
+      <ConfirmDialog
+        isOpen={!!confirmDelete}
+        onClose={() => setConfirmDelete(null)}
+        title="Excluir inscrição"
+        message={
+          <>
+            Tem certeza que deseja excluir permanentemente a inscrição de{' '}
+            <strong>{confirmDelete?.name}</strong>? Essa ação não pode ser desfeita.
+          </>
+        }
+        confirmLabel="Excluir"
+        loading={busy}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 }

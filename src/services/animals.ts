@@ -124,6 +124,18 @@ export async function fetchAdminAnimals(): Promise<AnimalWithImages[]> {
   });
 }
 
+export async function fetchAdminAnimal(id: string): Promise<AnimalWithImages | null> {
+  const { data, error } = await supabase
+    .from('animals')
+    .select('*, animal_images(*)')
+    .eq('id', id)
+    .is('deleted_at', null)
+    .maybeSingle();
+  if (error) throw new Error('Não foi possível carregar o animal.');
+  if (!data) return null;
+  return toWithImages(data as Animal, (data as { animal_images?: AnimalImage[] }).animal_images ?? []);
+}
+
 export async function createAnimal(input: AnimalInput): Promise<Animal | null> {
   const { data, error } = await supabase.from('animals').insert(input).select().single();
   if (error) throw new Error('Não foi possível cadastrar o animal.');

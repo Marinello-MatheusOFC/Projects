@@ -85,6 +85,7 @@ export default function AdoptionPage() {
   return (
     <div>
       <PageHeader
+        tone="yellow"
         eyebrow="SOS Focinho Carente"
         title="Talvez um desses olhares esteja esperando encontrar você."
         subtitle="Cada animal tem sua própria história. Conheça quem está disponível e descubra se um deles tem a ver com você."
@@ -96,7 +97,7 @@ export default function AdoptionPage() {
         }}
       />
 
-      <section className="section" style={{ paddingTop: 'var(--space-10)', paddingBottom: 0 }}>
+      <section className="section section--cream" style={{ paddingTop: 'var(--space-10)', paddingBottom: 0 }}>
         <div className="container">
           <div className="filters-bar" role="search" aria-label="Filtrar animais">
             <div className="form-field" style={{ marginBottom: 0, minWidth: 200, flex: 2 }}>

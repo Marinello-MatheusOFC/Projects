@@ -49,6 +49,7 @@ export default function ProductsPage() {
   return (
     <div>
       <PageHeader
+        tone="yellow"
         eyebrow="Brechó beneficente"
         title="Brechó Beneficente"
         subtitle="Suas compras ajudam a manter nossos projetos."
@@ -60,7 +61,7 @@ export default function ProductsPage() {
         }}
       />
 
-      <section className="section">
+      <section className="section section--cream">
         <div className="container">
           <div style={{ marginBottom: 'var(--space-6)', maxWidth: 480 }}>
             <Input

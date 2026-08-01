@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Calendar } from 'lucide-react';
 import { ResponsivePicture } from '@/components/media/ResponsivePicture';
 import { PageHeader } from '@/components/layout/PageHeader';
-import { EmptyState } from '@/components/feedback/EmptyState';
+import { NewsEmptyState } from '@/components/content/NewsEmptyState';
 import { ErrorState } from '@/components/feedback/ErrorState';
 import { CardSkeleton } from '@/components/feedback/Skeleton';
 import { fetchNews, type NewsWithImage } from '@/services/news';
@@ -51,7 +51,7 @@ export default function NewsPage() {
         }}
       />
 
-      <section className="section">
+      <section className="section section--cream">
         <div className="container">
           {error ? (
             <ErrorState
@@ -65,9 +65,9 @@ export default function NewsPage() {
               ))}
             </div>
           ) : news.length === 0 ? (
-            <EmptyState
-              title="Nenhuma notícia publicada"
-              description="Em breve traremos novidades da nossa ONG. Acompanhe nossas redes sociais."
+            <NewsEmptyState
+              image="/images/demo/animal-cat-01.jpg"
+              imageAlt="Registro de um momento da ONG"
             />
           ) : (
             featured && (

@@ -3,12 +3,15 @@
 /* ══════════════════════════════════════════════════════════
    SOS Focinho Carente — Folha de estilos global
    Camadas (ordem de importação = ordem de cascata):
-   1. tokens.css   — design tokens (:root)
-   2. reset.css    — reset e estilos-base
-   3. utilities.css — container, seções, grades, helpers
-   4. components.css — estilos de componentes
+   1. tokens.css            — design tokens (:root) — paleta vibrante
+   2. reset.css             — reset e estilos-base
+   3. utilities.css         — container, seções, grades, helpers
+   4. components.css        — estilos de componentes (base)
+   5. components-vibrant.css — camada vibrante (sobrescreve e amplia)
    ══════════════════════════════════════════════════════════ */
 @import './tokens.css';
 @import './reset.css';
 @import './utilities.css';
 @import './components.css';
+@import './components-vibrant.css';
+@import './admin.css';

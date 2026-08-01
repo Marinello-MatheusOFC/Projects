@@ -15,11 +15,13 @@ interface PageHeaderProps {
   subtitle?: string;
   actions?: React.ReactNode;
   media?: PageHeaderMedia;
+  tone?: 'default' | 'green' | 'yellow';
 }
 
-export function PageHeader({ eyebrow, title, subtitle, actions, media }: PageHeaderProps) {
+export function PageHeader({ eyebrow, title, subtitle, actions, media, tone = 'default' }: PageHeaderProps) {
+  const toneClass = tone === 'green' ? ' page-header--tone-green' : tone === 'yellow' ? ' page-header--tone-yellow' : '';
   return (
-    <section className="page-header">
+    <section className={`page-header${toneClass}`}>
       <div className="page-header__inner">
         <div>
           {eyebrow && <span className="page-header__eyebrow">{eyebrow}</span>}

@@ -31,6 +31,7 @@ export default function AboutPage() {
   return (
     <div>
       <PageHeader
+        tone="green"
         eyebrow="Quem somos"
         title="Sobre a SOS Focinho Carente"
         subtitle="Conheça nossa história e o trabalho que desenvolvemos pelos animais."
@@ -42,7 +43,7 @@ export default function AboutPage() {
         }}
       />
 
-      <section className="section">
+      <section className="section section--green-soft">
         <div className="container">
           <div className="about-story">
             <div className="about-story-image">
@@ -65,7 +66,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="section section--alt">
+      <section className="section section--yellow-soft">
         <div className="container">
           <div className="section-intro">
             <span className="eyebrow">Nossos princípios</span>
@@ -93,7 +94,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="section">
+      <section className="section section--mint">
         <div className="container">
           <div className="section-intro">
             <span className="eyebrow">Participe</span>

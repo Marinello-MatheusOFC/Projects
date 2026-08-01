@@ -20,15 +20,17 @@ Plataforma digital da ONG SOS Focinho Carente para divulgação de animais dispo
 - Galeria de fotos
 - Contato com honeypot antispam
 
-### Painel Administrativo
-- Dashboard com indicadores
-- CRUD de animais com upload de imagens
-- Gerenciamento de solicitações de adoção
-- Histórico de status
+### Painel Administrativo (`/admin`)
+- Dashboard com indicadores, gráfico de adoções por status e destaques
+- CRUD de animais com upload de imagens, publicação, destaque e arquivamento
+- Páginas de detalhe para animais, solicitações de adoção, mensagens e voluntários
+- Gestão de solicitações de adoção com histórico de status
 - Gerenciamento de eventos, notícias e produtos
+- Galeria de fotos com álbuns, capas e upload múltiplo
 - Gerenciamento de mensagens e voluntários
-- Configurações do site
-- Gerenciamento de usuários (superadmin)
+- Configurações do site (contatos, redes sociais, PIX, sobre)
+- Auditoria de ações administrativas e gerenciamento de usuários (superadmin)
+- Permissões por módulo com página de acesso negado
 
 ## Tecnologias
 
@@ -152,6 +154,18 @@ npm run format        # Prettier
 ├── tests/               # Testes
 └── docs/                # Documentação
 ```
+
+## Documentação
+
+Documentação detalhada em `docs/`:
+
+- `ARQUITETURA-ADMIN.md` — arquitetura do painel administrativo
+- `PERMISSOES-ADMIN.md` — matriz de permissões por módulo
+- `FLUXOS-ADMIN.md` — fluxos principais do painel
+- `VALIDACAO-VISUAL-ADMIN.md` — checklist de inspeção visual
+- `TESTES-ADMIN.md` — testes e checagem funcional
+- `CONFIGURACOES-EDITAVEIS.md` — configurações editáveis do site
+- `AUDITORIA.md` — registro de ações administrativas
 
 ## Segurança
 

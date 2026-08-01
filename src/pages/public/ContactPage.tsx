@@ -119,6 +119,7 @@ export default function ContactPage() {
   return (
     <div>
       <PageHeader
+        tone="green"
         eyebrow="Fale conosco"
         title="Contato"
         subtitle="Tire suas dúvidas, envie sugestões ou entre em contato conosco."
@@ -130,7 +131,7 @@ export default function ContactPage() {
         }}
       />
 
-      <section className="section">
+      <section className="section section--cream">
         <div className="container">
           {hasContactDetails && contacts && (
             <div className="contact-cards">
@@ -169,8 +170,8 @@ export default function ContactPage() {
             </div>
           )}
 
-          <div className="contact-grid" style={{ marginTop: 'var(--space-16)' }}>
-            <div className="contact-info">
+          <div className="contact-panel" style={{ marginTop: 'var(--space-12)' }}>
+            <div className="contact-panel__info">
               <span className="eyebrow">Fale com a gente</span>
               <h2>Entre em contato</h2>
               <p>
@@ -247,7 +248,7 @@ export default function ContactPage() {
               )}
             </div>
 
-            <div>
+            <div className="contact-panel__form">
               <span className="eyebrow">Mensagem</span>
               <h2 className="section-title">Envie sua mensagem</h2>
 
@@ -316,7 +317,7 @@ export default function ContactPage() {
         </div>
       </section>
 
-      <section className="section section--alt">
+      <section className="section section--peach">
         <div className="container">
           <div className="section-intro">
             <span className="eyebrow">Dúvidas frequentes</span>

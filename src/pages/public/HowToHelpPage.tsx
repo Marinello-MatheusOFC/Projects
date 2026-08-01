@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, CalendarDays, HandHeart, Heart, HeartHandshake, Home, Megaphone } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Alert } from '@/components/feedback/Alert';
 import { ResponsivePicture } from '@/components/media/ResponsivePicture';
@@ -17,12 +17,12 @@ const helpImages = [
 ];
 
 const helpOptions = [
-  { title: 'Adoção Responsável', desc: 'Abra seu lar para um animal resgatado e transforme duas vidas.', link: '/adocao', label: 'Conhecer animais' },
-  { title: 'Lar Temporário', desc: 'Ofereça um abrigo temporário até que o animal encontre um lar definitivo.', link: '/contato', label: 'Quero ajudar' },
-  { title: 'Voluntariado', desc: 'Contribua com seu tempo e talento. Há muitas formas de participar.', link: '/voluntariado', label: 'Seja voluntário' },
-  { title: 'Doação Financeira', desc: 'Ajude a cobrir custos com alimentação, veterinário e manutenção.', link: '/contato', label: 'Como doar' },
-  { title: 'Divulgação', desc: 'Compartilhe nossos animais e campanhas. A divulgação salva vidas.', link: '/adocao', label: 'Ajudar divulgando' },
-  { title: 'Participar de Eventos', desc: 'Participe de eventos e campanhas beneficentes da ONG.', link: '/eventos', label: 'Ver eventos' },
+  { title: 'Adoção Responsável', desc: 'Abra seu lar para um animal resgatado e transforme duas vidas. Conheça quem espera por você e entenda cada etapa do processo.', link: '/adocao', label: 'Conhecer animais', Icon: HeartHandshake },
+  { title: 'Lar Temporário', desc: 'Ofereça um abrigo temporário até que o animal encontre um lar definitivo.', link: '/contato', label: 'Quero ajudar', Icon: Home },
+  { title: 'Voluntariado', desc: 'Contribua com seu tempo e talento. Há muitas formas de participar.', link: '/voluntariado', label: 'Seja voluntário', Icon: HandHeart },
+  { title: 'Doação Financeira', desc: 'Ajude a cobrir custos com alimentação, veterinário e manutenção.', link: '/contato', label: 'Como doar', Icon: Heart },
+  { title: 'Divulgação', desc: 'Compartilhe nossos animais e campanhas. A divulgação salva vidas.', link: '/adocao', label: 'Ajudar divulgando', Icon: Megaphone },
+  { title: 'Participar de Eventos', desc: 'Participe de eventos e campanhas beneficentes da ONG.', link: '/eventos', label: 'Ver eventos', Icon: CalendarDays },
 ];
 
 export default function HowToHelpPage() {
@@ -45,6 +45,7 @@ export default function HowToHelpPage() {
   return (
     <div>
       <PageHeader
+        tone="yellow"
         eyebrow="Como ajudar"
         title="Existem muitas formas de ajudar"
         subtitle="Cada gesto — grande ou pequeno — faz diferença na vida de um animal."
@@ -56,7 +57,7 @@ export default function HowToHelpPage() {
         }}
       />
 
-      <section className="section">
+      <section className="section section--cream">
         <div className="container">
           <div className="section-intro">
             <span className="eyebrow">Participe</span>
@@ -65,19 +66,22 @@ export default function HowToHelpPage() {
           </div>
           <div className="help-list">
             {helpOptions.map((item, i) => (
-              <div key={i} className="help-card">
+              <div key={i} className={`help-card ${i === 0 ? 'help-card--featured' : ''}`}>
                 <div className="help-card-image">
                   <ResponsivePicture
                     src={helpImages[i]}
                     alt={item.title}
                     objectFit="cover"
                     objectPosition="center 50%"
-                    width={600}
-                    height={338}
+                    width={i === 0 ? 1200 : 600}
+                    height={i === 0 ? 514 : 338}
                     fallback="help"
                   />
                 </div>
                 <div className="help-card-body">
+                  <span className="help-card-icon" aria-hidden="true">
+                    <item.Icon size={24} strokeWidth={1.9} />
+                  </span>
                   <h3>{item.title}</h3>
                   <p>{item.desc}</p>
                   <Link to={item.link}>
@@ -90,7 +94,7 @@ export default function HowToHelpPage() {
         </div>
       </section>
 
-      <section className="section section--alt">
+      <section className="section section--vivid-red">
         <div className="container">
           <div className="section-intro">
             <span className="eyebrow">Doações</span>

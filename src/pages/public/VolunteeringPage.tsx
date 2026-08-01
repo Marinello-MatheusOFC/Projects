@@ -65,6 +65,7 @@ export default function VolunteeringPage() {
   return (
     <div>
       <PageHeader
+        tone="green"
         eyebrow="Faça parte"
         title="Voluntariado"
         subtitle="Sua dedicação pode transformar o dia de um animal."
@@ -76,7 +77,7 @@ export default function VolunteeringPage() {
         }}
       />
 
-      <section className="section">
+      <section className="section section--cream">
         <div className="container">
           <div className="volunteering-grid">
             <div className="volunteering-info">

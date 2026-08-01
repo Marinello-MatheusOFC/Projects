@@ -124,6 +124,16 @@ export async function fetchContactMessages(): Promise<ContactMessage[]> {
   return (data ?? []) as ContactMessage[];
 }
 
+export async function fetchContactMessage(id: string): Promise<ContactMessage | null> {
+  const { data, error } = await supabase
+    .from('contact_messages')
+    .select('*')
+    .eq('id', id)
+    .maybeSingle();
+  if (error) throw new Error('Não foi possível carregar a mensagem.');
+  return (data ?? null) as ContactMessage | null;
+}
+
 export async function updateContactMessageStatus(id: string, status: ContactMessage['status']): Promise<void> {
   const { error } = await supabase.from('contact_messages').update({ status }).eq('id', id);
   if (error) throw new Error('Não foi possível atualizar a mensagem.');
@@ -148,6 +158,16 @@ export async function fetchVolunteerApplications(): Promise<VolunteerApplication
     .order('created_at', { ascending: false });
   if (error) throw new Error('Não foi possível carregar as inscrições.');
   return (data ?? []) as VolunteerApplication[];
+}
+
+export async function fetchVolunteerApplication(id: string): Promise<VolunteerApplication | null> {
+  const { data, error } = await supabase
+    .from('volunteer_applications')
+    .select('*')
+    .eq('id', id)
+    .maybeSingle();
+  if (error) throw new Error('Não foi possível carregar a inscrição.');
+  return (data ?? null) as VolunteerApplication | null;
 }
 
 export async function updateVolunteerStatus(

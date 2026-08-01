@@ -153,7 +153,7 @@ export default function EventDetailPage() {
         }}
       />
 
-      <section className="section">
+      <section className="section section--cream">
         <div className="container">
           <Link to="/eventos" className="back-link">
             <ChevronLeft size={20} aria-hidden="true" />

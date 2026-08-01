@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth.ts';
 
@@ -6,8 +7,14 @@ interface AdminRouteProps {
 }
 
 export function AdminRoute({ children }: AdminRouteProps) {
-  const { isAdmin, loading, initialized } = useAuth();
+  const { isAdmin, loading, initialized, user, profile, signOut } = useAuth();
   const location = useLocation();
+
+  useEffect(() => {
+    if (initialized && !loading && user && !isAdmin) {
+      void signOut();
+    }
+  }, [initialized, loading, user, isAdmin, signOut]);
 
   if (!initialized || loading) {
     return (
@@ -19,7 +26,9 @@ export function AdminRoute({ children }: AdminRouteProps) {
   }
 
   if (!isAdmin) {
-    return <Navigate to="/admin/login" state={{ from: location }} replace />;
+    const reason =
+      user && !profile ? 'expired' : profile && !profile.active ? 'inactive' : 'no-access';
+    return <Navigate to="/admin/login" state={{ from: location, reason }} replace />;
   }
 
   return <>{children}</>;

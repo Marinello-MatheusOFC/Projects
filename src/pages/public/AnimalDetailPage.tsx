@@ -114,7 +114,7 @@ export default function AnimalDetailPage() {
 
   return (
     <div className="animal-detail-page">
-      <section className="section" style={{ paddingBottom: 0 }}>
+      <section className="section section--cream" style={{ paddingBottom: 0 }}>
         <div className="container">
           <Link to="/adocao" className="back-link">
             <ChevronLeft size={20} aria-hidden="true" />
@@ -123,7 +123,7 @@ export default function AnimalDetailPage() {
         </div>
       </section>
 
-      <section className="section" style={{ paddingTop: 'var(--space-6)' }}>
+      <section className="section section--cream" style={{ paddingTop: 'var(--space-6)' }}>
         <div className="container">
           <div className="animal-detail-gallery">
             <div className="animal-detail-main-image">
@@ -165,7 +165,7 @@ export default function AnimalDetailPage() {
         </div>
       </section>
 
-      <section className="section" style={{ paddingTop: 'var(--space-8)' }}>
+      <section className="section section--cream" style={{ paddingTop: 'var(--space-8)' }}>
         <div className="container">
           <div className="animal-detail-layout">
             <div className="animal-detail-main">
@@ -243,7 +243,7 @@ export default function AnimalDetailPage() {
       </section>
 
       {others.length > 0 && (
-        <section className="section section--warm">
+        <section className="section section--yellow-soft">
           <div className="container">
             <div className="section-intro">
               <h2>Conheça outros animais</h2>

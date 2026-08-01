@@ -9,8 +9,15 @@ import { Alert } from '@/components/feedback/Alert';
 import { TableSkeleton } from '@/components/feedback/Skeleton';
 import { EmptyState } from '@/components/feedback/EmptyState';
 import { ErrorState } from '@/components/feedback/ErrorState';
+import { ConfirmDialog } from '@/components/feedback/ConfirmDialog';
 import { ResponsivePicture } from '@/components/media/ResponsivePicture';
-import { fetchAdminAnimals, archiveAnimal, type AnimalWithImages } from '@/services/animals';
+import {
+  fetchAdminAnimals,
+  updateAnimal,
+  archiveAnimal,
+  type AnimalWithImages,
+} from '@/services/animals';
+import { logAudit } from '@/services/audit';
 import { speciesLabel, sizeLabel } from '@/lib/format';
 import type { AnimalStatus } from '@/types';
 
@@ -26,8 +33,11 @@ export default function AdminAnimalsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [search, setSearch] = useState('');
-  const [archivingId, setArchivingId] = useState<string | null>(null);
-  const [archiveError, setArchiveError] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<'all' | AnimalStatus>('all');
+  const [confirmArchive, setConfirmArchive] = useState<AnimalWithImages | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [actionError, setActionError] = useState(false);
+  const [actionNotice, setActionNotice] = useState<string | null>(null);
 
   const loadAnimals = useCallback(() => {
     let active = true;
@@ -48,27 +58,59 @@ export default function AdminAnimalsPage() {
     };
   }, []);
 
+  useEffect(() => {
+    document.title = 'Animais — SOS Focinho Carente';
+  }, []);
+
   useEffect(() => loadAnimals(), [loadAnimals]);
 
-  const handleArchive = async (animal: AnimalWithImages) => {
-    if (!window.confirm(`Tem certeza que deseja arquivar "${animal.name}"?`)) return;
-    setArchivingId(animal.id);
-    setArchiveError(false);
+  const flash = (message: string) => {
+    setActionNotice(message);
+    window.setTimeout(() => setActionNotice(null), 4000);
+  };
+
+  const handleArchive = async () => {
+    if (!confirmArchive) return;
+    setBusy(true);
+    setActionError(false);
     try {
-      await archiveAnimal(animal.id);
+      await archiveAnimal(confirmArchive.id);
+      await logAudit('arquivar', 'animal', confirmArchive.id, { name: confirmArchive.name });
+      setConfirmArchive(null);
       loadAnimals();
+      flash(`"${confirmArchive.name}" arquivado e removido do portal.`);
     } catch {
-      setArchiveError(true);
+      setActionError(true);
+      setConfirmArchive(null);
     } finally {
-      setArchivingId(null);
+      setBusy(false);
+    }
+  };
+
+  const handleToggleFeatured = async (animal: AnimalWithImages) => {
+    setBusy(true);
+    setActionError(false);
+    try {
+      const next = !animal.featured;
+      await updateAnimal(animal.id, { featured: next });
+      await logAudit(next ? 'destacar' : 'remover_destaque', 'animal', animal.id, { name: animal.name });
+      setAnimals((prev) => prev.map((a) => (a.id === animal.id ? { ...a, featured: next } : a)));
+      flash(next ? `"${animal.name}" destacado no portal.` : `Destaque de "${animal.name}" removido.`);
+    } catch {
+      setActionError(true);
+    } finally {
+      setBusy(false);
     }
   };
 
   const filtered = useMemo(() => {
     const term = search.trim().toLowerCase();
-    if (!term) return animals;
-    return animals.filter((animal) => animal.name.toLowerCase().includes(term));
-  }, [animals, search]);
+    return animals.filter((animal) => {
+      if (statusFilter !== 'all' && animal.status !== statusFilter) return false;
+      if (!term) return true;
+      return animal.name.toLowerCase().includes(term);
+    });
+  }, [animals, search, statusFilter]);
 
   const columns: {
     key: keyof AnimalWithImages | string;
@@ -88,7 +130,13 @@ export default function AdminAnimalsPage() {
         />
       ),
     },
-    { key: 'name', header: 'Nome', render: (animal) => animal.name },
+    {
+      key: 'name',
+      header: 'Nome',
+      render: (animal) => (
+        <Link to={`/admin/animais/${animal.id}`}>{animal.name}</Link>
+      ),
+    },
     { key: 'species', header: 'Espécie', render: (animal) => speciesLabel(animal.species) },
     { key: 'size', header: 'Porte', render: (animal) => sizeLabel(animal.size) },
     {
@@ -100,35 +148,47 @@ export default function AdminAnimalsPage() {
       },
     },
     {
-      key: 'featured',
-      header: 'Destacado',
-      render: (animal) =>
-        animal.featured ? (
-          <Star size={18} aria-label="Destacado" fill="currentColor" />
-        ) : (
-          <span aria-hidden="true">—</span>
-        ),
+      key: 'published',
+      header: 'Publicação',
+      render: (animal) => (
+        <Badge variant={animal.published ? 'success' : 'default'}>
+          {animal.published ? 'Publicado' : 'Rascunho'}
+        </Badge>
+      ),
     },
     {
       key: 'actions',
       header: 'Ações',
       render: (animal) => (
-        <div style={{ display: 'flex', gap: 'var(--space-1)', alignItems: 'center' }}>
-          <Link to={`/admin/animais/${animal.id}/editar`} aria-label={`Editar ${animal.name}`}>
-            <Button variant="ghost" size="sm" title={`Editar ${animal.name}`}>
-              <Pencil size={16} aria-hidden="true" />
-            </Button>
+        <div className="admin-table-actions">
+          <button
+            type="button"
+            className={`admin-icon-btn ${animal.featured ? 'admin-icon-btn--active' : ''}`}
+            aria-label={animal.featured ? `Remover destaque de ${animal.name}` : `Destacar ${animal.name}`}
+            title={animal.featured ? 'Remover destaque' : 'Destacar'}
+            disabled={busy}
+            onClick={() => handleToggleFeatured(animal)}
+          >
+            <Star size={18} aria-hidden="true" />
+          </button>
+          <Link
+            to={`/admin/animais/${animal.id}/editar`}
+            className="admin-icon-btn"
+            aria-label={`Editar ${animal.name}`}
+            title={`Editar ${animal.name}`}
+          >
+            <Pencil size={18} aria-hidden="true" />
           </Link>
-          <Button
-            variant="ghost"
-            size="sm"
+          <button
+            type="button"
+            className="admin-icon-btn admin-icon-btn--danger"
             aria-label={`Arquivar ${animal.name}`}
             title={`Arquivar ${animal.name}`}
-            onClick={() => handleArchive(animal)}
-            disabled={archivingId === animal.id}
+            disabled={busy || animal.status === 'archived'}
+            onClick={() => setConfirmArchive(animal)}
           >
-            <Archive size={16} aria-hidden="true" />
-          </Button>
+            <Archive size={18} aria-hidden="true" />
+          </button>
         </div>
       ),
     },
@@ -146,28 +206,50 @@ export default function AdminAnimalsPage() {
           id="search-animal"
         />
       </div>
-      <Link to="/admin/animais/novo">
-        <Button>
-          <Plus size={18} aria-hidden="true" />
-          Novo Animal
-        </Button>
-      </Link>
+      <div className="admin-toolbar-filters">
+        <select
+          aria-label="Filtrar por status"
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value as 'all' | AnimalStatus)}
+          className="form-select"
+        >
+          <option value="all">Todos os status</option>
+          <option value="available">Disponível</option>
+          <option value="in_process">Em processo</option>
+          <option value="adopted">Adotado</option>
+          <option value="archived">Arquivado</option>
+        </select>
+        <Link to="/admin/animais/novo">
+          <Button>
+            <Plus size={18} aria-hidden="true" />
+            Novo Animal
+          </Button>
+        </Link>
+      </div>
     </div>
   );
 
   return (
     <div className="admin-page">
-      <h2 className="admin-page-title">Animais</h2>
-      <p className="admin-page-subtitle">Gerencie os animais cadastrados para adoção.</p>
-      {header}
+      <div className="admin-page-header">
+        <div>
+          <h1 className="admin-page-title">Animais</h1>
+          <p className="admin-page-subtitle">Gerencie os animais cadastrados para adoção.</p>
+        </div>
+      </div>
 
-      {archiveError && (
-        <Alert
-          type="error"
-          message="Não foi possível arquivar o animal."
-          onClose={() => setArchiveError(false)}
-        />
+      {actionError && (
+        <div style={{ marginBottom: '1rem' }}>
+          <Alert type="error" message="Não foi possível concluir a ação." onClose={() => setActionError(false)} />
+        </div>
       )}
+      {actionNotice && (
+        <div style={{ marginBottom: '1rem' }}>
+          <Alert type="success" message={actionNotice} onClose={() => setActionNotice(null)} />
+        </div>
+      )}
+
+      {header}
 
       {error ? (
         <ErrorState message="Não foi possível carregar os animais." onRetry={loadAnimals} />
@@ -188,9 +270,24 @@ export default function AdminAnimalsPage() {
           columns={columns}
           data={filtered}
           keyExtractor={(animal) => animal.id}
-          emptyMessage="Nenhum animal encontrado com esse nome."
+          emptyMessage="Nenhum animal encontrado com os filtros atuais."
         />
       )}
+
+      <ConfirmDialog
+        isOpen={!!confirmArchive}
+        onClose={() => setConfirmArchive(null)}
+        title="Arquivar animal"
+        message={
+          <>
+            Tem certeza que deseja arquivar <strong>{confirmArchive?.name}</strong>? Ele será
+            removido do portal público.
+          </>
+        }
+        confirmLabel="Arquivar"
+        loading={busy}
+        onConfirm={handleArchive}
+      />
     </div>
   );
 }

@@ -19,6 +19,7 @@ export default function AdoptionProcessPage() {
   return (
     <div>
       <PageHeader
+        tone="green"
         eyebrow="Adoção responsável"
         title="Processo de Adoção"
         subtitle="Conheça as etapas do nosso processo de adoção responsável."
@@ -30,7 +31,7 @@ export default function AdoptionProcessPage() {
         }}
       />
 
-      <section className="section">
+      <section className="section section--cream">
         <div className="container">
           <div className="section-intro">
             <span className="eyebrow">Passo a passo</span>
