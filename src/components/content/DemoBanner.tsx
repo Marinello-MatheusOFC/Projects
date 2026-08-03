@@ -1,5 +1,6 @@
 import { Info } from 'lucide-react';
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function isDemoContent(items: Array<{ id?: string | null }>): boolean {
   return items.some((item) => item.id?.startsWith('demo-'));
 }

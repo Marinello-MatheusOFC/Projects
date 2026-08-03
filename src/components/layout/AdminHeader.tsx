@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { ChevronDown, ExternalLink, LogOut, Menu } from 'lucide-react';
+import { ChevronDown, ExternalLink, LogOut, Menu, Plus } from 'lucide-react';
 import { useAuth } from '@/features/auth/hooks/useAuth.ts';
 import { canAccessModule } from '@/features/auth/permissions';
+import { Button } from '@/components/ui/Button';
 
 interface BreadcrumbItem {
   label: string;
@@ -13,6 +14,7 @@ const SEGMENT_LABELS: Record<string, string> = {
   admin: 'Painel',
   animais: 'Animais',
   novo: 'Novo',
+  nova: 'Nova',
   editar: 'Editar',
   adocoes: 'Adoções',
   eventos: 'Eventos',
@@ -25,6 +27,20 @@ const SEGMENT_LABELS: Record<string, string> = {
   usuarios: 'Usuários',
   auditoria: 'Auditoria',
 };
+
+interface ContextualAction {
+  label: string;
+  to: string;
+  module: 'animais' | 'eventos' | 'noticias' | 'produtos' | 'galeria';
+}
+
+const CONTEXTUAL_ACTIONS: ContextualAction[] = [
+  { label: 'Cadastrar animal', to: '/admin/animais/novo', module: 'animais' },
+  { label: 'Criar evento', to: '/admin/eventos/novo', module: 'eventos' },
+  { label: 'Escrever notícia', to: '/admin/noticias/nova', module: 'noticias' },
+  { label: 'Adicionar produto', to: '/admin/produtos/novo', module: 'produtos' },
+  { label: 'Criar álbum', to: '/admin/galeria/novo', module: 'galeria' },
+];
 
 function segmentLabel(segment: string, index: number, segments: string[]): string {
   const known = SEGMENT_LABELS[segment];
@@ -55,9 +71,10 @@ function initialsOf(name: string): string {
 
 interface AdminHeaderProps {
   onMenuClick: () => void;
+  menuButtonRef?: React.RefObject<HTMLButtonElement | null>;
 }
 
-export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
+export function AdminHeader({ onMenuClick, menuButtonRef }: AdminHeaderProps) {
   const { profile, signOut } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
@@ -91,13 +108,29 @@ export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
   const role = profile?.role === 'superadmin' ? 'Superadmin' : 'Admin';
   const canManageSettings = canAccessModule('configuracoes', profile);
 
+  const contextualAction = useMemo<ContextualAction | null>(() => {
+    const path = location.pathname;
+    for (const action of CONTEXTUAL_ACTIONS) {
+      const prefix = `/admin/${action.module}`;
+      if (path === prefix || path.startsWith(`${prefix}/`)) {
+        if (canAccessModule(action.module, profile)) {
+          return action;
+        }
+      }
+    }
+    return null;
+  }, [location.pathname, profile]);
+
   return (
     <header className="admin-header">
       <button
+        ref={menuButtonRef}
         type="button"
         className="admin-header-menu"
         onClick={onMenuClick}
         aria-label="Abrir menu de navegação"
+        aria-expanded={false}
+        aria-controls="admin-sidebar"
       >
         <Menu size={22} aria-hidden="true" />
       </button>
@@ -125,6 +158,15 @@ export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
       </nav>
 
       <div className="admin-header-right">
+        {contextualAction && (
+          <Link to={contextualAction.to} style={{ textDecoration: 'none' }}>
+            <Button variant="primary" size="md" loading={false} className="admin-header-cta">
+              <Plus size={18} aria-hidden="true" />
+              <span>{contextualAction.label}</span>
+            </Button>
+          </Link>
+        )}
+
         <div className="admin-user-menu" ref={menuRef}>
           <button
             type="button"

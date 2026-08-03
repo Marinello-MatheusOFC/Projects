@@ -5,30 +5,47 @@ type AlertType = 'success' | 'error' | 'info' | 'warning';
 
 interface AlertProps {
   type?: AlertType;
-  message: string;
+  title?: string;
+  message: React.ReactNode;
+  icon?: React.ReactNode;
   onClose?: () => void;
   dismissible?: boolean;
+  className?: string;
 }
 
-const icons = {
+const defaultIcons = {
   success: CheckCircle,
   error: AlertCircle,
   info: Info,
   warning: AlertTriangle,
 };
 
-export function Alert({ type = 'info', message, onClose, dismissible = true }: AlertProps) {
-  const Icon = icons[type];
+export function Alert({
+  type = 'info',
+  title,
+  message,
+  icon,
+  onClose,
+  dismissible = true,
+  className,
+}: AlertProps) {
+  const DefaultIcon = defaultIcons[type];
+  const showClose = dismissible && !!onClose;
 
   return (
     <div
-      className={`alert alert--${type}`}
+      className={`alert alert--${type}${className ? ` ${className}` : ''}`}
       role="alert"
       aria-live="polite"
     >
-      <Icon size={20} aria-hidden="true" />
-      <span className="alert-message">{message}</span>
-      {dismissible && onClose && (
+      <span className="alert-icon" aria-hidden="true">
+        {icon ?? <DefaultIcon size={20} />}
+      </span>
+      <div className="alert-body">
+        {title && <strong className="alert-title">{title}</strong>}
+        <div className="alert-message">{message}</div>
+      </div>
+      {showClose && (
         <button className="alert-close" onClick={onClose} aria-label="Fechar">
           <X size={16} />
         </button>
