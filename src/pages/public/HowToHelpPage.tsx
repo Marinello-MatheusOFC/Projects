@@ -99,7 +99,10 @@ export default function HowToHelpPage() {
           <div className="section-intro">
             <span className="eyebrow">Doações</span>
             <h2>Informações de Doação</h2>
-            <p>Os dados bancários serão disponibilizados pela ONG em breve.</p>
+            <p>
+              Faça uma doação pelo PIX e ajude a cobrir custos com alimentação,
+              medicamentos, castrações e manutenção do abrigo. Qualquer valor faz a diferença.
+            </p>
           </div>
 
           {pixKey && (

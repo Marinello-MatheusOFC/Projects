@@ -21,5 +21,8 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./tests/setup.ts'],
     css: true,
+    env: {
+      VITE_ENABLE_DEMO_AUTH: 'true',
+    },
   },
 });

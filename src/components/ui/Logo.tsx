@@ -8,6 +8,29 @@ interface LogoProps {
 
 export function Logo({ size = 'md', showText = true, linkTo }: LogoProps) {
   const dims = { sm: 32, md: 44, lg: 56 };
+  const imgHeights = { sm: 40, md: 52, lg: 64 };
+  const imgRatio = 300 / 248;
+
+  if (showText) {
+    const imgHeight = imgHeights[size];
+    const content = (
+      <span className={`logo logo--${size} logo--img`}>
+        <img
+          src="/logo.png"
+          alt="SOS Focinho Carente"
+          className="logo-img"
+          width={Math.round(imgHeight * imgRatio)}
+          height={imgHeight}
+        />
+      </span>
+    );
+
+    if (linkTo !== undefined) {
+      return <Link to={linkTo} className="logo-link" aria-label="SOS Focinho Carente — Início">{content}</Link>;
+    }
+
+    return content;
+  }
 
   const content = (
     <span className={`logo logo--${size}`}>

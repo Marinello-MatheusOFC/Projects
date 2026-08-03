@@ -110,7 +110,7 @@ export default function AnimalDetailPage() {
   const thumbs = animal.images.map((img) => resolveImageUrl(img.storage_path));
   const species = speciesLabel(animal.species);
   const traitList = buildTraits(animal);
-  const story = animal.history || animal.description || 'A história completa deste animal será compartilhada em breve.';
+  const story = animal.history || animal.description || 'A história completa deste animal está sendo registrada pela nossa equipe. Para saber mais, entre em contato conosco.';
 
   return (
     <div className="animal-detail-page">

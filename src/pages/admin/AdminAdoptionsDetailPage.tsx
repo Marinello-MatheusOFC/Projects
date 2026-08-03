@@ -18,7 +18,7 @@ import {
 } from '@/services/applications';
 import { logAudit } from '@/services/audit';
 import { adoptionStatusLabels } from '@/utils';
-import { formatDateTime } from '@/utils/format';
+import { formatDateTime } from '@/lib/format';
 import type { AdoptionApplication, AdoptionStatus, AdoptionStatusHistory } from '@/types';
 
 type BadgeVariant = 'success' | 'warning' | 'error' | 'info' | 'default';

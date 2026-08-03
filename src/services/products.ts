@@ -1,4 +1,5 @@
 import { supabase, withFallback, resolveImageUrl } from '@/lib/images';
+import { isDemoConfigured } from '@/lib/auth-demo';
 import type { Product } from '@/types';
 import { demoProducts } from '@/data/content';
 
@@ -45,7 +46,7 @@ export async function fetchProducts(): Promise<ProductWithImage[]> {
     if (Array.isArray(rows) && rows.length > 0 && 'name' in rows[0]) {
       return (rows as Product[]).map(decorate);
     }
-    return demoList();
+    return isDemoConfigured() ? demoList() : ([] as ProductWithImage[]);
   });
 }
 
@@ -64,7 +65,7 @@ export async function fetchProductBySlug(slug: string): Promise<ProductWithImage
     if (row && 'name' in row && (row as Product).id) {
       return decorate(row as Product);
     }
-    return demoBySlug(slug);
+    return isDemoConfigured() ? demoBySlug(slug) : null;
   });
 }
 
@@ -81,7 +82,7 @@ export async function fetchAdminProducts(): Promise<ProductWithImage[]> {
     if (Array.isArray(rows) && rows.length > 0 && 'name' in rows[0]) {
       return (rows as Product[]).map(decorate);
     }
-    return demoList();
+    return isDemoConfigured() ? demoList() : ([] as ProductWithImage[]);
   });
 }
 

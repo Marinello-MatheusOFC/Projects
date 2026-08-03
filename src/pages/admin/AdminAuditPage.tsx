@@ -9,7 +9,7 @@ import { TableSkeleton } from '@/components/feedback/Skeleton';
 import { EmptyState } from '@/components/feedback/EmptyState';
 import { ErrorState } from '@/components/feedback/ErrorState';
 import { fetchAuditLogs } from '@/services/audit';
-import { formatDateTime } from '@/utils/format';
+import { formatDateTime } from '@/lib/format';
 import type { AuditLog } from '@/types';
 
 type BadgeVariant = 'success' | 'warning' | 'error' | 'info' | 'default';

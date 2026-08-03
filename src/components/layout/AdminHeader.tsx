@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ChevronDown, ExternalLink, LogOut, Menu, Plus } from 'lucide-react';
-import { useAuth } from '@/features/auth/hooks/useAuth.ts';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 import { canAccessModule } from '@/features/auth/permissions';
 import { Button } from '@/components/ui/Button';
 

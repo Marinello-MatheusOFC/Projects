@@ -1,4 +1,5 @@
 import { supabase, withFallback, resolveImageUrl } from '@/lib/images';
+import { isDemoConfigured } from '@/lib/auth-demo';
 import type { Event, EventStatus } from '@/types';
 import { demoEvents } from '@/data/content';
 
@@ -59,7 +60,7 @@ export async function fetchEvents(): Promise<EventWithImage[]> {
     if (Array.isArray(rows) && rows.length > 0 && 'start_at' in rows[0]) {
       return (rows as Event[]).map(decorate);
     }
-    return demoList();
+    return isDemoConfigured() ? demoList() : ([] as EventWithImage[]);
   });
 }
 
@@ -83,7 +84,7 @@ export async function fetchEventBySlug(slug: string): Promise<EventWithImage | n
     if (row && 'start_at' in row && (row as Event).id) {
       return decorate(row as Event);
     }
-    return demoBySlug(slug);
+    return isDemoConfigured() ? demoBySlug(slug) : null;
   });
 }
 
@@ -100,12 +101,17 @@ export async function fetchAdminEvents(): Promise<EventWithImage[]> {
     if (Array.isArray(rows) && rows.length > 0 && 'start_at' in rows[0]) {
       return (rows as Event[]).map(decorate);
     }
-    return demoList();
+    return isDemoConfigured() ? demoList() : ([] as EventWithImage[]);
   });
 }
 
 export async function createEvent(input: EventInput): Promise<Event | null> {
-  const { data, error } = await supabase.from('events').insert(input).select().single();
+  const { data: userData } = await supabase.auth.getUser();
+  const { data, error } = await supabase
+    .from('events')
+    .insert({ ...input, created_by: userData.user?.id })
+    .select()
+    .single();
   if (error) throw new Error('Não foi possível criar o evento.');
   return data as Event;
 }

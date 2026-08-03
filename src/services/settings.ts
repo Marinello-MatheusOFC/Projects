@@ -1,4 +1,5 @@
 import { supabase, withFallback } from '@/lib/images';
+import { isDemoConfigured } from '@/lib/auth-demo';
 import type { SiteSetting } from '@/types';
 import { demoSettings } from '@/data/content';
 
@@ -61,7 +62,9 @@ export async function fetchOrgInfo(): Promise<OrgInfo> {
     [] as SiteSetting[],
   ).then((rows) => {
     const list = Array.isArray(rows) ? rows : [];
-    if (list.length === 0) return fromSettings(demoMap());
+    if (list.length === 0) {
+      return isDemoConfigured() ? fromSettings(demoMap()) : emptyOrgInfo;
+    }
     return fromSettings(new Map(list.map((s) => [s.key, s])));
   });
 }

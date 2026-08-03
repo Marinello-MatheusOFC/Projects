@@ -13,7 +13,7 @@ export const demoEvents: Event[] = [
     start_at: '2026-08-20T09:00:00-03:00',
     end_at: '2026-08-20T17:00:00-03:00',
     location_name: 'Parque Municipal — Portão 3',
-    address: null,
+    address: 'Av. das Árvores, s/n - Jardim Primavera, São Paulo - SP',
     external_url: null,
     image_path: '/images/demo/adoption-event.jpg',
     status: 'scheduled',
@@ -33,7 +33,7 @@ export const demoEvents: Event[] = [
     start_at: '2026-08-08T07:00:00-03:00',
     end_at: '2026-08-08T18:00:00-03:00',
     location_name: 'Clínica Veterinária Popular — Centro',
-    address: null,
+    address: 'Av. da Saúde, 45 - Centro, São Paulo - SP',
     external_url: null,
     image_path: '/images/demo/animal-group.jpg',
     status: 'scheduled',
@@ -53,7 +53,7 @@ export const demoEvents: Event[] = [
     start_at: '2026-08-01T10:00:00-03:00',
     end_at: '2026-08-01T18:00:00-03:00',
     location_name: 'Sede da ONG',
-    address: null,
+    address: 'Rua das Flores, 123 - Centro, São Paulo - SP',
     external_url: null,
     image_path: '/images/demo/community-event.jpg',
     status: 'scheduled',
@@ -73,7 +73,7 @@ export const demoEvents: Event[] = [
     start_at: '2026-07-18T14:00:00-03:00',
     end_at: '2026-07-18T17:00:00-03:00',
     location_name: 'Biblioteca Municipal — Sala Infantil',
-    address: null,
+    address: 'Praça da Leitura, 10 - Centro, São Paulo - SP',
     external_url: null,
     image_path: '/images/demo/volunteer-care.jpg',
     status: 'completed',
@@ -93,7 +93,7 @@ export const demoEvents: Event[] = [
     start_at: '2026-07-10T08:00:00-03:00',
     end_at: '2026-07-10T11:00:00-03:00',
     location_name: 'Parque Ecológico — Entrada Principal',
-    address: null,
+    address: 'Av. Verde, s/n - Jardim Primavera, São Paulo - SP',
     external_url: null,
     image_path: '/images/demo/hero-dog.jpg',
     status: 'completed',
@@ -156,6 +156,44 @@ Esse novo espaço vai nos permitir atender melhor cada animal resgatado, com mai
     cover_image_path: '/images/demo/shelter-space.jpg',
     status: 'published',
     published_at: '2026-07-15T10:00:00-03:00',
+    author_id: null,
+    created_at: now,
+    updated_at: now,
+    deleted_at: null,
+  },
+  {
+    id: 'demo-news-004',
+    title: 'Voluntários plantam horta comunitária no novo espaço do abrigo',
+    slug: 'horta-comunitaria-abrigo',
+    excerpt:
+      'Além de embelezar o espaço, a horta vai fornecer alimentos frescos e envolver a comunidade.',
+    content: `No último fim de semana, um grupo de voluntários plantou uma horta comunitária no novo espaço do abrigo.
+
+A iniciativa reúne ervas, hortaliças e uma composteira, e vai envolver moradores do bairro em oficinas mensais de jardinagem e cuidado animal.
+
+Quem quiser participar das próximas oficinas pode se inscrever pela nossa página de contato ou acompanhar as novidades nas redes sociais.`,
+    cover_image_path: '/images/demo/news/news-cat.jpg',
+    status: 'published',
+    published_at: '2026-07-08T10:00:00-03:00',
+    author_id: null,
+    created_at: now,
+    updated_at: now,
+    deleted_at: null,
+  },
+  {
+    id: 'demo-news-005',
+    title: 'Parceria com pet shop garante banho e tosa gratuitos aos resgatados',
+    slug: 'parceria-pet-shop',
+    excerpt:
+      'Convênio com estabelecimento parceiro vai garantir banho, tosa e itens de higiene aos animais.',
+    content: `Fechamos uma parceria com um pet shop do bairro que vai garantir banho, tosa e kits de higiene para todos os animais sob nossos cuidados.
+
+A cada banho, o pet shop também doa um percentual das vendas do dia para a ONG. É uma corrente do bem que começa com um simples gesto.
+
+Empresas que desejam apoiar a causa podem entrar em contato pelo e-mail institucional.`,
+    cover_image_path: '/images/demo/volunteering/community-hands.jpg',
+    status: 'published',
+    published_at: '2026-07-01T10:00:00-03:00',
     author_id: null,
     created_at: now,
     updated_at: now,
@@ -265,10 +303,10 @@ export const demoSettings: SiteSetting[] = [
     id: 'demo-set-001',
     key: 'org_contacts',
     value_json: {
-      email: '',
-      phone: '',
-      whatsapp: '',
-      address: '',
+      email: 'contato@sosfocinhocarente.org.br',
+      phone: '(11) 3456-7890',
+      whatsapp: '5511998765432',
+      address: 'Rua das Flores, 123 - Centro, São Paulo - SP, CEP 01000-000',
     },
     public: true,
     updated_by: null,
@@ -278,9 +316,9 @@ export const demoSettings: SiteSetting[] = [
     id: 'demo-set-002',
     key: 'org_social',
     value_json: {
-      instagram: '',
-      facebook: '',
-      youtube: '',
+      instagram: 'sosfocinhocarente',
+      facebook: 'sosfocinhocarente',
+      youtube: 'sosfocinhocarente',
     },
     public: true,
     updated_by: null,
@@ -290,8 +328,8 @@ export const demoSettings: SiteSetting[] = [
     id: 'demo-set-003',
     key: 'donations_pix',
     value_json: {
-      pix_key: '',
-      pix_owner: '',
+      pix_key: 'pix@sosfocinhocarente.org.br',
+      pix_owner: 'SOS Focinho Carente',
     },
     public: true,
     updated_by: null,
@@ -301,8 +339,10 @@ export const demoSettings: SiteSetting[] = [
     id: 'demo-set-004',
     key: 'org_about',
     value_json: {
-      mission: '',
-      short_description: '',
+      mission:
+        'Resgatar, cuidar e promover a adoção responsável de animais abandonados, além de conscientizar a comunidade sobre o bem-estar animal e o combate ao abandono.',
+      short_description:
+        'Organização sem fins lucrativos dedicada ao resgate, cuidado e adoção responsável de cães e gatos, mantida por doações e trabalho voluntário.',
     },
     public: true,
     updated_by: null,

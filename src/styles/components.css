@@ -125,6 +125,8 @@
 
 .logo-svg { display: block; }
 
+.logo-img { display: block; }
+
 .logo-text { display: flex; flex-direction: column; gap: 2px; }
 .logo-text-main {
   font-family: var(--font-heading);

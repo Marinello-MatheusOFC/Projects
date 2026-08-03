@@ -1,4 +1,5 @@
 import { supabase, withFallback, resolveImageUrl } from '@/lib/images';
+import { isDemoConfigured } from '@/lib/auth-demo';
 import type { NewsPost, NewsStatus } from '@/types';
 import { demoNews } from '@/data/content';
 
@@ -43,7 +44,7 @@ export async function fetchNews(): Promise<NewsWithImage[]> {
     if (Array.isArray(rows) && rows.length > 0 && 'title' in rows[0]) {
       return (rows as NewsPost[]).map(decorate);
     }
-    return demoList();
+    return isDemoConfigured() ? demoList() : ([] as NewsWithImage[]);
   });
 }
 
@@ -62,7 +63,7 @@ export async function fetchNewsBySlug(slug: string): Promise<NewsWithImage | nul
     if (row && 'title' in row && (row as NewsPost).id) {
       return decorate(row as NewsPost);
     }
-    return demoBySlug(slug);
+    return isDemoConfigured() ? demoBySlug(slug) : null;
   });
 }
 
@@ -79,12 +80,17 @@ export async function fetchAdminNews(): Promise<NewsWithImage[]> {
     if (Array.isArray(rows) && rows.length > 0 && 'title' in rows[0]) {
       return (rows as NewsPost[]).map(decorate);
     }
-    return demoList();
+    return isDemoConfigured() ? demoList() : ([] as NewsWithImage[]);
   });
 }
 
 export async function createNews(input: NewsInput): Promise<NewsPost | null> {
-  const { data, error } = await supabase.from('news_posts').insert(input).select().single();
+  const { data: userData } = await supabase.auth.getUser();
+  const { data, error } = await supabase
+    .from('news_posts')
+    .insert({ ...input, author_id: userData.user?.id })
+    .select()
+    .single();
   if (error) throw new Error('Não foi possível criar a notícia.');
   return data as NewsPost;
 }

@@ -107,3 +107,47 @@ export function slugify(text: string): string {
     .replace(/-+/g, '-')
     .replace(/^-|-$/g, '');
 }
+
+export function formatCurrency(value: number): string {
+  return formatPrice(value);
+}
+
+export function formatDateShort(value: string | null | undefined): string {
+  if (!value) return '';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  return new Intl.DateTimeFormat('pt-BR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  }).format(date);
+}
+
+export function formatDateTime(value: string | null | undefined): string {
+  if (!value) return '';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  return new Intl.DateTimeFormat('pt-BR', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(date);
+}
+
+export function getAgeFromDate(birthDate: string): string {
+  const now = new Date();
+  const birth = new Date(birthDate);
+  const diff = now.getTime() - birth.getTime();
+  const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365));
+  if (years > 0) return `${years} ano${years > 1 ? 's' : ''}`;
+  const months = Math.floor(diff / (1000 * 60 * 60 * 24 * 30));
+  if (months > 0) return `${months} mês${months > 1 ? 'es' : ''}`;
+  return 'Filhote';
+}
+
+export function truncate(text: string, length: number): string {
+  if (text.length <= length) return text;
+  return text.slice(0, length).trimEnd() + '...';
+}

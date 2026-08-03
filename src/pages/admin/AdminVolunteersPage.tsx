@@ -15,7 +15,7 @@ import {
 } from '@/services/applications';
 import { logAudit } from '@/services/audit';
 import type { VolunteerApplication, VolunteerStatus } from '@/types';
-import { truncate } from '@/utils';
+import { truncate } from '@/lib/format';
 import { formatDate } from '@/lib/format';
 
 type BadgeVariant = 'success' | 'warning' | 'error' | 'info' | 'default';

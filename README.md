@@ -63,22 +63,44 @@ npm install
 VITE_SUPABASE_URL=https://seu-projeto.supabase.co
 VITE_SUPABASE_ANON_KEY=sua-chave-anon
 VITE_SITE_URL=http://localhost:3000
+
+# Opcional (apenas desenvolvimento): habilita o login de demonstração local
+# com as contas admin@.../admin123 e superadmin@.../super123
+VITE_ENABLE_DEMO_AUTH=false
 ```
+
+> **Modo demonstração:** com `VITE_ENABLE_DEMO_AUTH=true` (ou sem conexão com o banco),
+> o site exibe conteúdo fictício local (animais, eventos, notícias, PIX, contatos) em
+> `src/data/`. Em produção mantenha `false` para que dados fictícios nunca apareçam.
 
 ## Migrations
 
-No SQL Editor do Supabase, execute o arquivo:
+No SQL Editor do Supabase, execute os arquivos de `supabase/migrations/` na ordem:
 
 ```
 supabase/migrations/001_initial.sql
+supabase/migrations/002_admin_hardening.sql
+supabase/migrations/999_create_admin_users.sql
 ```
+
+Alternativa: o arquivo `supabase/BANCO_COMPLETO.sql` reúne tudo em um único script
+(schema + hardening + usuários admin).
 
 ## Seed (dados de demonstração)
 
+No SQL Editor do Supabase, execute na ordem:
+
 ```bash
-# No SQL Editor do Supabase, execute:
+# 1. Buckets de storage (obrigatório para upload de fotos no painel admin)
+supabase/storage_buckets.sql
+
+# 2. Dados de demonstração (idempotente — pode rodar mais de uma vez)
 supabase/seed.sql
 ```
+
+Após o seed, as tabelas do banco deixam de estar vazias e o painel admin passa a
+editar/arquivar/excluir registros reais (o modo demonstração só mostra conteúdo
+local quando o banco está vazio ou inacessível).
 
 ## Criando o Primeiro Superadmin
 
@@ -182,16 +204,17 @@ Documentação detalhada em `docs/`:
 - **SEO**: Como é uma SPA, o SEO é limitado. Recomenda-se migração futura para SSR/SSG (Next.js, Remix) ou uso de pré-renderização
 - **Pagamento online**: Não implementado nesta versão
 - **Dark mode**: Não implementado (pode ser adicionado futuramente)
-- **Testes**: Pendentes de implementação (estrutura pronta)
+- **Conteúdo**: Os dados exibidos são fictícios (modo demonstração); substitua pelos dados reais da ONG
 
 ## Roadmap
 
-1. Implementação da conexão com Supabase
-2. Testes automatizados
+1. ~~Implementação da conexão com Supabase~~ (concluído)
+2. ~~Testes automatizados~~ (parcial — 20 testes; ampliar cobertura do painel admin)
 3. Melhorias de acessibilidade
 4. Pré-renderização para SEO
 5. Modo escuro
 6. Internacionalização (se necessário)
+7. Pagamento online no brechó
 
 ## Créditos
 

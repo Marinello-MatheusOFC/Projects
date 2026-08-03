@@ -30,7 +30,7 @@ import {
 import type { LucideIcon } from 'lucide-react';
 
 import { Logo } from '@/components/ui/Logo';
-import { useAuth } from '@/features/auth/useAuth';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useRole } from '@/hooks/admin/useRole';
 
 import {
@@ -245,8 +245,8 @@ function useFocusTrap(
       return;
     }
 
-    const first = elements[0];
-    const last = elements[elements.length - 1];
+    const first = elements[0]!;
+    const last = elements[elements.length - 1]!;
 
     first.focus();
 

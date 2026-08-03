@@ -14,7 +14,7 @@ import {
   deleteContactMessage,
 } from '@/services/applications';
 import { logAudit } from '@/services/audit';
-import { formatDateTime } from '@/utils/format';
+import { formatDateTime } from '@/lib/format';
 import type { ContactMessage, ContactMessageStatus } from '@/types';
 
 type BadgeVariant = 'success' | 'warning' | 'error' | 'info' | 'default';

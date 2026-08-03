@@ -22,6 +22,14 @@ import {
   type DemoSignInResult,
 } from './useAuth';
 
+import {
+  demoSessionToProfile,
+  demoSessionToUser,
+  demoSignInWithPassword,
+  demoSignOut,
+  getDemoSession,
+} from '@/lib/auth-demo';
+
 interface AuthProviderProps {
   children: ReactNode;
 }
@@ -80,27 +88,6 @@ export function AuthProvider({
     [],
   );
 
-  const updateAuthenticatedUser =
-    useCallback(
-      async (
-        authenticatedUser: User,
-        mode: AuthMode,
-      ): Promise<Profile | null> => {
-        setUser(authenticatedUser);
-        setAuthMode(mode);
-
-        const loadedProfile =
-          await loadProfile(
-            authenticatedUser.id,
-          );
-
-        setProfile(loadedProfile);
-
-        return loadedProfile;
-      },
-      [loadProfile],
-    );
-
   const signInDemo = useCallback(
     async (
       email: string,
@@ -109,49 +96,16 @@ export function AuthProvider({
       setLoading(true);
 
       try {
-        const {
-          data,
-          error,
-        } =
-          await supabase.auth.signInWithPassword({
-            email: email.trim(),
+        const result =
+          await demoSignInWithPassword(
+            email,
             password,
-          });
-
-        if (error) {
-          setUser(null);
-          setProfile(null);
-          setAuthMode('none');
-
-          return {
-            success: false,
-            session: null,
-            error: error.message,
-          };
-        }
-
-        if (!data.user || !data.session) {
-          setUser(null);
-          setProfile(null);
-          setAuthMode('none');
-
-          return {
-            success: false,
-            session: null,
-            error:
-              'O Supabase não retornou uma sessão válida.',
-          };
-        }
-
-        const loadedProfile =
-          await updateAuthenticatedUser(
-            data.user,
-            'demo',
           );
 
-        if (!loadedProfile) {
-          await supabase.auth.signOut();
-
+        if (
+          !result.success ||
+          !result.session
+        ) {
           setUser(null);
           setProfile(null);
           setAuthMode('none');
@@ -160,32 +114,30 @@ export function AuthProvider({
             success: false,
             session: null,
             error:
-              'Usuário autenticado, mas nenhum perfil foi encontrado.',
+              result.error ??
+              'E-mail ou senha inválidos.',
           };
         }
 
-        if (!loadedProfile.active) {
-          await supabase.auth.signOut();
-
-          setUser(null);
-          setProfile(null);
-          setAuthMode('none');
-
-          return {
-            success: false,
-            session: null,
-            error:
-              'Este perfil está desativado.',
-          };
-        }
+        setUser(
+          demoSessionToUser(
+            result.session,
+          ) as unknown as User,
+        );
+        setProfile(
+          demoSessionToProfile(
+            result.session,
+          ),
+        );
+        setAuthMode('demo');
 
         return {
           success: true,
-          session: data.session,
+          session: result.session,
         };
       } catch (error) {
         console.error(
-          'Erro inesperado durante o login:',
+          'Erro inesperado durante o login de demonstração:',
           error,
         );
 
@@ -206,7 +158,7 @@ export function AuthProvider({
         setInitialized(true);
       }
     },
-    [updateAuthenticatedUser],
+    [],
   );
 
   const signOut = useCallback(
@@ -214,6 +166,8 @@ export function AuthProvider({
       setLoading(true);
 
       try {
+        await demoSignOut();
+
         const { error } =
           await supabase.auth.signOut();
 
@@ -285,6 +239,25 @@ export function AuthProvider({
             session?.user ?? null;
 
           if (!sessionUser) {
+            const demoSession =
+              getDemoSession();
+
+            if (demoSession) {
+              setUser(
+                demoSessionToUser(
+                  demoSession,
+                ) as unknown as User,
+              );
+              setProfile(
+                demoSessionToProfile(
+                  demoSession,
+                ),
+              );
+              setAuthMode('demo');
+
+              return;
+            }
+
             setUser(null);
             setProfile(null);
             setAuthMode('none');

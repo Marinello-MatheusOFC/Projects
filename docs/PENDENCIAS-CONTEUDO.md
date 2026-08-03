@@ -1,85 +1,46 @@
-# Pendências de Conteúdo — Pós-Redesign
+# Pendências de Conteúdo — SOS Focinho Carente
 
-## Páginas Públicas Vazias (precisam de conteúdo real)
+Documento consolidado (substitui os antigos `PENDENCIAS-CONTEUDO.md` e `PENDENCIAS-DE-CONTEUDO.md`).
 
-### Eventos (`EventsPage.tsx`)
-- [ ] Lista de eventos com dados do banco
-- [ ] Grid de cards de eventos com imagem, data, título, descrição
-- [ ] Filtros por data/tipo
+## Conteúdo de demonstração já disponível
 
-### Detalhe do Evento (`EventDetailPage.tsx`)
-- [ ] Página de detalhe com informações completas
-- [ ] Data, local, descrição, imagem
-- [ ] Formulário de inscrição/confirmação de presença
+O projeto já conta com dados fictícios completos em `src/data/` (usados automaticamente em modo demonstração — `VITE_ENABLE_DEMO_AUTH=true`):
 
-### Notícias (`NewsPage.tsx`)
-- [ ] Lista de notícias com dados do banco
-- [ ] Grid de cards com imagem, título, resumo, data
-- [ ] Busca por título
+| Área | Status |
+|------|--------|
+| Animais para adoção (9 com foto, história, personalidade e saúde) | OK |
+| Histórias individuais dos animais | OK |
+| Eventos (5, com data, local e endereço) | OK |
+| Notícias (5 publicadas) | OK |
+| Produtos do brechó (4) | OK |
+| Galeria (2 álbuns, 8 fotos) | OK |
+| Chave PIX e titular | OK |
+| E-mail, telefone, WhatsApp e endereço | OK |
+| Redes sociais (Instagram, Facebook, YouTube) | OK |
+| Missão e descrição institucional | OK |
+| Fotos (em `public/images/demo/`) | OK |
 
-### Detalhe da Notícia (`NewsDetailPage.tsx`)
-- [ ] Página de detalhe com conteúdo completo
-- [ ] Compartilhamento em redes sociais
+## Pendências reais (substituir conteúdo de demonstração)
 
-### Brechó (`ProductsPage.tsx`)
-- [ ] Lista de produtos com dados do banco
-- [ ] Grid de cards com imagem, nome, preço, descrição
-- [ ] Categorias/filtros
+### Fotografias
+- Substituir as fotos de demonstração por fotos reais dos animais e da ONG.
+- Manter um retrato individual de cada animal disponível.
+- Fotos dos voluntários, eventos e espaço de acolhimento.
 
-### Detalhe do Produto (`ProductDetailPage.tsx`)
-- [ ] Página de detalhe com fotos, descrição, preço
-- [ ] Botão "Entrar em contato" / "Comprar"
+### Dados da ONG
+- Confirmar e substituir pelos dados reais: PIX, endereço, telefone, WhatsApp, e-mail e redes sociais.
+- Informar horário de funcionamento.
 
-### Galeria (`GalleryPage.tsx`)
-- [ ] Álbuns de fotos
-- [ ] Lightbox para visualização ampliada
-- [ ] Categorias (eventos, animais, voluntariado)
+### Equipe
+- Cadastrar a equipe real (nomes e funções) no painel administrativo.
 
-## Páginas Admin (funcionalidades em desenvolvimento)
+### Logotipo
+- Substituir o logotipo ilustrado atual pelo logotipo oficial da ONG, se houver.
 
-### Adoções (`AdminAdoptionsPage.tsx`)
-- [ ] Listagem de solicitações de adoção
-- [ ] Aprovação/rejeição
-- [ ] Detalhes do adotante e animal
+## Funcionalidades ainda não implementadas
 
-### Eventos (`AdminEventsPage.tsx`)
-- [ ] CRUD completo de eventos
-- [ ] Upload de imagem
-- [ ] Gerenciamento de inscrições
-
-### Notícias (`AdminNewsPage.tsx`)
-- [ ] CRUD completo de notícias
-- [ ] Upload de imagem
-- [ ] Editor de conteúdo
-
-### Brechó (`AdminProductsPage.tsx`)
-- [ ] CRUD completo de produtos
-- [ ] Upload de múltiplas imagens
-- [ ] Gerenciamento de estoque
-
-### Mensagens (`AdminMessagesPage.tsx`)
-- [ ] Listagem de mensagens do formulário de contato
-- [ ] Marcar como lida/não lida
-- [ ] Responder
-
-### Voluntários (`AdminVolunteersPage.tsx`)
-- [ ] Listagem de cadastros de voluntários
-- [ ] Aprovação/rejeição
-- [ ] Contato
-
-### Configurações (`AdminSettingsPage.tsx`)
-- [ ] Dados institucionais (nome, endereço, telefone)
-- [ ] Chave Pix para doações
-- [ ] Redes sociais
-
-### Usuários (`AdminUsersPage.tsx`)
-- [ ] Gerenciamento de usuários admin
-- [ ] Roles (admin, superadmin)
-
-## Funcionalidades Transversais
-- [ ] Upload de imagens (componente reutilizável)
-- [ ] Preview de upload
-- [ ] Responsividade completa em admin (tabelas em mobile)
+- [ ] Pagamento online no brechó (checkout/carrinho)
+- [ ] SEO/SSR (o site é uma SPA; pré-renderização recomendada)
 - [ ] Dark mode
-- [ ] Página de loading personalizada
-- [ ] Animações de transição entre páginas
+- [ ] Mais testes automatizados (principalmente no painel admin)
+- [ ] Internacionalização

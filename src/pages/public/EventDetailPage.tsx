@@ -174,7 +174,7 @@ export default function EventDetailPage() {
                     <p key={index}>{paragraph}</p>
                   ))
                 ) : (
-                  <p>Em breve mais informações sobre este evento.</p>
+                  <p>Em breve mais informações sobre este evento. Acompanhe nossas redes sociais!</p>
                 )}
               </div>
             </div>
@@ -189,7 +189,9 @@ export default function EventDetailPage() {
                       Confirmar presença <ExternalLink size={16} aria-hidden="true" />
                     </a>
                   ) : (
-                    <p>As inscrições serão divulgadas em breve. Fique de olho nas nossas redes!</p>
+                    <Link to="/contato" className="btn btn--primary btn--full">
+                      Garantir vaga <ArrowRight size={16} aria-hidden="true" />
+                    </Link>
                   )
                 ) : (
                   <p>

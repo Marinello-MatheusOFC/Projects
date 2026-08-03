@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase';
+import { isDemoConfigured } from '@/lib/auth-demo';
 
 /**
  * Resolve o caminho de uma imagem para uma URL utilizável.
@@ -19,20 +20,26 @@ export function getStoragePublicUrl(bucket: string, path: string): string {
 }
 
 /**
- * Executa uma consulta ao Supabase e, caso a fonte não esteja disponível
- * (erro de rede, backend local desligado, etc.), retorna o fallback local.
- * O fallback só é usado em caso de erro — resultados vazios são respeitados.
+ * Executa uma consulta ao Supabase.
+ * - Em modo demonstração, retorna o fallback local quando o backend
+ *   não está disponível ou não há dados.
+ * - Em produção, erros são propagados e o fallback NUNCA é exibido,
+ *   evitando que conteúdo fictício apareça como se fosse real.
  */
 export async function withFallback<T>(
   query: () => Promise<{ data: T | null; error: unknown }>,
   fallback: T,
 ): Promise<T> {
+  const demo = isDemoConfigured();
+
   try {
     const { data, error } = await query();
-    if (error) return fallback;
-    return (data ?? fallback) as T;
-  } catch {
-    return fallback;
+    if (error) throw error;
+    if (demo && (data === null || data === undefined)) return fallback;
+    return data as T;
+  } catch (error) {
+    if (demo) return fallback;
+    throw error;
   }
 }
 

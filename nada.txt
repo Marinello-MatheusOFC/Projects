@@ -1,1 +1,0 @@
-pasta .zip do meu projeto, manda pra ia e pesquisar dependências para rodar ele, um .bat

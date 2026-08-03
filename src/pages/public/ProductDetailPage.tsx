@@ -139,7 +139,7 @@ export default function ProductDetailPage() {
 
               <div className="animal-detail-section">
                 <h2>Sobre este item</h2>
-                <p>{product.description || 'Mais detalhes deste item serão compartilhados em breve.'}</p>
+                <p>{product.description || 'Peça do bazar beneficente. Renda revertida para os cuidados dos animais. Para reservar, fale conosco pelo WhatsApp ou visite nosso bazar presencial.'}</p>
               </div>
             </div>
 

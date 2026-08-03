@@ -1,4 +1,5 @@
 import { supabase, withFallback, resolveImageUrl } from '@/lib/images';
+import { isDemoConfigured } from '@/lib/auth-demo';
 import type { Animal, AnimalImage, AnimalSpecies, AnimalSex, AnimalSize, AnimalStatus } from '@/types';
 import { demoAnimals, demoAnimalImages } from '@/data/animals';
 
@@ -69,7 +70,7 @@ export async function fetchAnimals(): Promise<AnimalWithImages[]> {
         toWithImages(row, row.animal_images),
       );
     }
-    return demoTowithImages();
+    return isDemoConfigured() ? demoTowithImages() : ([] as AnimalWithImages[]);
   });
 }
 
@@ -101,7 +102,7 @@ export async function fetchAnimalBySlug(slug: string): Promise<AnimalWithImages 
     if (row && 'animal_images' in row && row.id !== '') {
       return toWithImages(row as Animal, (row as { animal_images: AnimalImage[] }).animal_images);
     }
-    return demoBySlug(slug);
+    return isDemoConfigured() ? demoBySlug(slug) : null;
   });
 }
 
@@ -120,7 +121,7 @@ export async function fetchAdminAnimals(): Promise<AnimalWithImages[]> {
         toWithImages(row, row.animal_images),
       );
     }
-    return demoTowithImages();
+    return isDemoConfigured() ? demoTowithImages() : ([] as AnimalWithImages[]);
   });
 }
 
@@ -137,7 +138,12 @@ export async function fetchAdminAnimal(id: string): Promise<AnimalWithImages | n
 }
 
 export async function createAnimal(input: AnimalInput): Promise<Animal | null> {
-  const { data, error } = await supabase.from('animals').insert(input).select().single();
+  const { data: userData } = await supabase.auth.getUser();
+  const { data, error } = await supabase
+    .from('animals')
+    .insert({ ...input, created_by: userData.user?.id })
+    .select()
+    .single();
   if (error) throw new Error('Não foi possível cadastrar o animal.');
   return data as Animal;
 }

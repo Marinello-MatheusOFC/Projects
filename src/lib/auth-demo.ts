@@ -55,31 +55,9 @@ function uuid(): string {
 
 export function isDemoConfigured(): boolean {
   try {
-    const url = (env.VITE_SUPABASE_URL ?? '').trim();
-    const key = (env.VITE_SUPABASE_ANON_KEY ?? '').trim();
-
-    const hasRealUrl =
-      !!url &&
-      url.length >= 10 &&
-      !url.includes('your-project') &&
-      !url.includes('SEU_PROJETO') &&
-      !url.includes('example.com');
-
-    const hasRealKey =
-      !!key &&
-      key.length >= 40 &&
-      !key.includes('dev-') &&
-      !key.includes('dev_anon') &&
-      !key.includes('your-anon') &&
-      !key.includes('SUA_CHAVE') &&
-      key !== 'dev-anon-key';
-
-    const isFallbackEnv =
-      url === 'http://localhost:54321' && key === 'dev-anon-key';
-
-    return !(hasRealUrl && hasRealKey) || isFallbackEnv;
+    return env.VITE_ENABLE_DEMO_AUTH === 'true';
   } catch {
-    return true;
+    return false;
   }
 }
 

@@ -1,4 +1,5 @@
 import { supabase, withFallback, resolveImageUrl } from '@/lib/images';
+import { isDemoConfigured } from '@/lib/auth-demo';
 import type { GalleryAlbum, GalleryImage } from '@/types';
 import { demoGalleryAlbums, demoGalleryImages } from '@/data/content';
 
@@ -45,7 +46,7 @@ export async function fetchGallery(): Promise<GalleryAlbumWithImages[]> {
         decorateAlbum(row, row.gallery_images),
       );
     }
-    return demoAlbums();
+    return isDemoConfigured() ? demoAlbums() : ([] as GalleryAlbumWithImages[]);
   });
 }
 
@@ -77,7 +78,7 @@ export async function fetchAdminGallery(): Promise<GalleryAlbumWithImages[]> {
         decorateAlbum(row, row.gallery_images),
       );
     }
-    return demoAlbums();
+    return isDemoConfigured() ? demoAlbums() : ([] as GalleryAlbumWithImages[]);
   });
 }
 
