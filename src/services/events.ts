@@ -3,6 +3,8 @@ import { isDemoConfigured } from '@/lib/auth-demo';
 import type { Event, EventStatus } from '@/types';
 import { demoEvents } from '@/data/content';
 
+const BUCKET = 'events';
+
 export interface EventWithImage extends Event {
   image: string;
   isUpcoming: boolean;
@@ -123,6 +125,16 @@ export async function updateEvent(id: string, input: Partial<EventInput>): Promi
 }
 
 export async function deleteEvent(id: string): Promise<void> {
-  const { error } = await supabase.from('events').update({ deleted_at: new Date().toISOString() }).eq('id', id);
+  const { error } = await supabase.from('events').delete().eq('id', id);
   if (error) throw new Error('Não foi possível excluir o evento.');
+}
+
+export async function uploadEventImage(eventId: string, file: File): Promise<string | null> {
+  const ext = file.name.split('.').pop() ?? 'jpg';
+  const path = `${eventId}/${Date.now()}-${Math.round(Math.random() * 1e6)}.${ext}`;
+  const { error: uploadError } = await supabase.storage.from(BUCKET).upload(path, file);
+  if (uploadError) throw new Error('Não foi possível enviar a imagem.');
+  const storagePath = `${BUCKET}/${path}`;
+  await updateEvent(eventId, { image_path: storagePath });
+  return storagePath;
 }

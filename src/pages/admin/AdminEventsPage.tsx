@@ -10,6 +10,7 @@ import { EmptyState } from '@/components/feedback/EmptyState';
 import { ErrorState } from '@/components/feedback/ErrorState';
 import { Alert } from '@/components/feedback/Alert';
 import { fetchAdminEvents, deleteEvent, type EventWithImage } from '@/services/events';
+import { logAudit } from '@/services/audit';
 import { formatDate } from '@/lib/format';
 
 const statusConfig: Record<EventWithImage['status'], { label: string; variant: 'success' | 'error' | 'default' }> = {
@@ -58,6 +59,7 @@ export default function AdminEventsPage() {
     if (!window.confirm(`Excluir o evento "${event.title}"?`)) return;
     try {
       await deleteEvent(event.id);
+      await logAudit('excluir', 'event', event.id, { title: event.title });
       setReloadKey((key) => key + 1);
     } catch {
       setDeleteError(true);

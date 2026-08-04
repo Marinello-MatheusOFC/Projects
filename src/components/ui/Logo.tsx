@@ -7,8 +7,8 @@ interface LogoProps {
 }
 
 export function Logo({ size = 'md', showText = true, linkTo }: LogoProps) {
-  const dims = { sm: 32, md: 44, lg: 56 };
-  const imgHeights = { sm: 40, md: 52, lg: 64 };
+  const dims = { sm: 48, md: 72, lg: 96 };
+  const imgHeights = { sm: 60, md: 84, lg: 108 };
   const imgRatio = 300 / 248;
 
   if (showText) {

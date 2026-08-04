@@ -21,6 +21,16 @@ export interface DemoSignInResult {
   error?: string;
 }
 
+export interface SignUpResult {
+  success: boolean;
+  error?: string;
+}
+
+export interface SignInResult {
+  success: boolean;
+  error?: string;
+}
+
 export interface AuthContextType {
   user: User | null;
   profile: Profile | null;
@@ -30,6 +40,7 @@ export interface AuthContextType {
   isAuthenticated: boolean;
   isAdmin: boolean;
   isSuperAdmin: boolean;
+  isUser: boolean;
 
   authMode: AuthMode;
 
@@ -39,6 +50,19 @@ export interface AuthContextType {
     email: string,
     password: string,
   ) => Promise<DemoSignInResult>;
+
+  signUp: (
+    email: string,
+    password: string,
+    fullName: string,
+  ) => Promise<SignUpResult>;
+
+  signIn: (
+    email: string,
+    password: string,
+  ) => Promise<SignInResult>;
+
+  signInWithGoogle: () => Promise<SignInResult>;
 
   hasRole: (roles: Role[]) => boolean;
 }

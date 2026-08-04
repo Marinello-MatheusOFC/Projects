@@ -69,6 +69,7 @@ export default function AdminAdoptionsDetailPage() {
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [profileNames, setProfileNames] = useState<Record<string, string>>({});
 
   const load = useCallback(() => {
     if (!id) return;
@@ -105,6 +106,31 @@ export default function AdminAdoptionsDetailPage() {
   useEffect(() => load(), [load]);
 
   useEffect(() => {
+    const ids = Array.from(new Set(history.map((h) => h.changed_by).filter(Boolean)));
+    if (ids.length === 0) return;
+    let active = true;
+    (async () => {
+      try {
+        const { data } = await supabase
+          .from('profiles')
+          .select('id, full_name')
+          .in('id', ids);
+        if (!active || !data) return;
+        const map: Record<string, string> = {};
+        for (const p of data) {
+          if (p.full_name) map[p.id] = p.full_name;
+        }
+        setProfileNames(map);
+      } catch {
+        /* nome de quem alterou é opcional */
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, [history]);
+
+  useEffect(() => {
     if (!application || !application.animal_id) return;
     let active = true;
     const run = async () => {
@@ -131,7 +157,7 @@ export default function AdminAdoptionsDetailPage() {
     setSaveError(false);
     setSaved(false);
     try {
-      await updateAdoptionStatus(application.id, status, note || null, profile?.full_name ?? undefined);
+      await updateAdoptionStatus(application.id, status, note || null, profile?.id ?? undefined);
       await logAudit('atualizar_status', 'adoption_application', application.id, {
         previous_status: application.status,
         new_status: status,
@@ -302,7 +328,11 @@ export default function AdminAdoptionsDetailPage() {
                       {adoptionStatusLabels[entry.new_status] ?? entry.new_status}
                     </div>
                     {entry.note && <div className="admin-timeline-detail">{entry.note}</div>}
-                    <div className="admin-timeline-detail">por {entry.changed_by}</div>
+                    <div className="admin-timeline-detail">
+                      por{' '}
+                      {profileNames[entry.changed_by] ??
+                        (entry.changed_by ? entry.changed_by.slice(0, 8) : '—')}
+                    </div>
                   </li>
                 ))}
               </ul>

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Pencil, Archive, Star } from 'lucide-react';
+import { Plus, Pencil, Archive, RotateCcw, Star } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Table } from '@/components/ui/Table';
@@ -15,6 +15,7 @@ import {
   fetchAdminAnimals,
   updateAnimal,
   archiveAnimal,
+  restoreAnimal,
   type AnimalWithImages,
 } from '@/services/animals';
 import { logAudit } from '@/services/audit';
@@ -35,6 +36,7 @@ export default function AdminAnimalsPage() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | AnimalStatus>('all');
   const [confirmArchive, setConfirmArchive] = useState<AnimalWithImages | null>(null);
+  const [confirmRestore, setConfirmRestore] = useState<AnimalWithImages | null>(null);
   const [busy, setBusy] = useState(false);
   const [actionError, setActionError] = useState(false);
   const [actionNotice, setActionNotice] = useState<string | null>(null);
@@ -82,6 +84,24 @@ export default function AdminAnimalsPage() {
     } catch {
       setActionError(true);
       setConfirmArchive(null);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handleRestore = async () => {
+    if (!confirmRestore) return;
+    setBusy(true);
+    setActionError(false);
+    try {
+      await restoreAnimal(confirmRestore.id);
+      await logAudit('restaurar', 'animal', confirmRestore.id, { name: confirmRestore.name });
+      setConfirmRestore(null);
+      loadAnimals();
+      flash(`"${confirmRestore.name}" restaurado e disponível para adoção.`);
+    } catch {
+      setActionError(true);
+      setConfirmRestore(null);
     } finally {
       setBusy(false);
     }
@@ -179,16 +199,29 @@ export default function AdminAnimalsPage() {
           >
             <Pencil size={18} aria-hidden="true" />
           </Link>
-          <button
-            type="button"
-            className="admin-icon-btn admin-icon-btn--danger"
-            aria-label={`Arquivar ${animal.name}`}
-            title={`Arquivar ${animal.name}`}
-            disabled={busy || animal.status === 'archived'}
-            onClick={() => setConfirmArchive(animal)}
-          >
-            <Archive size={18} aria-hidden="true" />
-          </button>
+          {animal.status === 'archived' ? (
+            <button
+              type="button"
+              className="admin-icon-btn"
+              aria-label={`Restaurar ${animal.name}`}
+              title="Restaurar"
+              disabled={busy}
+              onClick={() => setConfirmRestore(animal)}
+            >
+              <RotateCcw size={18} aria-hidden="true" />
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="admin-icon-btn admin-icon-btn--danger"
+              aria-label={`Arquivar ${animal.name}`}
+              title={`Arquivar ${animal.name}`}
+              disabled={busy}
+              onClick={() => setConfirmArchive(animal)}
+            >
+              <Archive size={18} aria-hidden="true" />
+            </button>
+          )}
         </div>
       ),
     },
@@ -287,6 +320,21 @@ export default function AdminAnimalsPage() {
         confirmLabel="Arquivar"
         loading={busy}
         onConfirm={handleArchive}
+      />
+
+      <ConfirmDialog
+        isOpen={!!confirmRestore}
+        onClose={() => setConfirmRestore(null)}
+        title="Restaurar animal"
+        message={
+          <>
+            Tem certeza que deseja restaurar <strong>{confirmRestore?.name}</strong>? Ele voltará
+            a aparecer como disponível para adoção no portal.
+          </>
+        }
+        confirmLabel="Restaurar"
+        loading={busy}
+        onConfirm={handleRestore}
       />
     </div>
   );

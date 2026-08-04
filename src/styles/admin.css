@@ -52,7 +52,7 @@
   top: 0;
   padding: 0.75rem 1rem;
   background: var(--admin-red);
-  color: #fff;
+  color: var(--color-white);
   font-weight: var(--font-weight-bold);
   z-index: 9999;
   border-radius: 0 0 var(--admin-radius-button) 0;
@@ -231,7 +231,7 @@
 .admin-sidebar-count {
   margin-left: auto;
   background: var(--admin-red);
-  color: #fff;
+  color: var(--color-white);
   font-size: 0.6875rem;
   font-weight: var(--font-weight-bold);
   border-radius: 999px;
@@ -357,7 +357,7 @@
   height: 38px;
   border-radius: 999px;
   background: var(--admin-red);
-  color: #fff;
+  color: var(--color-white);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -820,13 +820,13 @@
 }
 
 .admin-content .btn--danger {
-  background: #C42B1E;
-  box-shadow: 0 7px 0 #7D170F;
+  background: var(--admin-red);
+  box-shadow: var(--admin-shadow-red);
 }
 
 .admin-content .btn--danger:hover:not(:disabled) {
-  background: #A32015;
-  box-shadow: 0 9px 0 #7D170F;
+  background: var(--admin-red-dark);
+  box-shadow: var(--admin-shadow-red-hover);
 }
 
 .admin-content .btn--outline {
@@ -1064,12 +1064,12 @@
 
 .admin-content .badge--success {
   background: rgba(22, 134, 111, 0.14);
-  color: #0F6E58;
+  color: var(--admin-green-dark);
 }
 
 .admin-content .badge--warning {
   background: var(--admin-yellow-soft);
-  color: #8A6A00;
+  color: var(--admin-yellow-dark);
 }
 
 .admin-content .badge--error {
@@ -1079,7 +1079,7 @@
 
 .admin-content .badge--info {
   background: rgba(22, 134, 111, 0.1);
-  color: #0F6E58;
+  color: var(--admin-green-dark);
 }
 
 /* ═══════════ Thumbs / imagens admin ═══════════ */
@@ -1529,7 +1529,7 @@
   background: var(--admin-yellow-soft);
   border-radius: 16px;
   font-size: var(--text-xs);
-  color: #6B5200;
+  color: var(--admin-yellow-dark);
   line-height: 1.5;
 }
 
@@ -1562,7 +1562,7 @@
   height: 84px;
   border-radius: var(--admin-radius-image);
   background: var(--admin-red);
-  color: #fff;
+  color: var(--color-white);
   font-family: var(--font-heading);
   font-weight: var(--font-weight-extrabold);
   font-size: var(--text-2xl);
@@ -1705,7 +1705,7 @@
   width: 100%;
 }
 .demo-credential-chip:hover {
-  background: #fff;
+  background: var(--color-white);
   border-color: var(--admin-yellow-dark);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(32, 42, 35, 0.08);
@@ -1732,10 +1732,10 @@
   border-bottom: 2px solid var(--admin-yellow-dark);
   padding: 0.75rem 1.25rem;
   background: linear-gradient(135deg, var(--admin-yellow-soft) 0%, var(--admin-peach) 100%);
-  color: #7a4a00;
+  color: var(--admin-yellow-dark);
 }
 .admin-demo-banner .alert-title {
-  color: #5a3500;
+  color: var(--admin-yellow-dark);
   font-family: var(--font-heading);
 }
 .admin-demo-banner .alert-icon {
@@ -1986,9 +1986,9 @@
 .admin-pagination-btn--active {
   background: var(--admin-red);
   border-color: var(--admin-red);
-  color: #fff;
+  color: var(--color-white);
 }
-.admin-pagination-btn--active:hover { color: #fff; }
+.admin-pagination-btn--active:hover { color: var(--color-white); }
 .admin-pagination-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* ── Mobile cards (tabela) ── */
@@ -2138,7 +2138,7 @@
   width: 22px;
   height: 22px;
   border-radius: 999px;
-  background: #fff;
+  background: var(--color-white);
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
   transition: transform var(--transition-fast);
 }

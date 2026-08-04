@@ -10,6 +10,7 @@ import { EmptyState } from '@/components/feedback/EmptyState';
 import { ErrorState } from '@/components/feedback/ErrorState';
 import { Alert } from '@/components/feedback/Alert';
 import { fetchAdminNews, deleteNews, type NewsWithImage } from '@/services/news';
+import { logAudit } from '@/services/audit';
 import { formatDate } from '@/lib/format';
 
 const statusConfig: Record<NewsWithImage['status'], { label: string; variant: 'success' | 'warning' }> = {
@@ -57,6 +58,7 @@ export default function AdminNewsPage() {
     if (!window.confirm(`Excluir a notícia "${item.title}"?`)) return;
     try {
       await deleteNews(item.id);
+      await logAudit('excluir', 'news_post', item.id, { title: item.title });
       setReloadKey((key) => key + 1);
     } catch {
       setDeleteError(true);

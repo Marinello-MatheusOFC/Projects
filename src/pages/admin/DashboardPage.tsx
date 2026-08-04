@@ -230,24 +230,15 @@ export default function DashboardPage() {
           }
         })(),
         safeCount(
-          (q) =>
-            q
-              .in('status', ['pending', 'novo', 'em_analise', 'new'])
-              .is('deleted_at', null),
+          (q) => q.in('status', ['pending', 'novo', 'em_analise', 'new']),
           'adoption_applications',
         ),
         safeCount(
-          (q) =>
-            q
-              .in('status', ['analise', 'review', 'under_review', 'interview'])
-              .is('deleted_at', null),
+          (q) => q.in('status', ['analise', 'review', 'under_review', 'interview']),
           'adoption_applications',
         ),
         safeCount(
-          (q) =>
-            q
-              .or('status.is.new,status.is.pending,is_read.is.false')
-              .is('deleted_at', null),
+          (q) => q.eq('status', 'new').is('deleted_at', null),
           'contact_messages',
         ),
         safeCount(
@@ -266,10 +257,7 @@ export default function DashboardPage() {
           'events',
         ),
         safeCount(
-          (q) =>
-            q
-              .or('status.eq.draft,published.is.false')
-              .is('deleted_at', null),
+          (q) => q.eq('status', 'draft').is('deleted_at', null),
           'news_posts',
         ),
         safeCount(
@@ -660,7 +648,7 @@ export default function DashboardPage() {
       key: 'escrever-noticia',
       label: 'Escrever notícia',
       icon: PenLine,
-      link: '/admin/noticias/nova',
+      link: '/admin/noticias/novo',
     },
     {
       key: 'ver-adocoes',
@@ -1109,10 +1097,7 @@ export default function DashboardPage() {
                   </thead>
                   <tbody>
                     {recentMessages.map((m) => {
-                      const isUnread =
-                        m.status === 'new' ||
-                        m.status === 'pending' ||
-                        (m as unknown as { is_read?: boolean }).is_read === false;
+                      const isUnread = m.status === 'new';
                       return (
                         <tr key={m.id}>
                           <td style={{ padding: '0.625rem 0', verticalAlign: 'top' }}>
@@ -1193,7 +1178,7 @@ export default function DashboardPage() {
                   {upcomingEvents.map((ev) => (
                     <Link
                       key={ev.id}
-                      to={`/admin/eventos/${ev.id}`}
+                      to={`/admin/eventos/${ev.id}/editar`}
                       role="listitem"
                       style={{
                         display: 'flex',

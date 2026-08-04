@@ -3,6 +3,8 @@ import { isDemoConfigured } from '@/lib/auth-demo';
 import type { NewsPost, NewsStatus } from '@/types';
 import { demoNews } from '@/data/content';
 
+const BUCKET = 'news';
+
 export interface NewsWithImage extends NewsPost {
   image: string;
 }
@@ -102,9 +104,16 @@ export async function updateNews(id: string, input: Partial<NewsInput>): Promise
 }
 
 export async function deleteNews(id: string): Promise<void> {
-  const { error } = await supabase
-    .from('news_posts')
-    .update({ deleted_at: new Date().toISOString() })
-    .eq('id', id);
+  const { error } = await supabase.from('news_posts').delete().eq('id', id);
   if (error) throw new Error('Não foi possível excluir a notícia.');
+}
+
+export async function uploadNewsImage(newsId: string, file: File): Promise<string | null> {
+  const ext = file.name.split('.').pop() ?? 'jpg';
+  const path = `${newsId}/${Date.now()}-${Math.round(Math.random() * 1e6)}.${ext}`;
+  const { error: uploadError } = await supabase.storage.from(BUCKET).upload(path, file);
+  if (uploadError) throw new Error('Não foi possível enviar a imagem.');
+  const storagePath = `${BUCKET}/${path}`;
+  await updateNews(newsId, { cover_image_path: storagePath });
+  return storagePath;
 }

@@ -10,8 +10,11 @@ import { Select } from '@/components/ui/Select';
 import { Alert } from '@/components/feedback/Alert';
 import { ErrorState } from '@/components/feedback/ErrorState';
 import { TableSkeleton } from '@/components/feedback/Skeleton';
-import { fetchAdminNews, createNews, updateNews, type NewsInput } from '@/services/news';
+import { fetchAdminNews, createNews, updateNews, uploadNewsImage, type NewsInput } from '@/services/news';
+import { ImageUpload } from '@/components/admin/ImageUpload';
 import { slugify } from '@/lib/format';
+import { resolveImageUrl } from '@/lib/images';
+import { logAudit } from '@/services/audit';
 
 const newsSchema = z.object({
   title: z.string().min(2, 'O título deve ter pelo menos 2 caracteres'),
@@ -38,6 +41,9 @@ export default function AdminNewsFormPage() {
   const [loading, setLoading] = useState(isEditing);
   const [loadError, setLoadError] = useState(false);
   const [submitState, setSubmitState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [coverImagePath, setCoverImagePath] = useState<string | null>(null);
+  const [imageUploading, setImageUploading] = useState(false);
+  const [imageError, setImageError] = useState('');
 
   const {
     register,
@@ -63,6 +69,7 @@ export default function AdminNewsFormPage() {
           setLoading(false);
           return;
         }
+        setCoverImagePath(found.cover_image_path);
         reset({
           title: found.title,
           excerpt: found.excerpt ?? '',
@@ -100,13 +107,35 @@ export default function AdminNewsFormPage() {
       };
       if (isEditing && id) {
         await updateNews(id, input);
+        await logAudit('atualizar', 'news_post', id, { title: input.title, slug: input.slug });
+        setSubmitState('success');
+        setTimeout(() => navigate('/admin/noticias'), 1500);
       } else {
-        await createNews(input);
+        const created = await createNews(input);
+        if (created) await logAudit('criar', 'news_post', created.id, { title: input.title, slug: input.slug });
+        setSubmitState('success');
+        if (created) {
+          setTimeout(() => navigate(`/admin/noticias/${created.id}/editar`, { replace: true }), 1200);
+        } else {
+          setTimeout(() => navigate('/admin/noticias'), 1200);
+        }
       }
-      setSubmitState('success');
-      setTimeout(() => navigate('/admin/noticias'), 1500);
     } catch {
       setSubmitState('error');
+    }
+  };
+
+  const handleUpload = async (file: File) => {
+    if (!id) return;
+    setImageUploading(true);
+    setImageError('');
+    try {
+      const storagePath = await uploadNewsImage(id, file);
+      if (storagePath) setCoverImagePath(storagePath);
+    } catch (err) {
+      setImageError(err instanceof Error ? err.message : 'Não foi possível enviar a imagem.');
+    } finally {
+      setImageUploading(false);
     }
   };
 
@@ -158,6 +187,19 @@ export default function AdminNewsFormPage() {
 
         <Textarea label="Resumo" error={errors.excerpt?.message} {...register('excerpt')} />
         <Textarea label="Conteúdo" error={errors.content?.message} {...register('content')} />
+
+        {isEditing && id && (
+          <ImageUpload
+            label="Capa da notícia"
+            alt="Imagem de capa da notícia"
+            fallback="news"
+            currentUrl={resolveImageUrl(coverImagePath)}
+            busy={imageUploading}
+            error={imageError}
+            onClearError={() => setImageError('')}
+            onUpload={handleUpload}
+          />
+        )}
 
         {submitState === 'error' && (
           <Alert type="error" message={`Não foi possível ${isEditing ? 'atualizar' : 'cadastrar'} a notícia.`} />

@@ -131,8 +131,7 @@ export default function LoginPage() {
       <div className="admin-login-brand">
         <div className="admin-login-brand-inner">
           <div className="admin-login-brand-logo">
-            <Logo size="md" showText={false} />
-            <span>SOS Focinho Carente</span>
+            <Logo size="md" />
           </div>
           <h2>Painel administrativo</h2>
           <p>
@@ -156,11 +155,7 @@ export default function LoginPage() {
       <div className="admin-login-card-wrap">
         <div className="admin-login-card">
           <div className="admin-login-logo-row">
-            <Logo size="md" showText={false} />
-            <span className="admin-login-logo-text">
-              <strong>Painel Administrativo</strong>
-              <span>SOS Focinho Carente</span>
-            </span>
+            <Logo size="md" />
           </div>
 
           <h1 className="admin-login-title">Acessar o painel</h1>

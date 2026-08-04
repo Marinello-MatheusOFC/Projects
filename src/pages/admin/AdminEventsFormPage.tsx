@@ -11,8 +11,11 @@ import { Checkbox } from '@/components/ui/Checkbox';
 import { Alert } from '@/components/feedback/Alert';
 import { ErrorState } from '@/components/feedback/ErrorState';
 import { TableSkeleton } from '@/components/feedback/Skeleton';
-import { fetchAdminEvents, createEvent, updateEvent, type EventInput } from '@/services/events';
+import { fetchAdminEvents, createEvent, updateEvent, uploadEventImage, type EventInput } from '@/services/events';
+import { ImageUpload } from '@/components/admin/ImageUpload';
 import { slugify } from '@/lib/format';
+import { resolveImageUrl } from '@/lib/images';
+import { logAudit } from '@/services/audit';
 
 const eventSchema = z.object({
   title: z.string().min(2, 'O título deve ter pelo menos 2 caracteres'),
@@ -50,6 +53,9 @@ export default function AdminEventsFormPage() {
   const [loadError, setLoadError] = useState(false);
   const [submitState, setSubmitState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [currentSlug, setCurrentSlug] = useState<string | null>(null);
+  const [imagePath, setImagePath] = useState<string | null>(null);
+  const [imageUploading, setImageUploading] = useState(false);
+  const [imageError, setImageError] = useState('');
 
   const {
     register,
@@ -77,6 +83,7 @@ export default function AdminEventsFormPage() {
           return;
         }
         setCurrentSlug(found.slug);
+        setImagePath(found.image_path);
         reset({
           title: found.title,
           summary: found.summary ?? '',
@@ -120,13 +127,35 @@ export default function AdminEventsFormPage() {
       };
       if (isEditing && id) {
         await updateEvent(id, input);
+        await logAudit('atualizar', 'event', id, { title: input.title, slug: input.slug });
+        setSubmitState('success');
+        setTimeout(() => navigate('/admin/eventos'), 1500);
       } else {
-        await createEvent(input);
+        const created = await createEvent(input);
+        if (created) await logAudit('criar', 'event', created.id, { title: input.title, slug: input.slug });
+        setSubmitState('success');
+        if (created) {
+          setTimeout(() => navigate(`/admin/eventos/${created.id}/editar`, { replace: true }), 1200);
+        } else {
+          setTimeout(() => navigate('/admin/eventos'), 1200);
+        }
       }
-      setSubmitState('success');
-      setTimeout(() => navigate('/admin/eventos'), 1500);
     } catch {
       setSubmitState('error');
+    }
+  };
+
+  const handleUpload = async (file: File) => {
+    if (!id) return;
+    setImageUploading(true);
+    setImageError('');
+    try {
+      const storagePath = await uploadEventImage(id, file);
+      if (storagePath) setImagePath(storagePath);
+    } catch (err) {
+      setImageError(err instanceof Error ? err.message : 'Não foi possível enviar a imagem.');
+    } finally {
+      setImageUploading(false);
     }
   };
 
@@ -193,6 +222,19 @@ export default function AdminEventsFormPage() {
 
         <Textarea label="Resumo" error={errors.summary?.message} {...register('summary')} />
         <Textarea label="Descrição" error={errors.description?.message} {...register('description')} />
+
+        {isEditing && id && (
+          <ImageUpload
+            label="Imagem do evento"
+            alt="Imagem de capa do evento"
+            fallback="event"
+            currentUrl={resolveImageUrl(imagePath)}
+            busy={imageUploading}
+            error={imageError}
+            onClearError={() => setImageError('')}
+            onUpload={handleUpload}
+          />
+        )}
 
         <div className="admin-form-checkboxes">
           <Checkbox label="Publicado no site" {...register('published')} />

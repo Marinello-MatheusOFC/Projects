@@ -37,7 +37,7 @@ interface ContextualAction {
 const CONTEXTUAL_ACTIONS: ContextualAction[] = [
   { label: 'Cadastrar animal', to: '/admin/animais/novo', module: 'animais' },
   { label: 'Criar evento', to: '/admin/eventos/novo', module: 'eventos' },
-  { label: 'Escrever notícia', to: '/admin/noticias/nova', module: 'noticias' },
+  { label: 'Escrever notícia', to: '/admin/noticias/novo', module: 'noticias' },
   { label: 'Adicionar produto', to: '/admin/produtos/novo', module: 'produtos' },
   { label: 'Criar álbum', to: '/admin/galeria/novo', module: 'galeria' },
 ];
@@ -57,7 +57,7 @@ function buildBreadcrumb(pathname: string): BreadcrumbItem[] {
   segments.forEach((seg, index) => {
     if (seg === 'admin') return;
     current = `${current}/${seg}`;
-    items.push({ label: segmentLabel(seg, index, segments), to: current });
+    items.push({ label: segmentLabel(seg, index, segments), to: `/admin${current}` });
   });
   return items;
 }

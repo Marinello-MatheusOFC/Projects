@@ -328,12 +328,18 @@ export function AdminSidebar({
   const drawerRef =
     useRef<HTMLDivElement | null>(null);
 
-  const isMobile =
+  const [isMobile, setIsMobile] = useState(
     typeof window !== 'undefined'
-      ? window.matchMedia(
-          '(max-width: 1023px)',
-        ).matches
-      : false;
+      ? window.matchMedia('(max-width: 1023px)').matches
+      : false,
+  );
+
+  useEffect(() => {
+    const mql = window.matchMedia('(max-width: 1023px)');
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mql.addEventListener('change', handler);
+    return () => mql.removeEventListener('change', handler);
+  }, []);
 
   useFocusTrap(
     open && isMobile,

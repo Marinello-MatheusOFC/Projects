@@ -738,57 +738,12 @@ CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 
--- 7. Triggers automáticos de AUDIT LOG (evita ter que logar manualmente no app)
-CREATE OR REPLACE FUNCTION public.log_audit_from_trigger()
-RETURNS TRIGGER AS $$
-DECLARE
-  ent_id TEXT;
-  action TEXT;
-  meta JSONB;
-  ent_type TEXT;
-BEGIN
-  ent_type := TG_ARGV[0];
-
-  IF TG_OP = 'INSERT' THEN action := 'criar';   ent_id := NEW.id::TEXT; meta := to_jsonb(NEW); END IF;
-  IF TG_OP = 'UPDATE' THEN action := 'editar';  ent_id := NEW.id::TEXT; meta := jsonb_build_object('old', to_jsonb(OLD), 'new', to_jsonb(NEW)); END IF;
-  IF TG_OP = 'DELETE' THEN action := 'excluir'; ent_id := OLD.id::TEXT; meta := to_jsonb(OLD); END IF;
-
-  INSERT INTO public.audit_logs (actor_id, action, entity_type, entity_id, metadata)
-  VALUES (auth.uid(), action, ent_type, ent_id, meta);
-
-  IF TG_OP = 'DELETE' THEN RETURN OLD; ELSE RETURN NEW; END IF;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
-DROP TRIGGER IF EXISTS audit_animals_trg ON public.animals;
-CREATE TRIGGER audit_animals_trg
-  AFTER INSERT OR UPDATE OR DELETE ON public.animals
-  FOR EACH ROW EXECUTE FUNCTION public.log_audit_from_trigger('animal');
-
-DROP TRIGGER IF EXISTS audit_events_trg ON public.events;
-CREATE TRIGGER audit_events_trg
-  AFTER INSERT OR UPDATE OR DELETE ON public.events
-  FOR EACH ROW EXECUTE FUNCTION public.log_audit_from_trigger('event');
-
-DROP TRIGGER IF EXISTS audit_news_trg ON public.news_posts;
-CREATE TRIGGER audit_news_trg
-  AFTER INSERT OR UPDATE OR DELETE ON public.news_posts
-  FOR EACH ROW EXECUTE FUNCTION public.log_audit_from_trigger('news');
-
-DROP TRIGGER IF EXISTS audit_products_trg ON public.products;
-CREATE TRIGGER audit_products_trg
-  AFTER INSERT OR UPDATE OR DELETE ON public.products
-  FOR EACH ROW EXECUTE FUNCTION public.log_audit_from_trigger('product');
-
-DROP TRIGGER IF EXISTS audit_settings_trg ON public.site_settings;
-CREATE TRIGGER audit_settings_trg
-  AFTER INSERT OR UPDATE ON public.site_settings
-  FOR EACH ROW EXECUTE FUNCTION public.log_audit_from_trigger('setting');
-
-DROP TRIGGER IF EXISTS audit_profiles_trg ON public.profiles;
-CREATE TRIGGER audit_profiles_trg
-  AFTER INSERT OR UPDATE OR DELETE ON public.profiles
-  FOR EACH ROW EXECUTE FUNCTION public.log_audit_from_trigger('profile');
+-- 7. Triggers automáticos de AUDIT LOG → REMOVIDOS (ver migration 004).
+--    Auditoria é feita exclusivamente pela camada de aplicação (logAudit)
+--    para evitar duplicação e garantir labels semânticos nos logs.
+--    O bloco abaixo foi removido; se precisar, veja migration 001 ou 002.
+-- (função log_audit_from_trigger removida — ver 004_drop_audit_triggers.sql)
+-- (triggers e função removidos — ver 004_drop_audit_triggers.sql)
 
 -- =====================================================================================
 -- PARTE 4/5 — SEED INICIAL: CATEGORIAS (roupas, acessórios, notícias etc.)

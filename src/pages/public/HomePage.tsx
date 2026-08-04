@@ -14,6 +14,7 @@ import {
   PawPrint,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { Logo } from '@/components/ui/Logo';
 import { ResponsivePicture } from '@/components/media/ResponsivePicture';
 import { CallToAction } from '@/components/layout/CallToAction';
 import { fetchFeaturedAnimals, fetchAdoptableAnimals, type AnimalWithImages } from '@/services/animals';
@@ -52,15 +53,27 @@ export default function HomePage() {
 
   useEffect(() => {
     let active = true;
-    fetchFeaturedAnimals(3).then((result) => {
-      if (active) setAnimals(result);
-    });
-    fetchAdoptableAnimals().then((result) => {
-      if (active) setStrip(result.slice(0, 6));
-    });
-    fetchUpcomingEvents().then((result) => {
-      if (active) setEvents(result.slice(0, 3));
-    });
+    fetchFeaturedAnimals(3)
+      .then((result) => {
+        if (active) setAnimals(result);
+      })
+      .catch(() => {
+        if (active) setAnimals([]);
+      });
+    fetchAdoptableAnimals()
+      .then((result) => {
+        if (active) setStrip(result.slice(0, 6));
+      })
+      .catch(() => {
+        if (active) setStrip([]);
+      });
+    fetchUpcomingEvents()
+      .then((result) => {
+        if (active) setEvents(result.slice(0, 3));
+      })
+      .catch(() => {
+        if (active) setEvents([]);
+      });
     return () => {
       active = false;
     };
@@ -73,7 +86,10 @@ export default function HomePage() {
         <PawPrint className="home-hero__paw" size={110} strokeWidth={1} aria-hidden="true" style={{ bottom: '6%', right: '40%' }} />
         <div className="home-hero__inner">
           <div className="home-hero__content">
-            <span className="home-hero__eyebrow">SOS Focinho Carente</span>
+            <span className="home-hero__eyebrow">
+              <Logo size="sm" showText={false} />
+              SOS Focinho Carente
+            </span>
             <h1 className="home-hero__title">
               Todo focinho merece a chance de <span className="text-highlight">encontrar um lar.</span>
             </h1>

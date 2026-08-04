@@ -26,6 +26,13 @@ export const DEMO_USERS: DemoCredentials[] = [
     full_name: 'João Santos (Superadmin Demo)',
     active: true,
   },
+  {
+    email: 'usuario@exemplo.com',
+    password: 'user123',
+    role: 'user',
+    full_name: 'Ana Souza (Usuário Demo)',
+    active: true,
+  },
 ];
 
 export interface DemoSession {

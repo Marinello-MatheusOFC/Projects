@@ -14,6 +14,7 @@ import { Alert } from '@/components/feedback/Alert';
 import { TableSkeleton } from '@/components/feedback/Skeleton';
 import { ErrorState } from '@/components/feedback/ErrorState';
 import { ResponsivePicture } from '@/components/media/ResponsivePicture';
+import { logAudit } from '@/services/audit';
 import {
   fetchAdminAnimals,
   createAnimal,
@@ -198,11 +199,19 @@ export default function AdminAnimalsFormPage() {
     try {
       if (isEditing && id) {
         await updateAnimal(id, input);
+        await logAudit('atualizar', 'animal', id, { name: input.name, slug: input.slug });
+        setSubmitState('success');
+        setTimeout(() => navigate('/admin/animais'), 1200);
       } else {
-        await createAnimal(input);
+        const created = await createAnimal(input);
+        if (created) await logAudit('criar', 'animal', created.id, { name: input.name, slug: input.slug });
+        setSubmitState('success');
+        if (created) {
+          setTimeout(() => navigate(`/admin/animais/${created.id}/editar`, { replace: true }), 1200);
+        } else {
+          setTimeout(() => navigate('/admin/animais'), 1200);
+        }
       }
-      setSubmitState('success');
-      setTimeout(() => navigate('/admin/animais'), 1200);
     } catch {
       setSubmitState('error');
     }

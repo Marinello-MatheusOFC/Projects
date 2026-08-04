@@ -76,7 +76,7 @@ export default function AdminSettingsPage() {
     setSaved(null);
     setSaveError(false);
     try {
-      await saveSiteSetting(SETTING_KEYS[key], value, profile?.full_name ?? null);
+      await saveSiteSetting(SETTING_KEYS[key], value, profile?.id ?? null);
       setSaved(key);
       setTimeout(() => setSaved(null), 3000);
     } catch {

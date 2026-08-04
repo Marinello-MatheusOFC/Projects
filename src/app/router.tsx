@@ -25,6 +25,9 @@ const NotFoundPage = lazy(() => import('@/pages/errors/NotFoundPage'));
 const ForbiddenPage = lazy(() => import('@/pages/errors/ForbiddenPage'));
 const ServerErrorPage = lazy(() => import('@/pages/errors/ServerErrorPage'));
 const LoginPage = lazy(() => import('@/pages/admin/LoginPage'));
+const UserLoginPage = lazy(() => import('@/pages/public/UserLoginPage'));
+const RegisterPage = lazy(() => import('@/pages/public/RegisterPage'));
+const UserDashboardPage = lazy(() => import('@/pages/public/UserDashboardPage'));
 const DashboardPage = lazy(() => import('@/pages/admin/DashboardPage'));
 const AdminAnimalsPage = lazy(() => import('@/pages/admin/AdminAnimalsPage'));
 const AdminAnimalsFormPage = lazy(() => import('@/pages/admin/AdminAnimalsFormPage'));
@@ -85,6 +88,9 @@ export function AppRouter() {
           <Route path="/brecho/:slug" element={<ProductDetailPage />} />
           <Route path="/galeria" element={<GalleryPage />} />
           <Route path="/contato" element={<ContactPage />} />
+          <Route path="/entrar" element={<UserLoginPage />} />
+          <Route path="/cadastrar" element={<RegisterPage />} />
+          <Route path="/minha-conta" element={<UserDashboardPage />} />
         </Route>
 
         <Route path="/admin/login" element={<LoginPage />} />

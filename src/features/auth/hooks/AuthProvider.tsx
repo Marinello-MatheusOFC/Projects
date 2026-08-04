@@ -20,6 +20,8 @@ import {
   type AuthContextType,
   type AuthMode,
   type DemoSignInResult,
+  type SignInResult,
+  type SignUpResult,
 } from './useAuth';
 
 import {
@@ -156,6 +158,163 @@ export function AuthProvider({
       } finally {
         setLoading(false);
         setInitialized(true);
+      }
+    },
+    [],
+  );
+
+  const signUp = useCallback(
+    async (
+      email: string,
+      password: string,
+      fullName: string,
+    ): Promise<SignUpResult> => {
+      setLoading(true);
+
+      try {
+        const { data, error } =
+          await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+              data: {
+                full_name: fullName,
+              },
+            },
+          });
+
+        if (error) {
+          return {
+            success: false,
+            error: error.message,
+          };
+        }
+
+        if (data.user) {
+          setUser(data.user);
+
+          const loadedProfile =
+            await loadProfile(data.user.id);
+          setProfile(loadedProfile);
+          setAuthMode('supabase');
+
+          return { success: true };
+        }
+
+        return {
+          success: false,
+          error: 'Não foi possível criar a conta.',
+        };
+      } catch (error) {
+        console.error(
+          'Erro inesperado durante o cadastro:',
+          error,
+        );
+
+        return {
+          success: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Erro inesperado durante o cadastro.',
+        };
+      } finally {
+        setLoading(false);
+        setInitialized(true);
+      }
+    },
+    [loadProfile],
+  );
+
+  const signIn = useCallback(
+    async (
+      email: string,
+      password: string,
+    ): Promise<SignInResult> => {
+      setLoading(true);
+
+      try {
+        const { data, error } =
+          await supabase.auth.signInWithPassword({
+            email,
+            password,
+          });
+
+        if (error) {
+          return {
+            success: false,
+            error: error.message,
+          };
+        }
+
+        if (data.user) {
+          setUser(data.user);
+
+          const loadedProfile =
+            await loadProfile(data.user.id);
+          setProfile(loadedProfile);
+          setAuthMode('supabase');
+
+          return { success: true };
+        }
+
+        return {
+          success: false,
+          error: 'Não foi possível entrar.',
+        };
+      } catch (error) {
+        console.error(
+          'Erro inesperado durante o login:',
+          error,
+        );
+
+        return {
+          success: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Erro inesperado durante o login.',
+        };
+      } finally {
+        setLoading(false);
+        setInitialized(true);
+      }
+    },
+    [loadProfile],
+  );
+
+  const signInWithGoogle = useCallback(
+    async (): Promise<SignInResult> => {
+      try {
+        const { error } =
+          await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+              redirectTo: `${window.location.origin}/`,
+            },
+          });
+
+        if (error) {
+          return {
+            success: false,
+            error: error.message,
+          };
+        }
+
+        return { success: true };
+      } catch (error) {
+        console.error(
+          'Erro inesperado durante o login com Google:',
+          error,
+        );
+
+        return {
+          success: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Erro inesperado durante o login com Google.',
+        };
       }
     },
     [],
@@ -378,8 +537,15 @@ export function AuthProvider({
           profile?.role ===
             'superadmin',
 
+        isUser:
+          isProfileActive &&
+          profile?.role === 'user',
+
         signOut,
         signInDemo,
+        signUp,
+        signIn,
+        signInWithGoogle,
         hasRole,
       }),
       [
@@ -391,6 +557,9 @@ export function AuthProvider({
         isProfileActive,
         signOut,
         signInDemo,
+        signUp,
+        signIn,
+        signInWithGoogle,
         hasRole,
       ],
     );

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -9,6 +10,7 @@ import { Select } from '@/components/ui/Select';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { Alert } from '@/components/feedback/Alert';
 import { submitAdoptionApplication } from '@/services/applications';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 
 const adoptionFormSchema = z.object({
   applicant_name: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
@@ -39,6 +41,7 @@ interface AdoptionFormProps {
 
 export function AdoptionForm({ animalId, onSuccess }: AdoptionFormProps) {
   const [submitState, setSubmitState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const { user, isAuthenticated } = useAuth();
 
   const {
     register,
@@ -57,7 +60,11 @@ export function AdoptionForm({ animalId, onSuccess }: AdoptionFormProps) {
   const onSubmit = async (data: AdoptionFormData) => {
     setSubmitState('loading');
     try {
-      await submitAdoptionApplication({ animal_id: animalId, ...data });
+      await submitAdoptionApplication({
+        animal_id: animalId,
+        ...data,
+        user_id: user?.id ?? null,
+      });
       setSubmitState('success');
       setTimeout(() => onSuccess(), 2000);
     } catch {
@@ -80,6 +87,19 @@ export function AdoptionForm({ animalId, onSuccess }: AdoptionFormProps) {
         Este formulário é uma manifestação de interesse e não garante a adoção.
         Todo o processo passa por análise e entrevista.
       </p>
+
+      {!isAuthenticated && (
+        <Alert
+          type="info"
+          message={
+            <>
+              <Link to="/cadastrar" style={{ fontWeight: 600 }}>Cadastre-se</Link> ou{' '}
+              <Link to="/entrar" style={{ fontWeight: 600 }}>entre na sua conta</Link> para
+              acompanhar o status da sua candidatura.
+            </>
+          }
+        />
+      )}
 
       <Input
         label="Nome completo"

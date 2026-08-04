@@ -61,6 +61,7 @@ export async function fetchAnimals(): Promise<AnimalWithImages[]> {
         .from('animals')
         .select('*, animal_images(*)')
         .eq('published', true)
+        .eq('status', 'available')
         .is('deleted_at', null)
         .order('created_at', { ascending: false }),
     [] as AnimalWithImages[],
@@ -76,8 +77,7 @@ export async function fetchAnimals(): Promise<AnimalWithImages[]> {
 
 export async function fetchAdoptableAnimals(): Promise<AnimalWithImages[]> {
   const all = await fetchAnimals();
-  const adoptable = all.filter((a) => a.status === 'available');
-  return adoptable.length > 0 ? adoptable : all;
+  return all.filter((a) => a.status === 'available');
 }
 
 export async function fetchFeaturedAnimals(limit = 4): Promise<AnimalWithImages[]> {
@@ -112,7 +112,6 @@ export async function fetchAdminAnimals(): Promise<AnimalWithImages[]> {
       supabase
         .from('animals')
         .select('*, animal_images(*)')
-        .is('deleted_at', null)
         .order('created_at', { ascending: false }),
     [] as AnimalWithImages[],
   ).then((rows) => {
@@ -130,7 +129,6 @@ export async function fetchAdminAnimal(id: string): Promise<AnimalWithImages | n
     .from('animals')
     .select('*, animal_images(*)')
     .eq('id', id)
-    .is('deleted_at', null)
     .maybeSingle();
   if (error) throw new Error('Não foi possível carregar o animal.');
   if (!data) return null;
@@ -157,9 +155,17 @@ export async function updateAnimal(id: string, input: Partial<AnimalInput>): Pro
 export async function archiveAnimal(id: string): Promise<void> {
   const { error } = await supabase
     .from('animals')
-    .update({ deleted_at: new Date().toISOString(), status: 'archived' })
+    .update({ deleted_at: new Date().toISOString(), status: 'archived', published: false })
     .eq('id', id);
   if (error) throw new Error('Não foi possível arquivar o animal.');
+}
+
+export async function restoreAnimal(id: string): Promise<void> {
+  const { error } = await supabase
+    .from('animals')
+    .update({ deleted_at: null, status: 'available', published: true })
+    .eq('id', id);
+  if (error) throw new Error('Não foi possível restaurar o animal.');
 }
 
 export async function uploadAnimalImage(

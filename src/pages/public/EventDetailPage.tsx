@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ChevronLeft, Calendar, Clock, MapPin, ExternalLink, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { ErrorState } from '@/components/feedback/ErrorState';
 import { ResponsivePicture } from '@/components/media/ResponsivePicture';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { fetchEventBySlug, fetchEvents, type EventWithImage } from '@/services/events';
@@ -71,32 +72,58 @@ export default function EventDetailPage() {
   const { slug } = useParams<{ slug: string }>();
   const [event, setEvent] = useState<EventWithImage | null | undefined>(undefined);
   const [others, setOthers] = useState<EventWithImage[]>([]);
+  const [error, setError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     if (!slug) return;
     let active = true;
     setEvent(undefined);
-    fetchEventBySlug(slug).then((result) => {
-      if (active) setEvent(result);
-    });
-    fetchEvents().then((result) => {
-      if (active) {
-        setOthers(
-          result
-            .filter((item) => item.slug !== slug && item.isUpcoming && !item.isCancelled)
-            .sort((a, b) => new Date(a.start_at).getTime() - new Date(b.start_at).getTime())
-            .slice(0, 3),
-        );
-      }
-    });
+    setError(false);
+    fetchEventBySlug(slug)
+      .then((result) => {
+        if (active) setEvent(result);
+      })
+      .catch(() => {
+        if (active) setError(true);
+      });
+    fetchEvents()
+      .then((result) => {
+        if (active) {
+          setOthers(
+            result
+              .filter((item) => item.slug !== slug && item.isUpcoming && !item.isCancelled)
+              .sort((a, b) => new Date(a.start_at).getTime() - new Date(b.start_at).getTime())
+              .slice(0, 3),
+          );
+        }
+      })
+      .catch(() => {
+        if (active) setOthers([]);
+      });
     return () => {
       active = false;
     };
-  }, [slug]);
+  }, [slug, reloadKey]);
 
   useEffect(() => {
     document.title = event ? `${event.title} — SOS Focinho Carente` : 'Eventos — SOS Focinho Carente';
   }, [event]);
+
+  if (error) {
+    return (
+      <div>
+        <section className="section">
+          <div className="container">
+            <ErrorState
+              message="Não conseguimos carregar este evento agora."
+              onRetry={() => setReloadKey((key) => key + 1)}
+            />
+          </div>
+        </section>
+      </div>
+    );
+  }
 
   if (event === undefined) {
     return (

@@ -579,7 +579,7 @@ body {
 }
 .animal-story--warm .animal-story-image, .about-story--warm .about-story-image { box-shadow: var(--frame-shadow-red); }
 
-.animal-story-body h3 { font-size: var(--text-3xl); margin-bottom: var(--space-4); }
+.animal-story-body h3 { font-size: var(--text-2xl); margin-bottom: var(--space-4); }
 .animal-story-body p { font-size: var(--text-lg); }
 
 .journey-steps { display: flex; flex-direction: column; gap: var(--space-4); }
@@ -807,10 +807,6 @@ body {
 @keyframes pulseSoft {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.05); }
-}
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 .home-hero__media, .page-header__media { animation: fadeInUp 0.7s ease both; }

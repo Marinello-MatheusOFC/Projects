@@ -118,6 +118,7 @@ export default function EventsPage() {
       <section className="section section--cream">
         <div className="container">
           <div className="section-intro">
+            <span className="eyebrow">Agenda</span>
             <h2>Próximos eventos</h2>
             <p>Venha fazer parte. Sua presença faz toda a diferença para os animais.</p>
           </div>
@@ -147,6 +148,7 @@ export default function EventsPage() {
         <section className="section section--peach">
           <div className="container">
             <div className="section-intro">
+              <span className="eyebrow">Memórias</span>
               <h2>Eventos anteriores</h2>
               <p>Relembre as edições passadas das nossas ações.</p>
             </div>

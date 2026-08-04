@@ -9,6 +9,7 @@ import { TableSkeleton } from '@/components/feedback/Skeleton';
 import { EmptyState } from '@/components/feedback/EmptyState';
 import { ErrorState } from '@/components/feedback/ErrorState';
 import { fetchAdminProducts, deleteProduct, type ProductWithImage } from '@/services/products';
+import { logAudit } from '@/services/audit';
 import { formatPrice } from '@/lib/format';
 
 export default function AdminProductsPage() {
@@ -50,6 +51,7 @@ export default function AdminProductsPage() {
     if (!window.confirm(`Excluir o produto "${product.name}"?`)) return;
     try {
       await deleteProduct(product.id);
+      await logAudit('excluir', 'product', product.id, { name: product.name });
       await load();
     } catch {
       setError(true);

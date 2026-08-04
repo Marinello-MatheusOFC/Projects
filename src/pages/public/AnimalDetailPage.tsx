@@ -3,12 +3,14 @@ import { useParams, Link } from 'react-router-dom';
 import { ChevronLeft, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
+import { ErrorState } from '@/components/feedback/ErrorState';
 import { Modal } from '@/components/ui/Modal';
 import { AdoptionForm } from '@/features/adoption/components/AdoptionForm';
 import { ResponsivePicture } from '@/components/media/ResponsivePicture';
 import { fetchAnimalBySlug, fetchAdoptableAnimals, type AnimalWithImages } from '@/services/animals';
 import { resolveImageUrl } from '@/lib/images';
 import { speciesLabel, sexLabel, sizeLabel, animalStatusLabel } from '@/lib/format';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 
 function getStatus(status: AnimalWithImages['status']): { label: string; variant: 'success' | 'warning' | 'default' } {
   switch (status) {
@@ -40,22 +42,49 @@ export default function AnimalDetailPage() {
   const [activeThumb, setActiveThumb] = useState(0);
   const [animal, setAnimal] = useState<AnimalWithImages | null | undefined>(undefined);
   const [others, setOthers] = useState<AnimalWithImages[]>([]);
+  const [error, setError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     if (!slug) return;
     let active = true;
     setAnimal(undefined);
     setActiveThumb(0);
-    fetchAnimalBySlug(slug).then((result) => {
-      if (active) setAnimal(result);
-    });
-    fetchAdoptableAnimals().then((result) => {
-      if (active) setOthers(result.filter((a) => a.slug !== slug).slice(0, 3));
-    });
+    setError(false);
+    fetchAnimalBySlug(slug)
+      .then((result) => {
+        if (active) setAnimal(result);
+      })
+      .catch(() => {
+        if (active) setError(true);
+      });
+    fetchAdoptableAnimals()
+      .then((result) => {
+        if (active) setOthers(result.filter((a) => a.slug !== slug).slice(0, 3));
+      })
+      .catch(() => {
+        if (active) setOthers([]);
+      });
     return () => {
       active = false;
     };
-  }, [slug]);
+  }, [slug, reloadKey]);
+
+  if (error) {
+    return (
+      <div>
+        <section className="section">
+          <div className="container">
+            <ErrorState
+              message="Não conseguimos carregar este animal agora."
+              onRetry={() => setReloadKey((key) => key + 1)}
+            />
+          </div>
+        </section>
+      </div>
+    );
+  }
 
   if (animal === undefined) {
     return (
@@ -220,14 +249,31 @@ export default function AnimalDetailPage() {
                 <p>
                   O envio do formulário demonstra interesse e não confirma automaticamente a adoção.
                 </p>
-                <Button
-                  size="lg"
-                  fullWidth
-                  onClick={() => setShowForm(true)}
-                  disabled={animal.status === 'adopted'}
-                >
-                  {animal.status === 'adopted' ? 'Animal adotado' : 'Quero adotar'}
-                </Button>
+                {isAuthenticated ? (
+                  <Button
+                    size="lg"
+                    fullWidth
+                    onClick={() => setShowForm(true)}
+                    disabled={animal.status === 'adopted'}
+                  >
+                    {animal.status === 'adopted' ? 'Animal adotado' : 'Quero adotar'}
+                  </Button>
+                ) : (
+                  <div className="detail-card-auth-prompt">
+                    <Button
+                      size="lg"
+                      fullWidth
+                      onClick={() => setShowForm(true)}
+                      disabled={animal.status === 'adopted'}
+                    >
+                      {animal.status === 'adopted' ? 'Animal adotado' : 'Quero adotar'}
+                    </Button>
+                    <p className="detail-note">
+                      <Link to="/entrar">Entrar</Link> ou{' '}
+                      <Link to="/cadastrar">criar conta</Link> para acompanhar sua candidatura.
+                    </p>
+                  </div>
+                )}
                 {animal.status === 'in_process' && (
                   <p className="detail-note">
                     Este animal já está em processo de adoção, mas você pode manifestar interesse.

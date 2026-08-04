@@ -1,12 +1,33 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { Header } from '@/components/layout/Header';
+import { AuthContext, type AuthContextType } from '@/features/auth/hooks/useAuth';
+
+const mockAuth: AuthContextType = {
+  user: null,
+  profile: null,
+  loading: false,
+  initialized: true,
+  isAuthenticated: false,
+  isAdmin: false,
+  isSuperAdmin: false,
+  isUser: false,
+  authMode: 'none',
+  signOut: vi.fn(),
+  signInDemo: vi.fn(),
+  signUp: vi.fn(),
+  signIn: vi.fn(),
+  signInWithGoogle: vi.fn(),
+  hasRole: vi.fn(),
+};
 
 function renderHeader() {
   return render(
     <MemoryRouter>
-      <Header />
+      <AuthContext.Provider value={mockAuth}>
+        <Header />
+      </AuthContext.Provider>
     </MemoryRouter>,
   );
 }

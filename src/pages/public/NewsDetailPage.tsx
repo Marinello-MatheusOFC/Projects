@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ChevronLeft, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { ErrorState } from '@/components/feedback/ErrorState';
 import { ResponsivePicture } from '@/components/media/ResponsivePicture';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { fetchNews, fetchNewsBySlug, type NewsWithImage } from '@/services/news';
@@ -11,25 +12,51 @@ export default function NewsDetailPage() {
   const { slug } = useParams<{ slug: string }>();
   const [post, setPost] = useState<NewsWithImage | null | undefined>(undefined);
   const [related, setRelated] = useState<NewsWithImage[]>([]);
+  const [error, setError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     if (!slug) return;
     let active = true;
     setPost(undefined);
-    fetchNewsBySlug(slug).then((result) => {
-      if (active) setPost(result);
-    });
-    fetchNews().then((result) => {
-      if (active) setRelated(result.filter((item) => item.slug !== slug).slice(0, 3));
-    });
+    setError(false);
+    fetchNewsBySlug(slug)
+      .then((result) => {
+        if (active) setPost(result);
+      })
+      .catch(() => {
+        if (active) setError(true);
+      });
+    fetchNews()
+      .then((result) => {
+        if (active) setRelated(result.filter((item) => item.slug !== slug).slice(0, 3));
+      })
+      .catch(() => {
+        if (active) setRelated([]);
+      });
     return () => {
       active = false;
     };
-  }, [slug]);
+  }, [slug, reloadKey]);
 
   useEffect(() => {
     document.title = post ? `${post.title} — SOS Focinho Carente` : 'Notícias — SOS Focinho Carente';
   }, [post]);
+
+  if (error) {
+    return (
+      <div>
+        <section className="section">
+          <div className="container">
+            <ErrorState
+              message="Não conseguimos carregar esta notícia agora."
+              onRetry={() => setReloadKey((key) => key + 1)}
+            />
+          </div>
+        </section>
+      </div>
+    );
+  }
 
   if (post === undefined) {
     return (
@@ -69,6 +96,7 @@ export default function NewsDetailPage() {
   }
 
   const paragraphs = (post.content ?? '').split('\n\n').filter(Boolean);
+  const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
 
   return (
     <div>
@@ -108,9 +136,30 @@ export default function NewsDetailPage() {
           <div className="news-detail-share">
             <span>Compartilhe essa história:</span>
             <div className="news-detail-share-links">
-              <a href="#" onClick={(e) => e.preventDefault()} className="btn btn--outline btn--sm">Facebook</a>
-              <a href="#" onClick={(e) => e.preventDefault()} className="btn btn--outline btn--sm">Instagram</a>
-              <a href="#" onClick={(e) => e.preventDefault()} className="btn btn--outline btn--sm">X</a>
+              <a
+                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn--outline btn--sm"
+              >
+                Facebook
+              </a>
+              <a
+                href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`${post.title} — ${shareUrl}`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn--outline btn--sm"
+              >
+                WhatsApp
+              </a>
+              <a
+                href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(post.title)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn--outline btn--sm"
+              >
+                X
+              </a>
             </div>
           </div>
         </div>

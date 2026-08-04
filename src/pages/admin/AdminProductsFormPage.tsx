@@ -10,8 +10,11 @@ import { Checkbox } from '@/components/ui/Checkbox';
 import { Alert } from '@/components/feedback/Alert';
 import { TableSkeleton } from '@/components/feedback/Skeleton';
 import { ErrorState } from '@/components/feedback/ErrorState';
-import { fetchAdminProducts, createProduct, updateProduct } from '@/services/products';
+import { fetchAdminProducts, createProduct, updateProduct, uploadProductImage } from '@/services/products';
+import { ImageUpload } from '@/components/admin/ImageUpload';
 import { slugify } from '@/lib/format';
+import { resolveImageUrl } from '@/lib/images';
+import { logAudit } from '@/services/audit';
 
 const productSchema = z.object({
   name: z.string().min(2, 'Nome deve ter pelo menos 2 caracteres'),
@@ -33,6 +36,9 @@ export default function AdminProductsFormPage() {
   const [loadingData, setLoadingData] = useState(isEditing);
   const [loadError, setLoadError] = useState(false);
   const [submitState, setSubmitState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [imagePath, setImagePath] = useState<string | null>(null);
+  const [imageUploading, setImageUploading] = useState(false);
+  const [imageError, setImageError] = useState('');
 
   const {
     register,
@@ -59,6 +65,7 @@ export default function AdminProductsFormPage() {
         if (!active) return;
         const found = list.find((p) => p.id === id);
         if (found) {
+          setImagePath(found.image_path);
           reset({
             name: found.name,
             description: found.description ?? '',
@@ -94,13 +101,35 @@ export default function AdminProductsFormPage() {
     try {
       if (isEditing && id) {
         await updateProduct(id, input);
+        await logAudit('atualizar', 'product', id, { name: input.name, slug: input.slug });
+        setSubmitState('success');
+        setTimeout(() => navigate('/admin/produtos'), 1500);
       } else {
-        await createProduct(input);
+        const created = await createProduct(input);
+        if (created) await logAudit('criar', 'product', created.id, { name: input.name, slug: input.slug });
+        setSubmitState('success');
+        if (created) {
+          setTimeout(() => navigate(`/admin/produtos/${created.id}/editar`, { replace: true }), 1200);
+        } else {
+          setTimeout(() => navigate('/admin/produtos'), 1200);
+        }
       }
-      setSubmitState('success');
-      setTimeout(() => navigate('/admin/produtos'), 1500);
     } catch {
       setSubmitState('error');
+    }
+  };
+
+  const handleUpload = async (file: File) => {
+    if (!id) return;
+    setImageUploading(true);
+    setImageError('');
+    try {
+      const storagePath = await uploadProductImage(id, file);
+      if (storagePath) setImagePath(storagePath);
+    } catch (err) {
+      setImageError(err instanceof Error ? err.message : 'Não foi possível enviar a imagem.');
+    } finally {
+      setImageUploading(false);
     }
   };
 
@@ -168,6 +197,19 @@ export default function AdminProductsFormPage() {
           <Checkbox label="Destacar no brechó" {...register('featured')} />
           <Checkbox label="Publicado" {...register('published')} />
         </div>
+
+        {isEditing && id && (
+          <ImageUpload
+            label="Foto do produto"
+            alt="Foto do produto do brechó"
+            fallback="product"
+            currentUrl={resolveImageUrl(imagePath)}
+            busy={imageUploading}
+            error={imageError}
+            onClearError={() => setImageError('')}
+            onUpload={handleUpload}
+          />
+        )}
 
         {submitState === 'error' && (
           <Alert

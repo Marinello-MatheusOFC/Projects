@@ -3,6 +3,8 @@ import { isDemoConfigured } from '@/lib/auth-demo';
 import type { Product } from '@/types';
 import { demoProducts } from '@/data/content';
 
+const BUCKET = 'products';
+
 export interface ProductWithImage extends Product {
   image: string;
 }
@@ -99,9 +101,16 @@ export async function updateProduct(id: string, input: Partial<ProductInput>): P
 }
 
 export async function deleteProduct(id: string): Promise<void> {
-  const { error } = await supabase
-    .from('products')
-    .update({ deleted_at: new Date().toISOString() })
-    .eq('id', id);
+  const { error } = await supabase.from('products').delete().eq('id', id);
   if (error) throw new Error('Não foi possível excluir o produto.');
+}
+
+export async function uploadProductImage(productId: string, file: File): Promise<string | null> {
+  const ext = file.name.split('.').pop() ?? 'jpg';
+  const path = `${productId}/${Date.now()}-${Math.round(Math.random() * 1e6)}.${ext}`;
+  const { error: uploadError } = await supabase.storage.from(BUCKET).upload(path, file);
+  if (uploadError) throw new Error('Não foi possível enviar a imagem.');
+  const storagePath = `${BUCKET}/${path}`;
+  await updateProduct(productId, { image_path: storagePath });
+  return storagePath;
 }

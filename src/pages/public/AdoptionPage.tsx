@@ -20,6 +20,7 @@ export default function AdoptionPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [animals, setAnimals] = useState<AnimalWithImages[] | null>(null);
   const [error, setError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
   const name = searchParams.get('nome') || '';
   const species = searchParams.get('especie') || '';
@@ -28,6 +29,7 @@ export default function AdoptionPage() {
 
   useEffect(() => {
     let active = true;
+    setError(false);
     fetchAdoptableAnimals()
       .then((result) => {
         if (active) {
@@ -41,7 +43,7 @@ export default function AdoptionPage() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [reloadKey]);
 
   const updateFilter = useCallback(
     (key: string, value: string) => {
@@ -74,7 +76,7 @@ export default function AdoptionPage() {
           <div className="container">
             <ErrorState
               message="Não conseguimos carregar os animais agora."
-              onRetry={() => setError(false)}
+              onRetry={() => setReloadKey((key) => key + 1)}
             />
           </div>
         </section>

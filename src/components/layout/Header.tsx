@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Menu, X, LogOut, User } from 'lucide-react';
 import { Logo } from '@/components/ui/Logo';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 
 const navItems = [
   { to: '/adocao', label: 'Conhecer animais' },
@@ -17,6 +18,8 @@ export function Header() {
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLElement>(null);
+  const { isAuthenticated, profile, signOut } = useAuth();
+  const navigate = useNavigate();
 
   const open = () => setIsOpen(true);
   const close = () => setIsOpen(false);
@@ -100,9 +103,34 @@ export function Header() {
         </nav>
 
         <div className="header-cta">
-          <Link to="/adocao" className="btn btn--primary btn--sm">
-            Quero adotar
-          </Link>
+          {isAuthenticated && profile ? (
+            <div className="header-user-menu">
+              <Link to="/minha-conta" className="header-user-link">
+                <User size={16} aria-hidden="true" />
+                <span className="header-user-name">{profile.full_name.split(' ')[0]}</span>
+              </Link>
+              <button
+                type="button"
+                className="header-user-btn"
+                onClick={async () => {
+                  await signOut();
+                  navigate('/', { replace: true });
+                }}
+                aria-label="Sair da conta"
+              >
+                <LogOut size={16} aria-hidden="true" />
+              </button>
+            </div>
+          ) : (
+            <div className="header-auth-links">
+              <Link to="/entrar" className="header-auth-link">
+                Entrar
+              </Link>
+              <Link to="/cadastrar" className="btn btn--primary btn--sm">
+                Cadastrar
+              </Link>
+            </div>
+          )}
         </div>
       </div>
 
@@ -145,9 +173,34 @@ export function Header() {
               ))}
             </ul>
             <div className="header-drawer-footer">
-              <Link to="/adocao" className="btn btn--primary btn--full" onClick={close}>
-                Quero adotar
-              </Link>
+              {isAuthenticated && profile ? (
+                <div className="header-drawer-auth">
+                  <Link to="/minha-conta" className="btn btn--primary btn--full" onClick={close}>
+                    Minha Conta
+                  </Link>
+                  <button
+                    type="button"
+                    className="btn btn--outline btn--full"
+                    onClick={async () => {
+                      await signOut();
+                      close();
+                      navigate('/', { replace: true });
+                    }}
+                  >
+                    <LogOut size={16} aria-hidden="true" />
+                    Sair da conta
+                  </button>
+                </div>
+              ) : (
+                <div className="header-drawer-auth">
+                  <Link to="/entrar" className="btn btn--outline btn--full" onClick={close}>
+                    Entrar
+                  </Link>
+                  <Link to="/cadastrar" className="btn btn--primary btn--full" onClick={close}>
+                    Cadastrar
+                  </Link>
+                </div>
+              )}
             </div>
           </nav>
         </div>
