@@ -39,6 +39,22 @@ export default function LoginPage() {
     }
   }, [authLoading, profile, isAdmin, navigate, from]);
 
+  function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => reject(new Error('timeout')), ms);
+      promise.then(
+        (value) => {
+          clearTimeout(timer);
+          resolve(value);
+        },
+        (error) => {
+          clearTimeout(timer);
+          reject(error);
+        },
+      );
+    });
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -49,10 +65,14 @@ export default function LoginPage() {
     let authenticated = false;
 
     try {
-      const { data, error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const timeoutMs = demoAvailable ? 3000 : 15000;
+      const { data, error: signInError } = await withTimeout(
+        supabase.auth.signInWithPassword({
+          email,
+          password,
+        }),
+        timeoutMs,
+      );
 
       if (!signInError && data.user) {
         const { data: profileData } = await supabase
